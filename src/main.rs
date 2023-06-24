@@ -12,5 +12,5 @@ async fn main() {
 
     let items = vec![item];
 
-    let items: Items = Items::new(items);
+    let _items: Items = Items::new(items);
 }
