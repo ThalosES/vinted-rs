@@ -1,22 +1,16 @@
-use vinted_rs::queries;
-use regex::bytes::Regex;
 use vinted_rs::model::item::Item;
 use vinted_rs::model::items::Items;
-
+use vinted_rs::queries;
 
 #[tokio::main]
 async fn main() {
+    let cookie = queries::refresh_cookie().await.unwrap();
 
-let Ok(regex) = Regex::new(r"cf_bm=([^;]+)") else{
-    panic!("")
-};
-let cookie = queries::refresh_cookie(regex).await.unwrap();
+    println!("Cookie : {}", cookie);
 
-println!("Cookie : {}" , cookie);
+    let item = Item {};
 
-let item = Item {};
+    let items = vec![item];
 
-let items = vec![item];
-
-let items : Items = Items::new(items);
+    let items: Items = Items::new(items);
 }

@@ -1,9 +1,10 @@
 use regex::bytes::Regex;
 // use serde::{Deserialize, Serialize};
+use once_cell::sync::OnceCell;
+use regex::Error as RegexError;
 use std::str::from_utf8;
 use std::str::Utf8Error;
 use thiserror::Error;
-
 
 /*
 "https://www.vinted.fr/auth/token_refresh"
@@ -26,7 +27,11 @@ use thiserror::Error;
 "https://www.vinted.hu/auth/token_refresh"
 */
 
+static RE: OnceCell<Regex> = OnceCell::new();
 
+fn get_regex() -> Result<&'static Regex, RegexError> {
+    RE.get_or_try_init(|| Ok(Regex::new(r"cf_bm=([^;]+)")?))
+}
 
 #[derive(Error, Debug)]
 pub enum CookieError {
@@ -40,11 +45,13 @@ pub enum CookieError {
     NoCaptures,
     #[error("NoMatchingError")]
     NoMatching,
+    #[error("Regex Init Error")]
+    RegexError(#[from] RegexError),
 }
 
-pub async fn refresh_cookie(re: Regex) -> Result<String, CookieError> {
+pub async fn refresh_cookie() -> Result<String, CookieError> {
     let client = reqwest::Client::new();
-    let host = "https://www.vinted.at";
+    let host = "https://www.vinted.be";
     let request = format!("{host}/auth/token_refresh");
     let res = client
         .post(request)
@@ -68,14 +75,14 @@ pub async fn refresh_cookie(re: Regex) -> Result<String, CookieError> {
 
     let cook = cookie_to_parse.as_bytes();
 
-    let Some(captures) = re.captures(cook) else{
+    let Some(captures) = get_regex()?.captures(cook) else{
         return Err(CookieError::NoCaptures);
         };
     let Some(cf_bm_value_bytes) = captures.get(1) else {
         return Err(CookieError::NoMatching);
         };
 
-    let cf_bm_value : String = from_utf8(cf_bm_value_bytes.as_bytes())?.to_string();
+    let cf_bm_value: String = from_utf8(cf_bm_value_bytes.as_bytes())?.to_string();
 
     Ok(cf_bm_value)
 }
