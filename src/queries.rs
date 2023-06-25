@@ -21,7 +21,7 @@ pub enum CookieError {
     NoMatching,
 }
 
-const DOMAINS: [&'static str; 18] = [
+const DOMAINS: [&str; 18] = [
     "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "uk", "pt", "com", "cz", "sk", "pl",
     "se", "ro", "hu",
 ];
@@ -36,6 +36,12 @@ static CLIENT: OnceCell<Client> = OnceCell::new();
 pub struct VintedWrapper {
     host: Option<String>,
     cookie_store: Arc<CookieStoreMutex>,
+}
+
+impl Default for VintedWrapper {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 impl VintedWrapper {
     pub fn new() -> Self {
