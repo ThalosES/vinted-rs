@@ -1,7 +1,7 @@
 name: Test and Build Rust
 
 on:
-  push: [main, develop]
+  push:
   pull_request:
   # schedule:
       # Check if it works with current dependencies (weekly on Friday 00:00  UTC)

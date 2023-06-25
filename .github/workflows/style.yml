@@ -1,7 +1,7 @@
 name: Format Check
 
 on: 
-  push: [main, develop]
+  push: 
   pull_request:
 
 jobs:
