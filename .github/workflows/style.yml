@@ -1,26 +1,16 @@
-name: Rust Code Formatting
+name: Format Check
 
-on:
-  push:
-  pull_request:
+on: 
+  push
 
 jobs:
-  rustfmt:
-    name: Rustfmt
+  fmt-check:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          profile: minimal
-          components: rustfmt
+      - name: Check code formatting
+        run: cargo fmt -- --check
 
-      - name: Check format
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: -- --check --verbose
