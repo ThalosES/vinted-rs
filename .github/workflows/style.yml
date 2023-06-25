@@ -1,0 +1,17 @@
+name: Format Check
+
+on: 
+  push: 
+  pull_request:
+
+jobs:
+  fmt-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check code formatting
+        run: cargo fmt -- --check --verbose
+

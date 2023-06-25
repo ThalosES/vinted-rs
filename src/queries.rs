@@ -30,7 +30,7 @@ use thiserror::Error;
 static RE: OnceCell<Regex> = OnceCell::new();
 
 fn get_regex() -> Result<&'static Regex, RegexError> {
-    RE.get_or_try_init(|| Ok(Regex::new(r"cf_bm=([^;]+)")?))
+    RE.get_or_try_init(|| (Regex::new(r"cf_bm=([^;]+)")))
 }
 
 #[derive(Error, Debug)]
