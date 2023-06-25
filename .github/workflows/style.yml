@@ -1,7 +1,8 @@
 name: Format Check
 
 on: 
-  push:
+  push: [main, develop]
+  pull_request:
 
 jobs:
   fmt-check:
@@ -12,5 +13,5 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check code formatting
-        run: cargo fmt -- --check
+        run: cargo fmt -- --check --verbose
 
