@@ -1,10 +1,6 @@
 use once_cell::sync::OnceCell;
 use rand::Rng;
-use reqwest::StatusCode;
-use reqwest::header::HeaderMap;
-use reqwest::header::SET_COOKIE;
 use reqwest::Client;
-use reqwest::Response;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::str::Utf8Error;
