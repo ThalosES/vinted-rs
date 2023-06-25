@@ -3,6 +3,7 @@ use regex::bytes::Regex;
 // use serde::{Deserialize, Serialize};
 use once_cell::sync::OnceCell;
 use regex::Error as RegexError;
+use std::fmt::format;
 use std::str::from_utf8;
 use std::str::Utf8Error;
 use thiserror::Error;
@@ -38,7 +39,6 @@ impl ValidDomainList {
 }
 
 static RE: OnceCell<Regex> = OnceCell::new();
-
 
 fn get_regex() -> Result<&'static Regex, RegexError> {
     RE.get_or_try_init(|| (Regex::new(r"cf_bm=([^;]+)")))
@@ -76,4 +76,14 @@ pub async fn refresh_cookie() -> Result<(String, String), CookieError> {
     Ok((cf_bm_value, host))
 }
 
-pub async fn get_item() {}
+pub async fn get_item() {
+    //1. Try request 
+    //2. If fails: get_cookie
+    //3. Needs client?
+    //4. Should the host be a parameter?
+    let url = format!("https://www.vinted.{host}/auth/token_refresh");
+    let res = reqwest::get(url).
+        await?.
+        json().
+        await?;
+}
