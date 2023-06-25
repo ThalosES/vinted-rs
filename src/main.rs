@@ -4,9 +4,9 @@ use vinted_rs::queries;
 
 #[tokio::main]
 async fn main() {
-    let cookie = queries::refresh_cookie().await.unwrap().0;
+    let cookie_test = queries::refresh_cookie().await.unwrap();
 
-    println!("Cookie : {}", cookie);
+    println!("Host: {} \nCookie : {}", cookie_test.1, cookie_test.0);
 
     let item = Item {};
 
