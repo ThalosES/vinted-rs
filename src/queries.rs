@@ -1,11 +1,14 @@
-use rand::Rng;
-use regex::bytes::Regex;
-// use serde::{Deserialize, Serialize};
 use once_cell::sync::OnceCell;
-use regex::Error as RegexError;
-use std::fmt::format;
-use std::str::from_utf8;
+use rand::Rng;
+use reqwest::StatusCode;
+use reqwest::header::HeaderMap;
+use reqwest::header::SET_COOKIE;
+use reqwest::Client;
+use reqwest::Response;
+use reqwest_cookie_store::CookieStore;
+use reqwest_cookie_store::CookieStoreMutex;
 use std::str::Utf8Error;
+use std::sync::Arc;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -20,70 +23,76 @@ pub enum CookieError {
     NoCaptures,
     #[error("NoMatchingError")]
     NoMatching,
-    #[error("Regex Init Error")]
-    RegexError(#[from] RegexError),
 }
 
-struct ValidDomainList;
+const DOMAINS: [&'static str; 18] = [
+    "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "uk", "pt", "com", "cz", "sk", "pl",
+    "se", "ro", "hu",
+];
 
-impl ValidDomainList {
-    const DOMAINS: [&'static str; 18] = [
-        "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "uk", "pt", "com", "cz", "sk", "pl",
-        "se", "ro", "hu",
-    ];
+fn random_host() -> String {
+    let random_index = rand::thread_rng().gen_range(0..DOMAINS.len());
+    DOMAINS[random_index].to_string()
+}
 
-    fn random_host() -> String {
-        let random_index = rand::thread_rng().gen_range(0..Self::DOMAINS.len());
-        Self::DOMAINS[random_index].to_string()
+static CLIENT: OnceCell<Client> = OnceCell::new();
+
+pub struct VintedWrapper {
+    host: Option<String>,
+    cookie_store: Arc<CookieStoreMutex>,
+}
+impl VintedWrapper {
+    pub fn new() -> Self {
+        let cookie_store = CookieStore::new(None);
+        let cookie_store = CookieStoreMutex::new(cookie_store);
+        let cookie_store = Arc::new(cookie_store);
+        VintedWrapper {
+            host: None,
+            cookie_store,
+        }
     }
-}
 
-static RE: OnceCell<Regex> = OnceCell::new();
+    fn get_client(&self) -> &'static Client {
+        CLIENT.get_or_init(|| -> Client {
+            reqwest::ClientBuilder::new()
+                .cookie_provider(Arc::clone(&self.cookie_store))
+                .build()
+                .unwrap()
+        })
+    }
 
-fn get_regex() -> Result<&'static Regex, RegexError> {
-    RE.get_or_try_init(|| (Regex::new(r"cf_bm=([^;]+)")))
-}
+    pub async fn refresh_cookies(&mut self) -> Result<(), CookieError> {
+        self.cookie_store.lock().unwrap().clear();
+        let client = self.get_client();
+        self.host = Some(random_host()); // Option<String>
+        let request = format!(
+            "https://www.vinted.{}/auth/token_refresh",
+            self.host.as_ref().unwrap()
+        );
+        client.post(request).send().await?;
+        Ok(())
+    }
 
-pub async fn refresh_cookie() -> Result<(String, String), CookieError> {
-    let client = reqwest::Client::new();
-    let host = ValidDomainList::random_host();
-    let request = format!("https://www.vinted.{host}/auth/token_refresh");
-    let res = client
-        .post(request)
-        .header("User-Agent", "PostmanRuntime/7.32.3")
-        .send()
-        .await?;
+    pub async fn get_item(&self) -> Result<(), CookieError> {
+        //1. Try request
+        //2. If fails: get_cookie
+        //3. Needs client?
+        //4. Should the host be a parameter?
+        /*
+        https://www.vinted.es/api/v2/catalog/items
 
-    let headers = res.headers();
+         */
+        let client = self.get_client();
 
-    let get_all = headers.get_all("set-cookie");
+        let url = format!(
+            "https://www.vinted.{}/api/v2/catalog/items",
+            self.host.as_ref().unwrap()
+        );
 
-    let Some(cookie_to_parse) = get_all.into_iter().last() else {
-        return Err(CookieError::NoLastElement);
-    };
+        let res = client.get(url).send().await?.text().await?;
 
-    let cook = cookie_to_parse.as_bytes();
+        println!("JSON : {res:?}");
 
-    let Some(captures) = get_regex()?.captures(cook) else{
-        return Err(CookieError::NoCaptures);
-        };
-    let Some(cf_bm_value_bytes) = captures.get(1) else {
-        return Err(CookieError::NoMatching);
-        };
-
-    let cf_bm_value: String = from_utf8(cf_bm_value_bytes.as_bytes())?.to_string();
-
-    Ok((cf_bm_value, host))
-}
-
-pub async fn get_item() {
-    //1. Try request 
-    //2. If fails: get_cookie
-    //3. Needs client?
-    //4. Should the host be a parameter?
-    let url = format!("https://www.vinted.{host}/auth/token_refresh");
-    let res = reqwest::get(url).
-        await?.
-        json().
-        await?;
+        Ok(())
+    }
 }

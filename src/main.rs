@@ -1,16 +1,24 @@
-use vinted_rs::model::item::Item;
+/*use vinted_rs::model::item::Item;
 use vinted_rs::model::items::Items;
+*/
 use vinted_rs::queries;
 
 #[tokio::main]
 async fn main() {
-    let cookie_test = queries::refresh_cookie().await.unwrap();
 
-    println!("Host: {} \nCookie : {}", cookie_test.1, cookie_test.0);
+    let mut vinted = queries::VintedWrapper::new();
 
-    let item = Item {};
+    vinted.refresh_cookies().await.unwrap();
+
+    vinted.get_item().await.unwrap();
+
+    // queries::get_item(&host, &cookie).await.unwrap();
+
+    /*let item = Item {};
 
     let items = vec![item];
 
     let _items: Items = Items::new(items);
+    */
+
 }
