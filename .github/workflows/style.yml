@@ -1,7 +1,7 @@
 name: Format Check
 
 on: 
-  push
+  [push]
 
 jobs:
   fmt-check:
