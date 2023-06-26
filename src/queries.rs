@@ -55,8 +55,7 @@ impl VintedWrapper {
     }
 
     pub async fn refresh_cookies(&mut self) -> Result<(), CookieError> {
-        let mut cookies = self.cookie_store.lock().unwrap();
-        cookies.clear();
+        self.cookie_store.lock().unwrap().clear();
         let client = self.get_client();
         self.host = Some(random_host()); // Option<String>
         let request = format!(
@@ -67,7 +66,7 @@ impl VintedWrapper {
         Ok(())
     }
 
-    pub async fn get_item(&self) -> Result<(), CookieError> {
+    pub async fn get_item(&mut self) -> Result<(), CookieError> {
         //1. Try request
         //2. If fails: get_cookie
         //3. Needs client?
@@ -76,12 +75,13 @@ impl VintedWrapper {
         https://www.vinted.es/api/v2/catalog/items
 
          */
-        let cookies = self.cookie_store.lock().unwrap();
 
-        for cookie in cookies.iter_unexpired(){
-            println!("Cookie : {:?}" , cookie)
+        let domain: &str = &format!("vinted.{}", self.host.as_ref().unwrap());
+      
+        if let None = self.cookie_store.clone().lock().unwrap().get(domain, "/", "__cf_bm") {
+            self.refresh_cookies().await?
         }
-        
+
         let client = self.get_client();
 
         let url = format!(
