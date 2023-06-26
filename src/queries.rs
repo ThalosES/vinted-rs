@@ -69,10 +69,16 @@ impl VintedWrapper {
     }
 
     pub async fn get_item(&mut self) -> Result<(), CookieError> {
-
         let domain: &str = &format!("vinted.{}", self.host.as_ref().unwrap());
-      
-        if let None = self.cookie_store.clone().lock().unwrap().get(domain, "/", "__cf_bm") {
+
+        let cookie_store_clone = self.cookie_store.clone();
+
+        if cookie_store_clone
+            .lock()
+            .unwrap()
+            .get(domain, "/", "__cf_bm")
+            .is_none()
+        {
             self.refresh_cookies().await?
         }
 
@@ -84,7 +90,6 @@ impl VintedWrapper {
         );
 
         let res: Items = client.get(url).send().await?.json().await?;
-        //let res = client.get(url).send().await?.text().await?;
 
         println!("JSON :{res:?}");
 

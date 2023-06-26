@@ -1,4 +1,4 @@
-use typed_builder::TypedBuilder;
+/*use typed_builder::TypedBuilder;
 
 #[derive(TypedBuilder)]
 pub struct Filter {
@@ -11,4 +11,4 @@ pub struct Filter {
     // id 15 es Mango
     #[builder(default, setter(strip_option))]
     brand_ids: Option<Vec<i32>>,
-}
+}*/
