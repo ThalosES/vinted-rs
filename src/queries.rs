@@ -3,7 +3,6 @@ use rand::Rng;
 use reqwest::Client;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
-use std::str::Utf8Error;
 use std::sync::Arc;
 use thiserror::Error;
 
@@ -11,14 +10,6 @@ use thiserror::Error;
 pub enum CookieError {
     #[error("ReqwestError")]
     ReqWestError(#[from] reqwest::Error),
-    #[error("Utf8Error")]
-    Utf8Error(#[from] Utf8Error),
-    #[error("NoLastElement")]
-    NoLastElement,
-    #[error("NoCapturesError")]
-    NoCaptures,
-    #[error("NoMatchingError")]
-    NoMatching,
 }
 
 const DOMAINS: [&str; 18] = [
@@ -64,7 +55,8 @@ impl VintedWrapper {
     }
 
     pub async fn refresh_cookies(&mut self) -> Result<(), CookieError> {
-        self.cookie_store.lock().unwrap().clear();
+        let mut cookies = self.cookie_store.lock().unwrap();
+        cookies.clear();
         let client = self.get_client();
         self.host = Some(random_host()); // Option<String>
         let request = format!(
@@ -84,6 +76,12 @@ impl VintedWrapper {
         https://www.vinted.es/api/v2/catalog/items
 
          */
+        let cookies = self.cookie_store.lock().unwrap();
+
+        for cookie in cookies.iter_unexpired(){
+            println!("Cookie : {:?}" , cookie)
+        }
+        
         let client = self.get_client();
 
         let url = format!(
