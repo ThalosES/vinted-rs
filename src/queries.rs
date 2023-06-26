@@ -6,6 +6,8 @@ use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::Arc;
 use thiserror::Error;
 
+use crate::model::items::Items;
+
 #[derive(Error, Debug)]
 pub enum CookieError {
     #[error("ReqwestError")]
@@ -67,14 +69,6 @@ impl VintedWrapper {
     }
 
     pub async fn get_item(&mut self) -> Result<(), CookieError> {
-        //1. Try request
-        //2. If fails: get_cookie
-        //3. Needs client?
-        //4. Should the host be a parameter?
-        /*
-        https://www.vinted.es/api/v2/catalog/items
-
-         */
 
         let domain: &str = &format!("vinted.{}", self.host.as_ref().unwrap());
       
@@ -89,9 +83,10 @@ impl VintedWrapper {
             self.host.as_ref().unwrap()
         );
 
-        let res = client.get(url).send().await?.text().await?;
+        let res: Items = client.get(url).send().await?.json().await?;
+        //let res = client.get(url).send().await?.text().await?;
 
-        println!("JSON : {res:?}");
+        println!("JSON :{res:?}");
 
         Ok(())
     }

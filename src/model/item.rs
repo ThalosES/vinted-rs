@@ -1,12 +1,24 @@
 use crate::model::{Deserialize, Serialize};
+
+use super::photo::Photo;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
-    id: i32,
+    id: i64,
     title: String,
-    price: i64,
+    is_visible: bool,
+    discount: String,
+    currency: String,
+    price: String,
     brand: String,
     color: String,
     size: String,
-    photo_url: String,
+    photo: Photo, //Sustituable por "full_size_url"
+    url: String,
+    promoted: bool,
+    favourite_count: i32,
+    size_title: String,
+    timestamp: String,
 }
+
 
