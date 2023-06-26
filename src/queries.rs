@@ -3,22 +3,15 @@ use rand::Rng;
 use reqwest::Client;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
-use std::str::Utf8Error;
 use std::sync::Arc;
 use thiserror::Error;
+
+use crate::model::items::Items;
 
 #[derive(Error, Debug)]
 pub enum CookieError {
     #[error("ReqwestError")]
     ReqWestError(#[from] reqwest::Error),
-    #[error("Utf8Error")]
-    Utf8Error(#[from] Utf8Error),
-    #[error("NoLastElement")]
-    NoLastElement,
-    #[error("NoCapturesError")]
-    NoCaptures,
-    #[error("NoMatchingError")]
-    NoMatching,
 }
 
 const DOMAINS: [&str; 18] = [
@@ -75,15 +68,20 @@ impl VintedWrapper {
         Ok(())
     }
 
-    pub async fn get_item(&self) -> Result<(), CookieError> {
-        //1. Try request
-        //2. If fails: get_cookie
-        //3. Needs client?
-        //4. Should the host be a parameter?
-        /*
-        https://www.vinted.es/api/v2/catalog/items
+    pub async fn get_item(&mut self) -> Result<(), CookieError> {
+        let domain: &str = &format!("vinted.{}", self.host.as_ref().unwrap());
 
-         */
+        let cookie_store_clone = self.cookie_store.clone();
+
+        if cookie_store_clone
+            .lock()
+            .unwrap()
+            .get(domain, "/", "__cf_bm")
+            .is_none()
+        {
+            self.refresh_cookies().await?
+        }
+
         let client = self.get_client();
 
         let url = format!(
@@ -91,9 +89,9 @@ impl VintedWrapper {
             self.host.as_ref().unwrap()
         );
 
-        let res = client.get(url).send().await?.text().await?;
+        let res: Items = client.get(url).send().await?.json().await?;
 
-        println!("JSON : {res:?}");
+        println!("JSON :{res:?}");
 
         Ok(())
     }
