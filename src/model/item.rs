@@ -8,5 +8,5 @@ pub struct Item {
     color: String,
     size: String,
     photo_url: String,
-    
 }
+
