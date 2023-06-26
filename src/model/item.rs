@@ -17,5 +17,3 @@ pub struct Item {
     promoted: bool,
     favourite_count: i32,
 }
-
-

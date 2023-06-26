@@ -4,5 +4,5 @@ use crate::model::{Deserialize, Serialize};
 pub struct Brand {
     id: i64,
     title: String,
-    url: String
+    url: String,
 }

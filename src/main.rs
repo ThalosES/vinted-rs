@@ -1,4 +1,3 @@
-
 use vinted_rs::queries;
 
 #[tokio::main]
@@ -8,5 +7,4 @@ async fn main() {
     vinted.refresh_cookies().await.unwrap();
 
     vinted.get_item().await.unwrap();
-
 }
