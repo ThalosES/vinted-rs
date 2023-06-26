@@ -6,6 +6,7 @@ use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::Arc;
 use thiserror::Error;
 
+use crate::model::filter::Filter;
 use crate::model::items::Items;
 
 #[derive(Error, Debug)]
@@ -68,7 +69,7 @@ impl VintedWrapper {
         Ok(())
     }
 
-    pub async fn get_item(&mut self) -> Result<(), CookieError> {
+    pub async fn get_item(&mut self, filters: Filter) -> Result<(), CookieError> {
         let domain: &str = &format!("vinted.{}", self.host.as_ref().unwrap());
 
         let cookie_store_clone = self.cookie_store.clone();
@@ -84,10 +85,15 @@ impl VintedWrapper {
 
         let client = self.get_client();
 
-        let url = format!(
+        let mut url = format!(
             "https://www.vinted.{}/api/v2/catalog/items",
             self.host.as_ref().unwrap()
         );
+
+        url = match filters.search_text {
+            Some(text) => format!("{url}?search_text={text}"),
+            None => format!("{url}?search_text="),
+        };
 
         let res: Items = client.get(url).send().await?.json().await?;
 
