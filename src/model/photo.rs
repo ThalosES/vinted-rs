@@ -4,4 +4,6 @@ use crate::model::{Deserialize, Serialize};
 pub struct Photo {
     id: i64,
     url: String,
+    dominant_color: String,
+    dominant_color_opaque: String,
 }
