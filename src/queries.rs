@@ -1,37 +1,11 @@
-use regex::bytes::Regex;
-// use serde::{Deserialize, Serialize};
 use once_cell::sync::OnceCell;
-use regex::Error as RegexError;
-use std::str::from_utf8;
+use rand::Rng;
+use reqwest::Client;
+use reqwest_cookie_store::CookieStore;
+use reqwest_cookie_store::CookieStoreMutex;
 use std::str::Utf8Error;
+use std::sync::Arc;
 use thiserror::Error;
-
-/*
-"https://www.vinted.fr/auth/token_refresh"
-"https://www.vinted.be/auth/token_refresh"
-"https://www.vinted.es/auth/token_refresh"
-"https://www.vinted.lu/auth/token_refresh"
-"https://www.vinted.nl/auth/token_refresh"
-"https://www.vinted.lt/auth/token_refresh"
-"https://www.vinted.de/auth/token_refresh"
-"https://www.vinted.at/auth/token_refresh"
-"https://www.vinted.it/auth/token_refresh"
-"https://www.vinted.co.uk/auth/token_refresh"
-"https://www.vinted.pt/auth/token_refresh"
-"https://www.vinted.com/auth/token_refresh"
-"https://www.vinted.cz/auth/token_refresh"
-"https://www.vinted.sk/auth/token_refresh"
-"https://www.vinted.pl/auth/token_refresh"
-"https://www.vinted.se/auth/token_refresh"
-"https://www.vinted.ro/auth/token_refresh"
-"https://www.vinted.hu/auth/token_refresh"
-*/
-
-static RE: OnceCell<Regex> = OnceCell::new();
-
-fn get_regex() -> Result<&'static Regex, RegexError> {
-    RE.get_or_try_init(|| (Regex::new(r"cf_bm=([^;]+)")))
-}
 
 #[derive(Error, Debug)]
 pub enum CookieError {
@@ -45,46 +19,82 @@ pub enum CookieError {
     NoCaptures,
     #[error("NoMatchingError")]
     NoMatching,
-    #[error("Regex Init Error")]
-    RegexError(#[from] RegexError),
 }
 
-pub async fn refresh_cookie() -> Result<String, CookieError> {
-    let client = reqwest::Client::new();
-    let host = "https://www.vinted.be";
-    let request = format!("{host}/auth/token_refresh");
-    let res = client
-        .post(request)
-        // .header("User-Agent", "PostmanRuntime/7.32.3")
-        // .header("Host",  host)
-        // .header("Connection", "keep-alive")
-        // .header("Accept", "*/*")
-        // .header("Accept-Encoding", "gzip, deflate, br")
-        .send()
-        .await?;
+const DOMAINS: [&str; 18] = [
+    "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "uk", "pt", "com", "cz", "sk", "pl",
+    "se", "ro", "hu",
+];
 
-    let headers = res.headers();
-    /*     .json()
-        .await?;
-    */
-    let get_all = headers.get_all("set-cookie");
-
-    let Some(cookie_to_parse) = get_all.into_iter().last() else {
-        return Err(CookieError::NoLastElement);
-    };
-
-    let cook = cookie_to_parse.as_bytes();
-
-    let Some(captures) = get_regex()?.captures(cook) else{
-        return Err(CookieError::NoCaptures);
-        };
-    let Some(cf_bm_value_bytes) = captures.get(1) else {
-        return Err(CookieError::NoMatching);
-        };
-
-    let cf_bm_value: String = from_utf8(cf_bm_value_bytes.as_bytes())?.to_string();
-
-    Ok(cf_bm_value)
+fn random_host() -> String {
+    let random_index = rand::thread_rng().gen_range(0..DOMAINS.len());
+    DOMAINS[random_index].to_string()
 }
 
-pub async fn get_item() {}
+static CLIENT: OnceCell<Client> = OnceCell::new();
+
+pub struct VintedWrapper {
+    host: Option<String>,
+    cookie_store: Arc<CookieStoreMutex>,
+}
+
+impl Default for VintedWrapper {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl VintedWrapper {
+    pub fn new() -> Self {
+        let cookie_store = CookieStore::new(None);
+        let cookie_store = CookieStoreMutex::new(cookie_store);
+        let cookie_store = Arc::new(cookie_store);
+        VintedWrapper {
+            host: None,
+            cookie_store,
+        }
+    }
+
+    fn get_client(&self) -> &'static Client {
+        CLIENT.get_or_init(|| -> Client {
+            reqwest::ClientBuilder::new()
+                .cookie_provider(Arc::clone(&self.cookie_store))
+                .build()
+                .unwrap()
+        })
+    }
+
+    pub async fn refresh_cookies(&mut self) -> Result<(), CookieError> {
+        self.cookie_store.lock().unwrap().clear();
+        let client = self.get_client();
+        self.host = Some(random_host()); // Option<String>
+        let request = format!(
+            "https://www.vinted.{}/auth/token_refresh",
+            self.host.as_ref().unwrap()
+        );
+        client.post(request).send().await?;
+        Ok(())
+    }
+
+    pub async fn get_item(&self) -> Result<(), CookieError> {
+        //1. Try request
+        //2. If fails: get_cookie
+        //3. Needs client?
+        //4. Should the host be a parameter?
+        /*
+        https://www.vinted.es/api/v2/catalog/items
+
+         */
+        let client = self.get_client();
+
+        let url = format!(
+            "https://www.vinted.{}/api/v2/catalog/items",
+            self.host.as_ref().unwrap()
+        );
+
+        let res = client.get(url).send().await?.text().await?;
+
+        println!("JSON : {res:?}");
+
+        Ok(())
+    }
+}
