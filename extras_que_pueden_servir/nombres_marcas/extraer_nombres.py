@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 
+import string
+
 def camel_case(texto):
     palabras = texto.split()
     capitalizado = [palabra.capitalize() for palabra in palabras]
@@ -23,10 +25,24 @@ def extraer_textos(html_file):
     return textos_etiqueta_a
 
 # Ejemplo de uso
-archivo_html = 'A_elements.html'  # Reemplaza con la ruta de tu archivo HTML
-textos = extraer_textos(archivo_html)
+letters = string.ascii_uppercase
 
-# Imprimir los textos obtenidos
-for texto in textos:
-    print(texto)
+def print_texts(textos):
+    for texto in textos:
+        print(texto)
+
+for letter in letters:
+    
+    if letter == 'Q':
+        print('Quechua\nQuiksilver\nQuiz')
+        continue
+    if letter == 'X':
+        print('Xbox')
+        continue
+    
+    archivo_html = letter+ '_elements.html'  # Reemplaza con la ruta de tu archivo HTML
+    textos = extraer_textos(archivo_html)
+    print_texts(textos)
+    
+print('5.10.15')
 
