@@ -1,0 +1,3 @@
+[submodule "vinted-db-feeder"]
+	path = vinted-db-feeder
+	url = https://github.com/TuTarea/vinted-db-feeder.git
