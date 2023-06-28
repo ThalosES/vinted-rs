@@ -11,4 +11,3 @@ pub struct Filter {
     #[builder(default, setter(strip_option))]
     pub brand_ids: Option<Vec<i32>>,
 }
-

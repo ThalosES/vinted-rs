@@ -1,7 +1,4 @@
-use vinted_rs::{
-    model::filter::{Filter},
-    queries,
-};
+use vinted_rs::{model::filter::Filter, queries};
 
 #[tokio::main]
 async fn main() {
@@ -9,9 +6,7 @@ async fn main() {
 
     vinted.refresh_cookies().await.unwrap();
 
-    let filter: Filter = Filter::builder()
-        .search_text(String::from("shoes"))
-        .build();
+    let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
 
     vinted.get_item(filter).await.unwrap();
 }
