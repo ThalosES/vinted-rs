@@ -72,13 +72,16 @@ def deserialize_json(data):
 
 
 if __name__ == "__main__":
+    
+    file = open("nombres_marcas.txt" , "r")
+    
+    base_url = "https://www.vinted.es/api/v2/brands?keyword="
     # URL para hacer la petición
-    base_url = "https://www.vinted.es/api/v2/brands?keyword=Zara"
 
     url_cookies = 'https://www.vinted.es/auth/token_refresh'
 
     sess = requests.Session()
-
+    
     HEADERS = {
                 "User-Agent": "PostmanRuntime/7.28.4",  # random.choice(USER_AGENTS),
                 "Host": "www.vinted.es",
@@ -87,22 +90,21 @@ if __name__ == "__main__":
     sess.headers.update(HEADERS)
 
     sess.post(url_cookies)
+    for brand in file:
+    
+        url = base_url+brand
 
+        # Obtener los datos
+        data = get_data(url, sess)
 
-    # Obtener los datos
-    data = get_data(base_url, sess)
+        if data is not None:
+            # Serializar el JSON
+            deserialized_data = deserialize_json(data)
+            # Imprimir los resultados deserializados
+            if len(deserialized_data.brands) > 0:
+                brand = deserialized_data.brands[0]
+                print(f"{brand.id} , {brand.title} , {brand.url}")
+        else:
+            print("Error al obtener los datos.")
 
-    if data is not None:
-        # Serializar el JSON
-        deserialized_data = deserialize_json(data)
-        # Imprimir los resultados deserializados
-        print("Brands:")
-        for brand in deserialized_data.brands:
-            print(f"Brand ID: {brand.id}")
-            print(f"Title: {brand.title}")
-            print(f"URL: {brand.url}")
-            print()
-    else:
-        print("Error al obtener los datos.")
-
-    time.sleep(0.250)
+        time.sleep(0.250)
