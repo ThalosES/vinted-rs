@@ -1,5 +1,5 @@
 use vinted_rs::{
-    model::filter::{Brands, Filter},
+    model::filter::{Filter},
     queries,
 };
 
@@ -11,7 +11,6 @@ async fn main() {
 
     let filter: Filter = Filter::builder()
         .search_text(String::from("shoes"))
-        .brand_ids(vec![Brands::Nike])
         .build();
 
     vinted.get_item(filter).await.unwrap();
