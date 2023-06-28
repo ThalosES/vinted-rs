@@ -60,11 +60,20 @@ Program after that `up.sql` and `down.sql` scripts.
 
 ### Run a Docker container with PostgreSQL
 
-- See in [Makefile]{https://github.com/TuTarea/vinted-rs/blob/main/Makefile}
+- See in [Makefile](https://github.com/TuTarea/vinted-rs/blob/main/Makefile)
 
 ```
 make db
 ```
 
-Notice that the PosgreSQL container is running at port 5433, it may fail if is allocated by other service.
+### Run migrations
+
+```
+make diesel
+```
+
+### Stop DB
+```
+make stop
+```
 
