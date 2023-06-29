@@ -38,7 +38,7 @@ sudo pacman -S postgresql-libs
 In `Debian` based distributions is only necessary to install this package.
 
 ```bash
-sudo apt install libpq5
+sudo apt install libpq-dev
 ```
 
 ```bash
