@@ -2,7 +2,7 @@
 
 A complete Vinted API-Wrapper in Rust
 
-## Instalation
+## Installation
 
 Via `cargo` you can add the library to your project's `Cargo.toml`
 
@@ -19,7 +19,7 @@ vinted-rs = "0.0.1"
 
 ## DB setup
 
-Advanced filters feature must require this setup before run.
+Advanced filtering features must require this setup before running.
 
 - First start installing diesel-cli (in order to run the migrations in PostgreSQL database)
 
@@ -27,7 +27,7 @@ Advanced filters feature must require this setup before run.
 
 diesel-cli installation may fail if you do not have `libpq` library installed.
 
-To install `libpq`, just install PostgreSQL package in you machine.
+To install `libpq`, just install PostgreSQL package on your machine.
 
 In `Arch` based is only necessary to install this package.
 
