@@ -1,33 +1,34 @@
 CREATE TABLE IF NOT EXISTS COLOR(
-   ID    INTEGER  NOT NULL PRIMARY KEY 
-  ,Title VARCHAR(30) NOT NULL
-  ,Hex   VARCHAR(7) NOT NULL
+   ID    INTEGER PRIMARY KEY,
+   Title VARCHAR(30) NOT NULL,
+   Hex   VARCHAR(7) NOT NULL
 );
-INSERT INTO COLOR(ID,Title,Hex) VALUES (1,'Noir','#000000');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (2,'Marron','#663300');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (3,'Gris','#919191');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (4,'Beige','#f4e0c8');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (5,'Rose','#ff0080');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (6,'Violet','#800080');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (7,'Rouge','#CC3300');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (8,'Jaune','#fff200');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (9,'Bleu','#007bc4');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (10,'Vert','#369a3d');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (11,'Orange','#FFA500');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (12,'Blanc','#FFFFFF');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (13,'Argenté','#dddddd');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (14,'Doré','#be9927');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (15,'Multicolore','#');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (16,'Kaki','#86814A');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (17,'Turquoise','#B7DEE8');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (20,'Crème','#F8F8E1');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (21,'Abricot','#FFCC98');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (22,'Corail','#FE7F5D');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (23,'Bordeaux','#AE2E3D');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (24,'Rose','#FFCCCA');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (25,'Lila','#D297D2');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (26,'Bleu clair','#89CFF0');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (27,'Marine','#35358D');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (28,'Vert foncé','#356639');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (29,'Moutarde','#E5B539');
-INSERT INTO COLOR(ID,Title,Hex) VALUES (30,'Menthe','#A2FFBC');
+
+ INSERT INTO COLOR(ID,Title,Hex) VALUES (1,'Noir','#000000'),
+   (2,'Marron','#663300'),
+   (3,'Gris','#919191'),
+   (4,'Beige','#f4e0c8'),
+   (5,'Rose','#ff0080'),
+   (6,'Violet','#800080'),
+   (7,'Rouge','#CC3300'),
+   (8,'Jaune','#fff200'),
+   (9,'Bleu','#007bc4'),
+   (10,'Vert','#369a3d'),
+   (11,'Orange','#FFA500'),
+   (12,'Blanc','#FFFFFF'),
+   (13,'Argenté','#dddddd'),
+   (14,'Doré','#be9927'),
+   (15,'Multie','#'),
+   (16,'Kaki','#86814A'),
+   (17,'Turquoise','#B7DEE8'),
+   (20,'Crème','#F8F8E1'),
+   (21,'Abricot','#FFCC98'),
+   (22,'Corail','#FE7F5D'),
+   (23,'Bordeaux','#AE2E3D'),
+   (24,'Rose','#FFCCCA'),
+   (25,'Lila','#D297D2'),
+   (26,'Bleu clair','#89CFF0'),
+   (27,'Marine','#35358D'),
+   (28,'Vert foncé','#356639'),
+   (29,'Moutarde','#E5B539'),
+   (30,'Menthe','#A2FFBC');

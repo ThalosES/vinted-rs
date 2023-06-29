@@ -1,61 +1,63 @@
 -- Your SQL goes here
 CREATE TABLE MATERIAL(
-   ID          INTEGER  NOT NULL PRIMARY KEY 
-  ,MATERIAL_ES VARCHAR(30) NOT NULL
-  ,MATERIAL_FR VARCHAR(30) NOT NULL
-  ,MATERIAL_EN VARCHAR(30) NOT NULL
+   ID          INTEGER PRIMARY KEY,
+   MATERIAL_ES VARCHAR(30) NOT NULL,
+   MATERIAL_FR VARCHAR(30) NOT NULL,
+   MATERIAL_EN VARCHAR(30) NOT NULL
 );
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (43,'Piel','Cuir','Leather');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (44,'Algodon','Coton','Cotton');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (45,'Poliester','Polyester','Polyester');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (46,'Lana','Laine','Wool');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (48,'Viscosa','Viscose','Viscose');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (49,'Seda','Soie','Silk');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (52,'Nailon','Nylon','Nylon');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (53,'Elastano','Elasthanne','Elastane');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (120,'Polar','Polaire','Fleece');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (121,'Merino','Merinos','Merino');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (122,'Alpaca','Alpaga','Alpaca');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (123,'Cachemira','Cachemire','Cashmere');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (146,'Lino','Lin','Linen');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (149,'Acrilico','Acrylique','Acrylic');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (152,'Angora','Mohair','Mohair');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (177,'Velveton','Peluche','Velour');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (178,'Neopreno','Neoprene','Neoprene');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (226,'Lentejuelas','Sequin','Sequin');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (298,'Ante','Daim','Suede');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (299,'Pana','Velous cotele','Corduroy');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (300,'Plastico','Plastique','Plastic');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (301,'Goma','Caoutchouc','Rubber');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (302,'Latex','Latex','Latex');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (303,'Vaquero','Denim','Denim');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (305,'Charol','Cuir verni','Patent leather');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (311,'Raso','Satin','Satin');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (440,'Bambu','Bambou','Bamboo');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (441,'Lona','Toile','Canvas');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (442,'Carton','Carton','Cardboard');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (443,'Ceramica','Ceramique','Ceramic');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (444,'Chifon','Mousseline','Chiffon');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (445,'Plumon','Duvet','Down');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (446,'Cuero sintetico','Fausse fourrure','Faux fur');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (447,'Piel sintetica','Cuir synthetique','Faux leather');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (448,'Fieltro','Feutre','Felt');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (449,'Gomaespuma','Mousse','Foam');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (451,'Franela','Flanelle','Flannel');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (452,'Cristal','Verre','Glass');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (453,'Oro','Or','Gold');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (454,'Yute','Jute','Jute');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (455,'Encaje','Dentelle','Lace');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (456,'Malla','Maille','Mesh');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (457,'Metal','Metal','Metal');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (458,'Papel','Papier','Paper');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (459,'Porcelana','Porcelaine','Porcelain');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (460,'Mimbre','Rotin','Rattan');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (461,'Plata','Argent','Silver');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (462,'Piedra','Pierre','Stone');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (463,'Paja','Paille','Straw');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (464,'Tul','Tulle','Tulle');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (465,'Tweed','Tweed','Tweed');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (466,'Terciopelo','Velours','Velvet');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (467,'Madera','Bois','Wood');
-INSERT INTO MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES (470,'Silicona','Silicone','Silicone');
+
+ INSERT INTO  MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES
+   (43,'Piel','Cuir','Leather'),
+   (44,'Algodon','Coton','Cotton'),
+   (45,'Poliester','Polyester','Polyester'),
+   (46,'Lana','Laine','Wool'),
+   (48,'Viscosa','Viscose','Viscose'),
+   (49,'Seda','Soie','Silk'),
+   (52,'Nailon','Nylon','Nylon'),
+   (53,'Elastano','Elasthanne','Elastane'),
+   (120,'Polar','Polaire','Fleece'),
+   (121,'Merino','Merinos','Merino'),
+   (122,'Alpaca','Alpaga','Alpaca'),
+   (123,'Cachemira','Cachemire','Cashmere'),
+   (146,'Lino','Lin','Linen'),
+   (149,'Acrilico','Acrylique','Acrylic'),
+   (152,'Angora','Mohair','Mohair'),
+   (177,'Velveton','Peluche','Velour'),
+   (178,'Neopreno','Neoprene','Neoprene'),
+   (226,'Lentejuelas','Sequin','Sequin'),
+   (298,'Ante','Daim','Suede'),
+   (299,'Pana','Velous cotele','Corduroy'),
+   (300,'Plastico','Plastique','Plastic'),
+   (301,'Goma','Caoutchouc','Rubber'),
+   (302,'Latex','Latex','Latex'),
+   (303,'Vaquero','Denim','Denim'),
+   (305,'Charol','Cuir verni','Patent leather'),
+   (311,'Raso','Satin','Satin'),
+   (440,'Bambu','Bambou','Bamboo'),
+   (441,'Lona','Toile','Canvas'),
+   (442,'Carton','Carton','Cardboard'),
+   (443,'Ceramica','Ceramique','Ceramic'),
+   (444,'Chifon','Mousseline','Chiffon'),
+   (445,'Plumon','Duvet','Down'),
+   (446,'Cuero sintetico','Fausse fourrure','Faux fur'),
+   (447,'Piel sintetica','Cuir synthetique','Faux leather'),
+   (448,'Fieltro','Feutre','Felt'),
+   (449,'Gomaespuma','Mousse','Foam'),
+   (451,'Franela','Flanelle','Flannel'),
+   (452,'Cristal','Verre','Glass'),
+   (453,'Oro','Or','Gold'),
+   (454,'Yute','Jute','Jute'),
+   (455,'Encaje','Dentelle','Lace'),
+   (456,'Malla','Maille','Mesh'),
+   (457,'Metal','Metal','Metal'),
+   (458,'Papel','Papier','Paper'),
+   (459,'Porcelana','Porcelaine','Porcelain'),
+   (460,'Mimbre','Rotin','Rattan'),
+   (461,'Plata','Argent','Silver'),
+   (462,'Piedra','Pierre','Stone'),
+   (463,'Paja','Paille','Straw'),
+   (464,'Tul','Tulle','Tulle'),
+   (465,'Tweed','Tweed','Tweed'),
+   (466,'Terciopelo','Velours','Velvet'),
+   (467,'Madera','Bois','Wood'),
+   (470,'Silicona','Silicone','Silicone');
