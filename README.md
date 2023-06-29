@@ -31,28 +31,27 @@ To install `libpq`, just install PostgreSQL package in you machine.
 
 In `Arch` based is only necessary to install this package.
 
-```
+```bash
 sudo pacman -S postgresql-libs
 ```
 
 In `Debian` based distributions is only necessary to install this package.
 
-```
+```bash
 sudo apt install libpq5
 ```
 
-
-```
+```bash
 cargo install diesel_cli --features=postgres --no-default-features
 ```
 
 ### Create a migration
 
-```
+```bash
 mkdir migrations
 ```
 
-```
+```bash
 diesel migration generate my_migration
 ```
 
@@ -62,18 +61,18 @@ Program after that `up.sql` and `down.sql` scripts.
 
 - See in [Makefile](https://github.com/TuTarea/vinted-rs/blob/main/Makefile)
 
-```
+```bash
 make db
 ```
 
 ### Run migrations
 
-```
+```bash
 make diesel
 ```
 
 ### Stop DB
-```
+
+```bash
 make stop
 ```
-
