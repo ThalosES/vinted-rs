@@ -1,6 +1,6 @@
-use crate::model::{Deserialize, Serialize};
+use typed_builder::TypedBuilder;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, TypedBuilder)]
 pub struct Brand {
     id: i64,
     title: String,
