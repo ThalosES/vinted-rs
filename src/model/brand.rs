@@ -2,7 +2,7 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder)]
 pub struct Brand {
-    id: i64,
-    title: String,
-    url: String,
+    pub id: i64,
+    pub title: String,
+    pub url: String,
 }

@@ -10,13 +10,13 @@ const POOL_SIZE: u32 = 5;
 
 #[tokio::main]
 async fn main() {
-    /*let mut vinted = queries::VintedWrapper::new();
+    let mut vinted = queries::VintedWrapper::new();
 
     vinted.refresh_cookies().await.unwrap();
 
     let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
 
-    vinted.get_item(filter).await.unwrap();*/
+    vinted.get_item(filter).await.unwrap();
 
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
 
