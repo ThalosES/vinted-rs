@@ -19,6 +19,7 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
+          POSTGRES_DB: vinted-rs
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
         # Set health checks to wait until postgres has started
@@ -56,7 +57,7 @@ jobs:
           args: diesel_cli --no-default-features --features "postgres"
 
       - name: Setup db
-        run: diesel setup
+        run: diesel setup --database-url=postgres://postgres:postgres@localhost/vinted-rs
 
       - name: Run tests
         uses: actions-rs/cargo@v1
