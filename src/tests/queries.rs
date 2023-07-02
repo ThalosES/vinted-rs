@@ -14,7 +14,7 @@ async fn test_get_item_query_text() {
         }
         Err(err) => match err {
             CookieError::ReqWestError(_) => unreachable!(),
-            CookieError::GetCookiesError => assert!(true),
+            CookieError::GetCookiesError => (),
         },
     };
 }
