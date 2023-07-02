@@ -12,6 +12,7 @@ use thiserror::Error;
 use crate::model::brand::Brand;
 
 const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql");
+const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");
 
 #[derive(Error, Debug)]
 pub enum DbError {
@@ -48,11 +49,11 @@ where
 
     pub async fn get_brand_by_name<S: AsRef<str> + Sync + ToSql>(
         &self,
-        name: S,
+        name: &S,
     ) -> Result<Brand, DbError> {
         let conn = self.pool.get().await?;
 
-        let row: Row = conn.query_one(GET_BRAND_BY_NAME, &[&name]).await?;
+        let row: Row = conn.query_one(GET_BRAND_BY_NAME, &[name]).await?;
 
         let b: Brand = Brand::builder()
             .id(row.get("ID"))
@@ -60,5 +61,26 @@ where
             .url(row.get("URL"))
             .build();
         Ok(b)
+    }
+
+    pub async fn get_brands_by_name(&self, mut name: String) -> Result<Vec<Brand>, DbError> {
+        let conn = self.pool.get().await?;
+
+        name += "%";
+
+        let rows: Vec<Row> = conn.query(GET_BRANDS_BY_NAME, &[&name]).await.unwrap();
+
+        let brands: Vec<Brand> = rows
+            .into_iter()
+            .map(|row| {
+                Brand::builder()
+                    .id(row.get("ID"))
+                    .title(row.get("TITLE"))
+                    .url(row.get("URL"))
+                    .build()
+            })
+            .collect();
+
+        Ok(brands)
     }
 }

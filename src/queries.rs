@@ -1,6 +1,7 @@
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
+use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::Arc;
@@ -11,8 +12,10 @@ use crate::model::items::Items;
 
 #[derive(Error, Debug)]
 pub enum CookieError {
-    #[error("ReqwestError")]
+    #[error(transparent)]
     ReqWestError(#[from] reqwest::Error),
+    #[error("Error to get cookies")]
+    GetCookiesError,
 }
 
 const DOMAINS: [&str; 18] = [
@@ -20,24 +23,25 @@ const DOMAINS: [&str; 18] = [
     "se", "ro", "hu",
 ];
 
-fn random_host() -> String {
+fn random_host<'a>() -> &'a str {
     let random_index = rand::thread_rng().gen_range(0..DOMAINS.len());
-    DOMAINS[random_index].to_string()
+    DOMAINS[random_index]
 }
 
 static CLIENT: OnceCell<Client> = OnceCell::new();
 
-pub struct VintedWrapper {
-    host: Option<String>,
+#[derive(Debug , Clone)]
+pub struct VintedWrapper<'a> {
+    host: Option<&'a str>,
     cookie_store: Arc<CookieStoreMutex>,
 }
 
-impl Default for VintedWrapper {
+impl<'a> Default for VintedWrapper<'a> {
     fn default() -> Self {
         Self::new()
     }
 }
-impl VintedWrapper {
+impl<'a> VintedWrapper<'a> {
     pub fn new() -> Self {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
@@ -57,20 +61,48 @@ impl VintedWrapper {
         })
     }
 
+    fn get_host(&mut self) -> &'a str {
+        match self.host {
+            Some(host) => host,
+            None => {
+                self.host = Some(random_host());
+                self.host.unwrap()
+            }
+        }
+    }
+
     pub async fn refresh_cookies(&mut self) -> Result<(), CookieError> {
+        
         self.cookie_store.lock().unwrap().clear();
+        
         let client = self.get_client();
-        self.host = Some(random_host()); // Option<String>
+        
         let request = format!(
             "https://www.vinted.{}/auth/token_refresh",
-            self.host.as_ref().unwrap()
+            self.get_host()
         );
-        client.post(request).send().await?;
+
+        let mut response_cookies = client.post(&request).send().await?;
+        let max_retries = 3;
+        let mut i = 0;
+
+        while response_cookies.status() == StatusCode::FORBIDDEN && i < max_retries {
+            response_cookies = client.post(&request).send().await?;
+            i += 1;
+            // valorar meter un sleep ?
+        }
+
+        if response_cookies.status() == StatusCode::FORBIDDEN {
+            return Err(CookieError::GetCookiesError);
+        }
+
         Ok(())
     }
 
-    pub async fn get_item(&mut self, filters: Filter) -> Result<(), CookieError> {
-        let domain: &str = &format!("vinted.{}", self.host.as_ref().unwrap());
+    pub async fn get_item(&mut self, filters: Filter) -> Result<Items, CookieError> {
+
+        let domain: &str =
+            &format!("https://www.vinted.{}/api/v2/catalog/items", self.get_host());
 
         let cookie_store_clone = self.cookie_store.clone();
 
@@ -80,14 +112,14 @@ impl VintedWrapper {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            self.refresh_cookies().await?
+            self.refresh_cookies().await?;
         }
 
         let client = self.get_client();
 
         let mut url = format!(
             "https://www.vinted.{}/api/v2/catalog/items",
-            self.host.as_ref().unwrap()
+            self.get_host()
         );
 
         url = match filters.search_text {
@@ -95,10 +127,10 @@ impl VintedWrapper {
             None => format!("{url}?search_text="),
         };
 
-        let res: Items = client.get(url).send().await?.json().await?;
+        url = format!("{url}&per_page=1");
 
-        println!("JSON :{res:?}");
+        let items: Items = client.get(url).send().await?.json().await?;
 
-        Ok(())
+        Ok(items)
     }
 }
