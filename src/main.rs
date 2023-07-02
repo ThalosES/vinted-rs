@@ -1,7 +1,7 @@
 use bb8_postgres::tokio_postgres::NoTls;
 use vinted_rs::{
     db::DbController,
-    model::{brand::Brand, filter::Filter},
+    model::{filter::brand::Brand, filter::Filter},
 };
 
 use vinted_rs::VintedWrapper;

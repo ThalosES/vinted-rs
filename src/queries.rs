@@ -151,6 +151,14 @@ impl<'a> VintedWrapper<'a> {
         Ok(())
     }
 
+    fn substitute_if_first(first: &mut bool, url: &mut String) {
+        if *first {
+            url.replace_range(0..1, "?");
+            *first = false;
+        }
+    }
+
+    // TODO valorar si se tiene los filtros como vec de i32 o vec de String
     pub async fn get_item(&self, filters: &Filter) -> Result<Items, CookieError> {
         let domain: &str = &format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
 
@@ -167,13 +175,51 @@ impl<'a> VintedWrapper<'a> {
 
         let client = self.get_client();
 
+        let mut first = true;
+
         let mut url = format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
 
-        url = match &filters.search_text {
-            Some(text) => format!("{url}?search_text={text}"),
-            None => format!("{url}?search_text="),
-        };
+        // Filtro search text
+        if let Some(text) = &filters.search_text {
+            url = format!("{url}?search_text={text}");
+            first = false;
+        }
 
+        // Filtro catalogo
+        if let Some(vec) = &filters.catalog_ids {
+            let querify_vec: Vec<String> = vec.iter().map(|id| id.to_string()).collect();
+
+            let mut catalog_args: String = format!("&catalog_ids={}", querify_vec.join(","));
+
+            VintedWrapper::substitute_if_first(&mut first, &mut catalog_args);
+
+            url = format!("{url}{catalog_args}");
+        }
+
+        // Filtro colores
+        if let Some(vec) = &filters.color_ids {
+            let querify_vec: Vec<String> = vec.iter().map(|id| id.to_string()).collect();
+
+            let mut color_args: String = format!("&color_ids={}", querify_vec.join(","));
+
+            VintedWrapper::substitute_if_first(&mut first, &mut color_args);
+
+            url = format!("{url}{color_args}");
+        }
+
+        if let Some(vec) = &filters.brand_ids {
+            let querify_vec: Vec<String> = vec.iter().map(|id| id.to_string()).collect();
+
+            let mut brand_args: String = format!("&brand_ids={}", querify_vec.join(","));
+
+            VintedWrapper::substitute_if_first(&mut first, &mut brand_args);
+
+            url = format!("{url}{brand_args}");
+        }
+
+        // TODO terminar de procesar los filtros
+
+        // Limitar el articulo a 1
         url = format!("{url}&per_page=1");
 
         let items: Items = client.get(url).send().await?.json().await?;

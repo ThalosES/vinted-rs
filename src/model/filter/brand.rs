@@ -13,9 +13,9 @@ pub struct Brand {
 impl From<Row> for Brand {
     fn from(row: Row) -> Self {
         Brand::builder()
-            .id(row.get("ID"))
-            .title(row.get("TITLE"))
-            .url(row.get("URL"))
+            .id(row.get("id"))
+            .title(row.get("title"))
+            .url(row.get("url"))
             .build()
     }
 }

@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS COLOR(
-   ID    INTEGER PRIMARY KEY,
-   Title VARCHAR(30) NOT NULL,
-   Hex   VARCHAR(7) NOT NULL
+   id    INTEGER PRIMARY KEY,
+   title VARCHAR(30) NOT NULL,
+   hex   VARCHAR(7) NOT NULL
 );
 
- INSERT INTO COLOR(ID,Title,Hex) VALUES (1,'Noir','#000000'),
+ INSERT INTO COLOR(id,title,hex) VALUES (1,'Noir','#000000'),
    (2,'Marron','#663300'),
    (3,'Gris','#919191'),
    (4,'Beige','#f4e0c8'),

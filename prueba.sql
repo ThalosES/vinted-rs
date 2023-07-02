@@ -1,15 +1,6 @@
--- Your SQL goes here
 
-CREATE TABLE CATEGORY(
-   id         INTEGER PRIMARY KEY,
-   title      VARCHAR(80) NOT NULL,
-   code       VARCHAR(80) NOT NULL,
-   parent_id  INTEGER  NOT NULL,
-   url        VARCHAR(256) NOT NULL,
-   url_en     VARCHAR(256) NOT NULL
-);
-
- INSERT INTO  CATEGORY(id,title,code,parent_id,url,url_en)  VALUES 
+ -- patron mamado de visual \((\d+),'(.+?)'(.+?)\n
+ -- regex por el cual sustituir "$1,$2"\n
    (1904,'Women','WOMEN_ROOT',0,'/women','/women'),
    (4,'Clothes','WOMENS',1904,'/women/clothes','/women/clothes'),
    (1037,'Outerwear','COATS_JACKETS',4,'/women/clothes/outerwear','/women/clothes/outerwear'),

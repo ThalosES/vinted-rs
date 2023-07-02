@@ -1,12 +1,12 @@
 -- Your SQL goes here
 
 CREATE TABLE BRAND(
-   ID   INT PRIMARY KEY,
-   TITLE VARCHAR(80),
-   URL   VARCHAR(256)
+   id   INT PRIMARY KEY,
+   title VARCHAR(80),
+   url   VARCHAR(256)
 );
 
-INSERT INTO BRAND(ID , TITLE , URL) VALUES
+INSERT INTO BRAND(id , title , url) VALUES
 (14 , 'adidas' , 'https://www.vinted.es/brand/adidas'),
 (194976 , 'adidas Originals' , 'https://www.vinted.es/brand/adidas-originals'),
 (115490 , 'YEEZY' , 'https://www.vinted.es/brand/yeezy'),

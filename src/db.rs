@@ -11,7 +11,7 @@ use bb8_postgres::{
 use postgres_types::ToSql;
 use thiserror::Error;
 
-use crate::model::brand::Brand;
+use crate::model::filter::brand::Brand;
 
 const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql");
 const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");

@@ -1,4 +1,4 @@
-use crate::{db::DbController, model::brand::Brand};
+use crate::{db::DbController, model::filter::brand::Brand};
 use bb8_postgres::tokio_postgres::NoTls;
 
 const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
