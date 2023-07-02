@@ -138,13 +138,13 @@ impl<'a> VintedWrapper<'a> {
         let max_retries = 3;
         let mut i = 0;
 
-        while response_cookies.status() == StatusCode::FORBIDDEN && i < max_retries {
+        while response_cookies.status() != StatusCode::OK && i < max_retries {
             response_cookies = client.post(&request).send().await?;
             i += 1;
-            // valorar meter un sleep ?
+            // valorar meter un sleep 0.1 s
         }
 
-        if response_cookies.status() == StatusCode::FORBIDDEN {
+        if response_cookies.status() != StatusCode::OK {
             return Err(CookieError::GetCookiesError);
         }
 
