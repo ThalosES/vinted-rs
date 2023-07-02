@@ -12,6 +12,26 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
 
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        # Set health checks to wait until postgres has started
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v3
 
@@ -28,6 +48,15 @@ jobs:
         with:
           command: clippy
           args: --verbose --all-targets --all-features -- -D warnings
+
+      - name: Install diesel-cli
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: diesel_cli --no-default-features --features "postgres"
+
+      - name: Setup db
+        run: diesel setup
 
       - name: Run tests
         uses: actions-rs/cargo@v1

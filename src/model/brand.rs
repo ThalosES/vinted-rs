@@ -2,7 +2,7 @@
 use bb8_postgres::tokio_postgres::Row;
 use typed_builder::TypedBuilder;
 
-#[derive(Debug, Clone, TypedBuilder)]
+#[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Brand {
     pub id: i32,
     pub title: String,
