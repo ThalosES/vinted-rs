@@ -30,7 +30,7 @@ fn random_host<'a>() -> &'a str {
 
 static CLIENT: OnceCell<Client> = OnceCell::new();
 
-#[derive(Debug , Clone)]
+#[derive(Debug, Clone)]
 pub struct VintedWrapper<'a> {
     host: Option<&'a str>,
     cookie_store: Arc<CookieStoreMutex>,
@@ -72,15 +72,11 @@ impl<'a> VintedWrapper<'a> {
     }
 
     pub async fn refresh_cookies(&mut self) -> Result<(), CookieError> {
-        
         self.cookie_store.lock().unwrap().clear();
-        
+
         let client = self.get_client();
-        
-        let request = format!(
-            "https://www.vinted.{}/auth/token_refresh",
-            self.get_host()
-        );
+
+        let request = format!("https://www.vinted.{}/auth/token_refresh", self.get_host());
 
         let mut response_cookies = client.post(&request).send().await?;
         let max_retries = 3;
@@ -100,9 +96,10 @@ impl<'a> VintedWrapper<'a> {
     }
 
     pub async fn get_item(&mut self, filters: Filter) -> Result<Items, CookieError> {
-
-        let domain: &str =
-            &format!("https://www.vinted.{}/api/v2/catalog/items", self.get_host());
+        let domain: &str = &format!(
+            "https://www.vinted.{}/api/v2/catalog/items",
+            self.get_host()
+        );
 
         let cookie_store_clone = self.cookie_store.clone();
 
