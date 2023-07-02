@@ -11,11 +11,11 @@ const POOL_SIZE: u32 = 5;
 
 #[tokio::main]
 async fn main() {
-    let mut vinted = VintedWrapper::new();
+    let vinted = VintedWrapper::new();
 
     let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
 
-    let items = vinted.get_item(filter).await.unwrap();
+    let items = vinted.get_item(&filter).await.unwrap();
 
     print!("{items:?}");
 

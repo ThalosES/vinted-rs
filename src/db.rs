@@ -55,11 +55,9 @@ where
 
         let row: Row = conn.query_one(GET_BRAND_BY_NAME, &[name]).await?;
 
-        let b: Brand = Brand::builder()
-            .id(row.get("ID"))
-            .title(row.get("TITLE"))
-            .url(row.get("URL"))
-            .build();
+        // Funciona porque está implementado From<Row> for Brand
+        let b: Brand = row.into();
+
         Ok(b)
     }
 
@@ -70,16 +68,8 @@ where
 
         let rows: Vec<Row> = conn.query(GET_BRANDS_BY_NAME, &[&name]).await.unwrap();
 
-        let brands: Vec<Brand> = rows
-            .into_iter()
-            .map(|row| {
-                Brand::builder()
-                    .id(row.get("ID"))
-                    .title(row.get("TITLE"))
-                    .url(row.get("URL"))
-                    .build()
-            })
-            .collect();
+        // Funciona porque está implementado From<Row> for Brand
+        let brands: Vec<Brand> = rows.into_iter().map(|row| row.into()).collect();
 
         Ok(brands)
     }

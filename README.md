@@ -76,3 +76,15 @@ make diesel
 ```bash
 make stop
 ```
+
+## Running Tests
+
+### Very important
+
+Before running tests is important to do the DB setup
+
+Then run the tests
+
+```bash
+cargo test
+```
