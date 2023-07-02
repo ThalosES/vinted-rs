@@ -114,7 +114,7 @@ impl<'a> VintedWrapper<'a> {
         self.host = random_host();
     }
 
-    pub fn set_new_host(&mut self , host: Host) {
+    pub fn set_new_host(&mut self, host: Host) {
         self.host = host.into();
     }
 

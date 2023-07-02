@@ -1,6 +1,6 @@
-use typed_builder::TypedBuilder;
 #[cfg(feature = "advanced_filters")]
 use bb8_postgres::tokio_postgres::Row;
+use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder)]
 pub struct Brand {
