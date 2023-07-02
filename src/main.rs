@@ -21,7 +21,7 @@ async fn main() {
 
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
 
-    let brand_name : String = String::from("adidas");
+    let brand_name: String = String::from("adidas");
     //let brand_name : &str = "adidas";
 
     let b: Brand = db.get_brand_by_name(&brand_name).await.unwrap();
