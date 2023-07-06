@@ -1,12 +1,12 @@
 -- Your SQL goes here
 CREATE TABLE MATERIAL(
-   ID          INTEGER PRIMARY KEY,
-   MATERIAL_ES VARCHAR(30) NOT NULL,
-   MATERIAL_FR VARCHAR(30) NOT NULL,
-   MATERIAL_EN VARCHAR(30) NOT NULL
+   id          INTEGER PRIMARY KEY,
+   material_es VARCHAR(30) NOT NULL,
+   material_fr VARCHAR(30) NOT NULL,
+   material_en VARCHAR(30) NOT NULL
 );
 
- INSERT INTO  MATERIAL(ID,MATERIAL_ES,MATERIAL_FR,MATERIAL_EN) VALUES
+ INSERT INTO  MATERIAL(id,material_es,material_fr,material_en) VALUES
    (43,'Piel','Cuir','Leather'),
    (44,'Algodon','Coton','Cotton'),
    (45,'Poliester','Polyester','Polyester'),

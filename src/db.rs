@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use bb8_postgres::{
     bb8::{Pool, RunError},
     tokio_postgres::{
@@ -9,7 +11,7 @@ use bb8_postgres::{
 use postgres_types::ToSql;
 use thiserror::Error;
 
-use crate::model::brand::Brand;
+use crate::model::filter::brand::Brand;
 
 const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql");
 const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");
@@ -46,7 +48,10 @@ where
 
         Ok(DbController { pool })
     }
-
+    ///
+    ///
+    ///
+    ///
     pub async fn get_brand_by_name<S: AsRef<str> + Sync + ToSql>(
         &self,
         name: &S,
@@ -60,13 +65,20 @@ where
 
         Ok(b)
     }
-
-    pub async fn get_brands_by_name(&self, mut name: String) -> Result<Vec<Brand>, DbError> {
+    /**
+     *
+     *
+     *
+     */
+    pub async fn get_brands_by_name<S: AsRef<str> + Sync + ToSql + Display>(
+        &self,
+        name: &S,
+    ) -> Result<Vec<Brand>, DbError> {
         let conn = self.pool.get().await?;
 
-        name += "%";
+        let name_to_sql = format!("{}%", &name);
 
-        let rows: Vec<Row> = conn.query(GET_BRANDS_BY_NAME, &[&name]).await.unwrap();
+        let rows: Vec<Row> = conn.query(GET_BRANDS_BY_NAME, &[&name_to_sql]).await?;
 
         // Funciona porque está implementado From<Row> for Brand
         let brands: Vec<Brand> = rows.into_iter().map(|row| row.into()).collect();

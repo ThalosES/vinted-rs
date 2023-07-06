@@ -1,4 +1,3 @@
-pub mod brand;
 pub mod filter;
 pub mod item;
 pub mod items;
