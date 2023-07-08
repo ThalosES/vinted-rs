@@ -8,7 +8,7 @@
 # Vinted API Wrapper
 Welcome to this first release of our Vinted API Wrapper, as a disclaimer, we would like to notify that this is an open-source project to help programmers to take advantage of Vinted **public** API routes.
 
-## API Authentication 
+## API Authentication
 Cookie automatic authentication using CookieStore
 
 ## API Functionality
@@ -52,7 +52,6 @@ async fn main() {
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
 
     let brand_name: String = String::from("adidas");
-    //let brand_name : &str = "adidas";
 
     let b: Brand = db.get_brand_by_name(&brand_name).await.unwrap();
 
