@@ -72,7 +72,8 @@ async fn test_get_items_catalogs_no_db() {
     //Woman elements
     let filter: Filter = Filter::builder().catalog_ids(String::from("1904")).build();
     let substrings = vec![
-        "women", "mujer", "femme", "kobiety", "donna", "moterims", "noi","dames", "zeny", "damen", "femei", "mulher"
+        "women", "mujer", "femme", "kobiety", "donna", "moterims", "noi", "dames", "zeny", "damen",
+        "femei", "mulher",
     ];
 
     match vinted.get_items(&filter, 10).await {
