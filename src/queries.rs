@@ -190,7 +190,7 @@ impl<'a> VintedWrapper<'a> {
     /// use crate::vinted_rs::model::items::Items;
     /// use crate::vinted_rs::model::filter::Filter;
     /// use crate::vinted_rs::queries::VintedWrapper;
-    /// use crate::vinted_rs::queries::CookieError;
+    /// use crate::vinted_rs::queries::VintedWrapperError;
     ///
     ///
     /// #[tokio::main]
@@ -199,14 +199,14 @@ impl<'a> VintedWrapper<'a> {
     ///     let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
     ///     let num = 10;
     ///
-    ///    match wrapper.get_items(&filter, Some(num)).await {
+    ///    match wrapper.get_items(&filter, num).await {
     ///    Ok(items) => {
     ///        println!("Retrieved {} items: {:?}", items.items.len(), items);
     ///        assert_eq!(items.items.len(), 10);
     ///    }
     ///    Err(err) => match err {
-    ///        CookieError::ReqWestError(_) => unreachable!(),
-    ///        CookieError::GetCookiesError => (),
+    ///        VintedWrapperError::ItemNumberError => unreachable!(),
+    ///        VintedWrapperError::CookiesError(_) => (),
     ///    },
     /// }
     /// }
