@@ -28,9 +28,9 @@ pub struct Filter {
     #[builder(default, setter(strip_option))]
     pub size_ids: Option<Vec<i32>>,
     #[builder(default, setter(strip_option))]
-    pub article_status : Option<Vec<ArticleStatus>>,
+    pub article_status: Option<Vec<ArticleStatus>>,
     #[builder(default, setter(strip_option))]
-    pub sort_by : Option<SortBy>
+    pub sort_by: Option<SortBy>,
 }
 
 #[derive(Debug, Clone)]
