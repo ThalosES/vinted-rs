@@ -1,4 +1,7 @@
+-- SQLBook: Code
 -- Your SQL goes here
+ -- patron mamado de visual \((\d+),'(.+?)'(.+?)\n
+ -- regex por el cual sustituir "$1,$2"\n
 
 CREATE TABLE CATEGORY(
    id         INTEGER PRIMARY KEY,
