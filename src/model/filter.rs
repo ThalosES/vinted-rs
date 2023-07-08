@@ -18,15 +18,15 @@ pub struct Filter {
     #[builder(default, setter(strip_option))]
     pub search_text: Option<String>,
     #[builder(default, setter(strip_option))]
-    pub catalog_ids: Option<Vec<i32>>,
+    pub catalog_ids: Option<String>,
     #[builder(default, setter(strip_option))]
-    pub color_ids: Option<Vec<i32>>,
+    pub color_ids: Option<String>,
     #[builder(default, setter(strip_option))]
-    pub brand_ids: Option<Vec<i32>>,
+    pub brand_ids: Option<String>,
     #[builder(default, setter(strip_option))]
-    pub countries_ids: Option<Vec<i32>>,
+    pub countries_ids: Option<String>,
     #[builder(default, setter(strip_option))]
-    pub size_ids: Option<Vec<i32>>,
+    pub size_ids: Option<String>,
     #[builder(default, setter(strip_option))]
     pub article_status: Option<Vec<ArticleStatus>>,
     #[builder(default, setter(strip_option))]
@@ -43,14 +43,15 @@ pub enum ArticleStatus {
 }
 
 /// Para pasar de `ArticleStatus` a `i32` que es el id de vinted
-impl From<ArticleStatus> for i32 {
-    fn from(status: ArticleStatus) -> Self {
-        match status {
-            ArticleStatus::NewTags => 6,
-            ArticleStatus::NewNoTags => 1,
-            ArticleStatus::VeryGood => 2,
-            ArticleStatus::Good => 3,
-            ArticleStatus::Satisfactory => 4,
+///
+impl From<&ArticleStatus> for &str {
+    fn from(status: &ArticleStatus) -> Self {
+        match *status {
+            ArticleStatus::NewTags => "6",
+            ArticleStatus::NewNoTags => "1",
+            ArticleStatus::VeryGood => "2",
+            ArticleStatus::Good => "3",
+            ArticleStatus::Satisfactory => "4",
         }
     }
 }

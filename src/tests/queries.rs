@@ -1,7 +1,7 @@
 use crate::db::DbController;
 use crate::model::filter::Filter;
 use crate::queries::VintedWrapperError;
-use crate::{VintedWrapper};
+use crate::VintedWrapper;
 use bb8_postgres::tokio_postgres::NoTls;
 
 const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
@@ -31,7 +31,7 @@ async fn test_get_item_brands() {
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
-    let filter: Filter = Filter::builder().brand_ids(vec![brand.id]).build();
+    let filter: Filter = Filter::builder().brand_ids(brand.id.to_string()).build();
 
     match vinted.get_items(&filter, 1).await {
         // Limitado el numero de elementos a 1
@@ -51,7 +51,7 @@ async fn test_get_items_brands() {
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
-    let filter: Filter = Filter::builder().brand_ids(vec![brand.id]).build();
+    let filter: Filter = Filter::builder().brand_ids(brand.id.to_string()).build();
 
     match vinted.get_items(&filter, 10).await {
         Ok(items) => {
@@ -70,7 +70,7 @@ async fn test_get_items_brands() {
 async fn test_get_items_catalogs_no_db() {
     let vinted = VintedWrapper::new();
     //Woman elements
-    let filter: Filter = Filter::builder().catalog_ids(vec![1904]).build();
+    let filter: Filter = Filter::builder().catalog_ids(String::from("1904")).build();
     let substrings = vec![
         "women", "mujer", "femme", "kobiety", "donna", "moterims", "noi",
     ];

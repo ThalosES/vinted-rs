@@ -26,7 +26,7 @@ pub enum VintedWrapperError {
     ItemNumberError,
 }
 
-impl From<reqwest::Error> for VintedWrapperError{
+impl From<reqwest::Error> for VintedWrapperError {
     fn from(value: reqwest::Error) -> Self {
         VintedWrapperError::CookiesError(CookieError::ReqWestError(value))
     }
@@ -211,11 +211,7 @@ impl<'a> VintedWrapper<'a> {
     /// }
     /// }
     /// ```
-    pub async fn get_items(
-        &self,
-        filters: &Filter,
-        num: u32,
-    ) -> Result<Items, VintedWrapperError> {
+    pub async fn get_items(&self, filters: &Filter, num: u32) -> Result<Items, VintedWrapperError> {
         if num == 0 {
             return Err(VintedWrapperError::ItemNumberError);
         }
@@ -246,10 +242,8 @@ impl<'a> VintedWrapper<'a> {
         }
 
         // Filtro catalogo
-        if let Some(vec) = &filters.catalog_ids {
-            let querify_vec: Vec<String> = vec.iter().map(|id| id.to_string()).collect();
-
-            let mut catalog_args: String = format!("&catalog_ids={}", querify_vec.join(","));
+        if let Some(catalog_ids) = &filters.catalog_ids {
+            let mut catalog_args: String = format!("&catalog_ids={}", catalog_ids);
 
             VintedWrapper::substitute_if_first(&mut first, &mut catalog_args);
 
@@ -257,24 +251,28 @@ impl<'a> VintedWrapper<'a> {
         }
 
         // Filtro colores
-        if let Some(vec) = &filters.color_ids {
-            let querify_vec: Vec<String> = vec.iter().map(|id| id.to_string()).collect();
-
-            let mut color_args: String = format!("&color_ids={}", querify_vec.join(","));
+        if let Some(color_ids) = &filters.color_ids {
+            let mut color_args: String = format!("&color_ids={}", color_ids);
 
             VintedWrapper::substitute_if_first(&mut first, &mut color_args);
 
             url = format!("{url}{color_args}");
         }
 
-        if let Some(vec) = &filters.brand_ids {
-            let querify_vec: Vec<String> = vec.iter().map(|id| id.to_string()).collect();
-
-            let mut brand_args: String = format!("&brand_ids={}", querify_vec.join(","));
+        if let Some(brand_ids) = &filters.brand_ids {
+            let mut brand_args: String = format!("&brand_ids={}", brand_ids);
 
             VintedWrapper::substitute_if_first(&mut first, &mut brand_args);
 
             url = format!("{url}{brand_args}");
+        }
+
+        if let Some(vec) = &filters.article_status {
+            let querify_vec: Vec<&str> = vec.into_iter().map(|status| status.into()).collect();
+
+            let mut article_status_args: String = format!("&status_ids={}", querify_vec.join(","));
+
+            VintedWrapper::substitute_if_first(&mut first, &mut article_status_args);
         }
 
         // TODO terminar de procesar los filtros
