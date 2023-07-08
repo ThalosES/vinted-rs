@@ -8,10 +8,9 @@ pub struct Item {
     pub title: String,
     pub size_title: String,
     pub brand_title: String,
-    //discount: String, (null?)
     pub currency: String,
     pub price: String,
-    pub photo: Photo, //Sustituable por "full_size_url"
+    pub photo: Photo, 
     pub url: String,
     pub is_visible: i32,
     pub promoted: bool,

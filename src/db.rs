@@ -49,10 +49,7 @@ where
 
         Ok(DbController { pool })
     }
-    ///
-    ///
-    ///
-    ///
+
     pub async fn get_brand_by_name<S: AsRef<str> + Sync + ToSql>(
         &self,
         name: &S,
@@ -61,16 +58,12 @@ where
 
         let row: Row = conn.query_one(GET_BRAND_BY_NAME, &[name]).await?;
 
-        // Funciona porque está implementado From<Row> for Brand
+        // Works because From<Row> for Brand is implemented
         let b: Brand = row.into();
 
         Ok(b)
     }
-    /**
-     *
-     *
-     *
-     */
+
     pub async fn get_brands_by_name<S: AsRef<str> + Sync + ToSql + Display>(
         &self,
         name: &S,
@@ -81,17 +74,12 @@ where
 
         let rows: Vec<Row> = conn.query(GET_BRANDS_BY_NAME, &[&name_to_sql]).await?;
 
-        // Funciona porque está implementado From<Row> for Brand
+        // Works because From<Row> for Brand is implemented
         let brands: Vec<Brand> = rows.into_iter().map(|row| row.into()).collect();
 
         Ok(brands)
     }
 
-    /**
-     *
-     *
-     *
-     */
     pub async fn get_category_by_title<S: AsRef<str> + Sync + ToSql + Display>(
         &self,
         name: &S,
@@ -99,7 +87,7 @@ where
         let conn = self.pool.get().await?;
         let row: Row = conn.query_one(GET_CATEGORY_BY_NAME, &[&name]).await?;
 
-        // Funciona porque está implementado From<Row> for Category
+        // Works because From<Row> for Category is implemented
         let cat: Category = row.into();
 
         Ok(cat)

@@ -124,6 +124,10 @@ impl<'a> VintedWrapper<'a> {
         }
     }
 
+    pub fn get_host(&self) -> &str{
+        self.host
+    }
+
     pub fn set_new_random_host(&mut self) {
         self.host = random_host();
     }

@@ -8,11 +8,6 @@ pub mod country;
 pub mod material;
 pub mod size;
 
-// TODO valorar si poner que lo que está dentro del Option sea & referencia inmutable
-// TODO en vez de que consuma valor
-// TODO valorar si pasar un id con i32 o el id ya con el String Vec<i32> o Vec<String>
-
-// TODO valorar si es mejor tener las categorias cargadas en memoria directamente o en la BBDD ya que se podrían cargar "facilmente" con el json de las categorias
 #[derive(TypedBuilder, Debug, Clone)]
 pub struct Filter {
     #[builder(default, setter(strip_option))]
@@ -42,9 +37,8 @@ pub enum ArticleStatus {
     Satisfactory,
 }
 
-/// Para pasar de `ArticleStatus` a `i32` que es el id de vinted
-///
 impl From<&ArticleStatus> for &str {
+    /// From `&ArticleStatus` to `&str` 
     fn from(status: &ArticleStatus) -> Self {
         match *status {
             ArticleStatus::NewTags => "6",
@@ -65,6 +59,7 @@ pub enum SortBy {
 }
 
 impl From<&SortBy> for &str {
+    /// From `&SortBy` to `&str` 
     fn from(sort: &SortBy) -> Self {
         match *sort {
             SortBy::Relevance => "relevance",
