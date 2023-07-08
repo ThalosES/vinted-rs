@@ -64,9 +64,9 @@ pub enum SortBy {
     NewestFirst,
 }
 
-impl From<SortBy> for &str {
-    fn from(sort: SortBy) -> Self {
-        match sort {
+impl From<&SortBy> for &str {
+    fn from(sort: &SortBy) -> Self {
+        match *sort {
             SortBy::Relevance => "relevance",
             SortBy::PriceDescendant => "price_high_to_low",
             SortBy::PriceAscendant => "price_low_to_high",

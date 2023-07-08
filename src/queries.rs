@@ -273,12 +273,26 @@ impl<'a> VintedWrapper<'a> {
             let mut article_status_args: String = format!("&status_ids={}", querify_vec.join(","));
 
             VintedWrapper::substitute_if_first(&mut first, &mut article_status_args);
+
+            url = format!("{url}{article_status_args}");
         }
 
-        // TODO terminar de procesar los filtros
+        if let Some(sort_by) = &filters.sort_by {
+            let sort_by_str: &str = sort_by.into();
+
+            let mut sort_by_arg = format!("&order={}", sort_by_str);
+
+            VintedWrapper::substitute_if_first(&mut first, &mut sort_by_arg);
+
+            url = format!("{url}{sort_by_arg}");
+        }
 
         // Limitar el articulo a 1
-        url = format!("{url}&per_page={num}");
+        let mut per_page_args = format!("&per_page={num}");
+
+        VintedWrapper::substitute_if_first(&mut first, &mut per_page_args);
+
+        url = format!("{url}{per_page_args}");
 
         let items: Items = client.get(url).send().await?.json().await?;
 
