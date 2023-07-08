@@ -27,16 +27,6 @@
      }
  }
  ```
- ## Structs
-
- - [`VintedWrapper`](struct.VintedWrapper.html): Represents the main wrapper for interacting with the Vinted API. It provides methods for retrieving items based on filters and handling cookies.
-
- ## Errors
-
- The `queries` module defines the following error types:
-
- - [`VintedWrapperError`](enum.VintedWrapperError.html): Represents errors specific to the `VintedWrapper`.
- - [`CookieError`](enum.CookieError.html): Represents errors related to handling cookies.
 */
 use once_cell::sync::OnceCell;
 use rand::Rng;
