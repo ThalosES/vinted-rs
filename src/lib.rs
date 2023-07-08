@@ -25,7 +25,7 @@ Cookie automatic authentication using CookieStore
 
 - Search via raw text
 
-# 2. Examples
+# Examples
 
 ```rust
 use bb8_postgres::tokio_postgres::NoTls;
