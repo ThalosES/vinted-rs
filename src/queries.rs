@@ -158,8 +158,52 @@ impl<'a> VintedWrapper<'a> {
         }
     }
 
-    // TODO valorar si se tiene los filtros como vec de i32 o vec de String
-    pub async fn get_item(&self, filters: &Filter) -> Result<Items, CookieError> {
+    /// Retrieves items from the Vinted API based on the provided filters.
+    ///
+    /// # Arguments
+    ///
+    /// * `filters` - A reference to a `Filter` struct containing the filter parameters.
+    /// * `num` - The number of items to retrieve. Defaults to 1 if not specified.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` enum containing either the retrieved `Items` or a `CookieError`.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use tokio::main;
+    /// use crate::vinted_rs::model::items::Items;
+    /// use crate::vinted_rs::model::filter::Filter;
+    /// use crate::vinted_rs::queries::VintedWrapper;
+    /// use crate::vinted_rs::queries::CookieError;
+    ///
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let wrapper = VintedWrapper::new();
+    ///     let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
+    ///     let num = 10;
+    ///
+    ///    match wrapper.get_items(&filter, Some(num)).await {
+    ///    Ok(items) => {
+    ///        println!("Retrieved {} items: {:?}", items.items.len(), items);
+    ///        assert_eq!(items.items.len(), 10);
+    ///    }
+    ///    Err(err) => match err {
+    ///        CookieError::ReqWestError(_) => unreachable!(),
+    ///        CookieError::GetCookiesError => (),
+    ///    },
+    /// }
+    /// }
+    /// ```
+    pub async fn get_items(
+        &self,
+        filters: &Filter,
+        num: Option<i32>,
+    ) -> Result<Items, CookieError> {
+        let num = num.unwrap_or(1);
+
         let domain: &str = &format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
 
         let cookie_store_clone = self.cookie_store.clone();
@@ -220,7 +264,7 @@ impl<'a> VintedWrapper<'a> {
         // TODO terminar de procesar los filtros
 
         // Limitar el articulo a 1
-        url = format!("{url}&per_page=1");
+        url = format!("{url}&per_page={num}");
 
         let items: Items = client.get(url).send().await?.json().await?;
 
