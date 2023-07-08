@@ -8,49 +8,6 @@ The `db` module depends on the following external crates:
 - `tokio_postgres`: Provides the PostgreSQL client.
 - `postgres_types`: Provides support for custom types in PostgreSQL.
 - `thiserror`: Provides error handling utilities.
-
-## Structs
-
-### `DbController`
-
-Represents a database controller for interacting with a PostgreSQL database.
-
-Type Parameters:
-- `Tls`: The type of the TLS connector used for establishing a secure connection.
-
-Fields:
-- `pool`: The connection pool for managing database connections.
-
-Methods:
-- `new(uri: &str, pool_size: u32, tls: Tls) -> Result<DbController<Tls>, DbError>`: Creates a new instance of `DbController` with the specified database URI, pool size, and TLS connector.
-- `get_brand_by_name<S: AsRef<str> + Sync + ToSql>(&self, name: &S) -> Result<Brand, DbError>`: Retrieves a brand by its name from the database.
-- `get_brands_by_name<S: AsRef<str> + Sync + ToSql + Display>(&self, name: &S) -> Result<Vec<Brand>, DbError>`: Retrieves a list of brands matching the provided name pattern from the database.
-- `get_category_by_title<S: AsRef<str> + Sync + ToSql + Display>(&self, name: &S) -> Result<Category, DbError>`: Retrieves a category by its title from the database.
-
-## Enums
-
-### `DbError`
-
-Represents an error that can occur during database operations.
-
-Variants:
-- `PoolError(RunError<bb8_postgres::tokio_postgres::Error>)`: An error related to the connection pool.
-- `PgError(bb8_postgres::tokio_postgres::Error)`: An error related to the PostgreSQL client.
-
-## Constants
-
-### `GET_BRAND_BY_NAME`
-
-SQL query for retrieving a brand by its name.
-
-### `GET_BRANDS_BY_NAME`
-
-SQL query for retrieving brands by their name pattern.
-
-### `GET_CATEGORY_BY_NAME`
-
-SQL query for retrieving a category by its title.
-
  */
 use std::fmt::Display;
 
@@ -71,6 +28,12 @@ const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql"
 const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");
 const GET_CATEGORY_BY_NAME: &str = include_str!("sql_queries/GET_CATEGORY_BY_NAME.sql");
 
+/**
+Represents an error that can occur during database operations. 
+Variants:
+- `PoolError(RunError<bb8_postgres::tokio_postgres::Error>)`: An error related to the connection pool.
+- `PgError(bb8_postgres::tokio_postgres::Error)`: An error related to the PostgreSQL client.
+ */
 #[derive(Error, Debug)]
 pub enum DbError {
     #[error(transparent)]
@@ -79,6 +42,15 @@ pub enum DbError {
     PgError(#[from] bb8_postgres::tokio_postgres::Error),
 }
 
+/**
+Represents a database controller for interacting with a PostgreSQL database.
+
+Type Parameters:
+- `Tls`: The type of the TLS connector used for establishing a secure connection.
+
+Fields:
+- `pool`: The connection pool for managing database connections.
+ */
 pub struct DbController<Tls>
 where
     Tls: MakeTlsConnect<Socket> + Clone + Send + Sync + 'static,
@@ -96,6 +68,7 @@ where
     <Tls as MakeTlsConnect<Socket>>::TlsConnect: Send,
     <<Tls as MakeTlsConnect<Socket>>::TlsConnect as TlsConnect<Socket>>::Future: Send,
 {
+    /// Creates a new instance of DbController with the specified database URI, pool size, and TLS connector
     pub async fn new(uri: &str, pool_size: u32, tls: Tls) -> Result<DbController<Tls>, DbError> {
         let manager = PostgresConnectionManager::new_from_stringlike(uri, tls)?;
 
@@ -104,6 +77,7 @@ where
         Ok(DbController { pool })
     }
 
+    /// Retrieves a brand by its name from the database.
     pub async fn get_brand_by_name<S: AsRef<str> + Sync + ToSql>(
         &self,
         name: &S,
@@ -118,6 +92,7 @@ where
         Ok(b)
     }
 
+    /// Retrieves a list of brands matching the provided name pattern from the database.
     pub async fn get_brands_by_name<S: AsRef<str> + Sync + ToSql + Display>(
         &self,
         name: &S,
@@ -134,6 +109,7 @@ where
         Ok(brands)
     }
 
+    /// Retrieves a category by its title from the database
     pub async fn get_category_by_title<S: AsRef<str> + Sync + ToSql + Display>(
         &self,
         name: &S,
