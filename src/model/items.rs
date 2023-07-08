@@ -2,7 +2,7 @@ use crate::model::item::Item;
 use crate::model::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Items {
-    items: Vec<Item>,
+    pub items: Vec<Item>,
 }
 
 impl Items {

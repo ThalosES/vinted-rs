@@ -1,17 +1,35 @@
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
+use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::Arc;
 use thiserror::Error;
 
+use crate::model::filter::Filter;
 use crate::model::items::Items;
 
 #[derive(Error, Debug)]
 pub enum CookieError {
-    #[error("ReqwestError")]
+    #[error(transparent)]
     ReqWestError(#[from] reqwest::Error),
+    #[error("Error to get cookies")]
+    GetCookiesError,
+}
+
+#[derive(Error, Debug)]
+pub enum VintedWrapperError {
+    #[error(transparent)]
+    CookiesError(#[from] CookieError),
+    #[error("Number of items must be non-zero value")]
+    ItemNumberError,
+}
+
+impl From<reqwest::Error> for VintedWrapperError {
+    fn from(value: reqwest::Error) -> Self {
+        VintedWrapperError::CookiesError(CookieError::ReqWestError(value))
+    }
 }
 
 const DOMAINS: [&str; 18] = [
@@ -19,32 +37,103 @@ const DOMAINS: [&str; 18] = [
     "se", "ro", "hu",
 ];
 
-fn random_host() -> String {
+#[derive(Debug, Clone)]
+pub enum Host {
+    Fr,
+    Be,
+    Es,
+    Lu,
+    Nl,
+    Lt,
+    De,
+    At,
+    It,
+    Uk,
+    Pt,
+    Com,
+    Cz,
+    Sk,
+    Pl,
+    Se,
+    Ro,
+    Hu,
+}
+
+impl From<Host> for &str {
+    fn from(val: Host) -> Self {
+        match val {
+            Host::Fr => DOMAINS[0],
+            Host::Be => DOMAINS[1],
+            Host::Es => DOMAINS[2],
+            Host::Lu => DOMAINS[3],
+            Host::Nl => DOMAINS[4],
+            Host::Lt => DOMAINS[5],
+            Host::De => DOMAINS[6],
+            Host::At => DOMAINS[7],
+            Host::It => DOMAINS[8],
+            Host::Uk => DOMAINS[9],
+            Host::Pt => DOMAINS[10],
+            Host::Com => DOMAINS[11],
+            Host::Cz => DOMAINS[12],
+            Host::Sk => DOMAINS[13],
+            Host::Pl => DOMAINS[14],
+            Host::Se => DOMAINS[15],
+            Host::Ro => DOMAINS[16],
+            Host::Hu => DOMAINS[17],
+        }
+    }
+}
+
+pub fn random_host<'a>() -> &'a str {
     let random_index = rand::thread_rng().gen_range(0..DOMAINS.len());
-    DOMAINS[random_index].to_string()
+    DOMAINS[random_index]
 }
 
 static CLIENT: OnceCell<Client> = OnceCell::new();
 
-pub struct VintedWrapper {
-    host: Option<String>,
+#[derive(Debug, Clone)]
+pub struct VintedWrapper<'a> {
+    host: &'a str,
     cookie_store: Arc<CookieStoreMutex>,
 }
 
-impl Default for VintedWrapper {
+impl<'a> Default for VintedWrapper<'a> {
     fn default() -> Self {
-        Self::new()
+        Self::new_with_host(Host::Es)
     }
 }
-impl VintedWrapper {
+
+impl<'a> VintedWrapper<'a> {
     pub fn new() -> Self {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
         let cookie_store = Arc::new(cookie_store);
         VintedWrapper {
-            host: None,
+            host: random_host(),
             cookie_store,
         }
+    }
+
+    pub fn new_with_host(host: Host) -> Self {
+        let cookie_store = CookieStore::new(None);
+        let cookie_store = CookieStoreMutex::new(cookie_store);
+        let cookie_store = Arc::new(cookie_store);
+        VintedWrapper {
+            host: host.into(),
+            cookie_store,
+        }
+    }
+
+    pub fn get_host(&self) -> &str {
+        self.host
+    }
+
+    pub fn set_new_random_host(&mut self) {
+        self.host = random_host();
+    }
+
+    pub fn set_new_host(&mut self, host: Host) {
+        self.host = host.into();
     }
 
     fn get_client(&self) -> &'static Client {
@@ -56,20 +145,82 @@ impl VintedWrapper {
         })
     }
 
-    pub async fn refresh_cookies(&mut self) -> Result<(), CookieError> {
+    pub async fn refresh_cookies(&self) -> Result<(), CookieError> {
         self.cookie_store.lock().unwrap().clear();
+
         let client = self.get_client();
-        self.host = Some(random_host()); // Option<String>
-        let request = format!(
-            "https://www.vinted.{}/auth/token_refresh",
-            self.host.as_ref().unwrap()
-        );
-        client.post(request).send().await?;
+
+        let request = format!("https://www.vinted.{}/auth/token_refresh", self.host);
+
+        let mut response_cookies = client.post(&request).send().await?;
+        let max_retries = 3;
+        let mut i = 0;
+
+        while response_cookies.status() != StatusCode::OK && i < max_retries {
+            response_cookies = client.post(&request).send().await?;
+            i += 1;
+            // valorar meter un sleep 0.1 s
+        }
+
+        if response_cookies.status() != StatusCode::OK {
+            return Err(CookieError::GetCookiesError);
+        }
+
         Ok(())
     }
 
-    pub async fn get_item(&mut self) -> Result<(), CookieError> {
-        let domain: &str = &format!("vinted.{}", self.host.as_ref().unwrap());
+    fn substitute_if_first(first: &mut bool, url: &mut String) {
+        if *first {
+            url.replace_range(0..1, "?");
+            *first = false;
+        }
+    }
+
+    /// Retrieves items from the Vinted API based on the provided filters.
+    ///
+    /// # Arguments
+    ///
+    /// * `filters` - A reference to a `Filter` struct containing the filter parameters.
+    /// * `num` - The number of items to retrieve. Defaults to 1 if not specified.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` enum containing either the retrieved `Items` or a `CookieError`.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use tokio::main;
+    /// use crate::vinted_rs::model::items::Items;
+    /// use crate::vinted_rs::model::filter::Filter;
+    /// use crate::vinted_rs::queries::VintedWrapper;
+    /// use crate::vinted_rs::queries::VintedWrapperError;
+    ///
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let wrapper = VintedWrapper::new();
+    ///     let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
+    ///     let num = 10;
+    ///
+    ///    match wrapper.get_items(&filter, num).await {
+    ///    Ok(items) => {
+    ///        println!("Retrieved {} items: {:?}", items.items.len(), items);
+    ///        assert_eq!(items.items.len(), 10);
+    ///    }
+    ///    Err(err) => match err {
+    ///        VintedWrapperError::ItemNumberError => unreachable!(),
+    ///        VintedWrapperError::CookiesError(_) => (),
+    ///    },
+    /// }
+    /// }
+    /// ```
+    pub async fn get_items(&self, filters: &Filter, num: u32) -> Result<Items, VintedWrapperError> {
+        if num == 0 {
+            return Err(VintedWrapperError::ItemNumberError);
+        }
+
+        let domain: &str = &format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
 
         let cookie_store_clone = self.cookie_store.clone();
 
@@ -79,20 +230,76 @@ impl VintedWrapper {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            self.refresh_cookies().await?
+            self.refresh_cookies().await?;
         }
 
         let client = self.get_client();
 
-        let url = format!(
-            "https://www.vinted.{}/api/v2/catalog/items",
-            self.host.as_ref().unwrap()
-        );
+        let mut first = true;
 
-        let res: Items = client.get(url).send().await?.json().await?;
+        let mut url = format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
 
-        println!("JSON :{res:?}");
+        // Filtro search text
+        if let Some(text) = &filters.search_text {
+            url = format!("{url}?search_text={text}");
+            first = false;
+        }
 
-        Ok(())
+        // Filtro catalogo
+        if let Some(catalog_ids) = &filters.catalog_ids {
+            let mut catalog_args: String = format!("&catalog_ids={}", catalog_ids);
+
+            VintedWrapper::substitute_if_first(&mut first, &mut catalog_args);
+
+            url = format!("{url}{catalog_args}");
+        }
+
+        // Filtro colores
+        if let Some(color_ids) = &filters.color_ids {
+            let mut color_args: String = format!("&color_ids={}", color_ids);
+
+            VintedWrapper::substitute_if_first(&mut first, &mut color_args);
+
+            url = format!("{url}{color_args}");
+        }
+
+        if let Some(brand_ids) = &filters.brand_ids {
+            let mut brand_args: String = format!("&brand_ids={}", brand_ids);
+
+            VintedWrapper::substitute_if_first(&mut first, &mut brand_args);
+
+            url = format!("{url}{brand_args}");
+        }
+
+        if let Some(vec) = &filters.article_status {
+            let querify_vec: Vec<&str> = vec.iter().map(|status| status.into()).collect();
+
+            let mut article_status_args: String = format!("&status_ids={}", querify_vec.join(","));
+
+            VintedWrapper::substitute_if_first(&mut first, &mut article_status_args);
+
+            url = format!("{url}{article_status_args}");
+        }
+
+        if let Some(sort_by) = &filters.sort_by {
+            let sort_by_str: &str = sort_by.into();
+
+            let mut sort_by_arg = format!("&order={}", sort_by_str);
+
+            VintedWrapper::substitute_if_first(&mut first, &mut sort_by_arg);
+
+            url = format!("{url}{sort_by_arg}");
+        }
+
+        // Limitar el articulo a 1
+        let mut per_page_args = format!("&per_page={num}");
+
+        VintedWrapper::substitute_if_first(&mut first, &mut per_page_args);
+
+        url = format!("{url}{per_page_args}");
+
+        let items: Items = client.get(url).send().await?.json().await?;
+
+        Ok(items)
     }
 }

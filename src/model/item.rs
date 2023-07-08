@@ -4,16 +4,15 @@ use super::photo::Photo;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
-    id: i64,
-    title: String,
-    size_title: String,
-    brand_title: String,
-    //discount: String, (null?)
-    currency: String,
-    price: String,
-    photo: Photo, //Sustituable por "full_size_url"
-    url: String,
-    is_visible: i32,
-    promoted: bool,
-    favourite_count: i32,
+    pub id: i64,
+    pub title: String,
+    pub size_title: String,
+    pub brand_title: String,
+    pub currency: String,
+    pub price: String,
+    pub photo: Photo,
+    pub url: String,
+    pub is_visible: i32,
+    pub promoted: bool,
+    pub favourite_count: i32,
 }
