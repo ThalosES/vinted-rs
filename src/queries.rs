@@ -18,6 +18,20 @@ pub enum CookieError {
     GetCookiesError,
 }
 
+#[derive(Error, Debug)]
+pub enum VintedWrapperError {
+    #[error(transparent)]
+    CookiesError(#[from] CookieError),
+    #[error("Number of items must be non-zero value")]
+    ItemNumberError,
+}
+
+impl From<reqwest::Error> for VintedWrapperError{
+    fn from(value: reqwest::Error) -> Self {
+        VintedWrapperError::CookiesError(CookieError::ReqWestError(value))
+    }
+}
+
 const DOMAINS: [&str; 18] = [
     "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "uk", "pt", "com", "cz", "sk", "pl",
     "se", "ro", "hu",
@@ -200,9 +214,11 @@ impl<'a> VintedWrapper<'a> {
     pub async fn get_items(
         &self,
         filters: &Filter,
-        num: Option<i32>,
-    ) -> Result<Items, CookieError> {
-        let num = num.unwrap_or(1);
+        num: u32,
+    ) -> Result<Items, VintedWrapperError> {
+        if num == 0 {
+            return Err(VintedWrapperError::ItemNumberError);
+        }
 
         let domain: &str = &format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
 

@@ -15,7 +15,7 @@ async fn main() {
 
     let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
 
-    let items = vinted.get_items(&filter, Some(5)).await.unwrap();
+    let items = vinted.get_items(&filter, 5).await.unwrap();
 
     print!("{items:?}");
 

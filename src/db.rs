@@ -11,10 +11,11 @@ use bb8_postgres::{
 use postgres_types::ToSql;
 use thiserror::Error;
 
-use crate::model::filter::brand::Brand;
+use crate::model::filter::{brand::Brand, category::Category};
 
 const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql");
 const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");
+const GET_CATEGORY_BY_NAME: &str = include_str!("sql_queries/GET_CATEGORY_BY_NAME.sql");
 
 #[derive(Error, Debug)]
 pub enum DbError {
@@ -84,5 +85,23 @@ where
         let brands: Vec<Brand> = rows.into_iter().map(|row| row.into()).collect();
 
         Ok(brands)
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    pub async fn get_category_by_title<S: AsRef<str> + Sync + ToSql + Display>(
+        &self,
+        name: &S,
+    ) -> Result<Category, DbError> {
+        let conn = self.pool.get().await?;
+        let row: Row = conn.query_one(GET_CATEGORY_BY_NAME, &[&name]).await?;
+
+        // Funciona porque está implementado From<Row> for Category
+        let cat: Category = row.into();
+
+        Ok(cat)
     }
 }
