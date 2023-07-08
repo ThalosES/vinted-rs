@@ -8,7 +8,6 @@ pub mod country;
 pub mod material;
 pub mod size;
 
-
 /// Represents a filter for querying items.
 
 /// Trait Implementations:

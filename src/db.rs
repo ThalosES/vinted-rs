@@ -29,7 +29,7 @@ const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sq
 const GET_CATEGORY_BY_NAME: &str = include_str!("sql_queries/GET_CATEGORY_BY_NAME.sql");
 
 /**
-Represents an error that can occur during database operations. 
+Represents an error that can occur during database operations.
 Variants:
 - `PoolError(RunError<bb8_postgres::tokio_postgres::Error>)`: An error related to the connection pool.
 - `PgError(bb8_postgres::tokio_postgres::Error)`: An error related to the PostgreSQL client.
