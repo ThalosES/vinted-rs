@@ -38,7 +38,7 @@ pub enum ArticleStatus {
 }
 
 impl From<&ArticleStatus> for &str {
-    /// From `&ArticleStatus` to `&str` 
+    /// From `&ArticleStatus` to `&str`
     fn from(status: &ArticleStatus) -> Self {
         match *status {
             ArticleStatus::NewTags => "6",
@@ -59,7 +59,7 @@ pub enum SortBy {
 }
 
 impl From<&SortBy> for &str {
-    /// From `&SortBy` to `&str` 
+    /// From `&SortBy` to `&str`
     fn from(sort: &SortBy) -> Self {
         match *sort {
             SortBy::Relevance => "relevance",

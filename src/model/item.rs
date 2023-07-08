@@ -10,7 +10,7 @@ pub struct Item {
     pub brand_title: String,
     pub currency: String,
     pub price: String,
-    pub photo: Photo, 
+    pub photo: Photo,
     pub url: String,
     pub is_visible: i32,
     pub promoted: bool,

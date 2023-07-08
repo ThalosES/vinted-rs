@@ -124,7 +124,7 @@ impl<'a> VintedWrapper<'a> {
         }
     }
 
-    pub fn get_host(&self) -> &str{
+    pub fn get_host(&self) -> &str {
         self.host
     }
 
@@ -272,7 +272,7 @@ impl<'a> VintedWrapper<'a> {
         }
 
         if let Some(vec) = &filters.article_status {
-            let querify_vec: Vec<&str> = vec.into_iter().map(|status| status.into()).collect();
+            let querify_vec: Vec<&str> = vec.iter().map(|status| status.into()).collect();
 
             let mut article_status_args: String = format!("&status_ids={}", querify_vec.join(","));
 
