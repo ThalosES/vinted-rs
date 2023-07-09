@@ -9,7 +9,7 @@ pub mod material;
 pub mod size;
 
 /// Represents a filter for querying items.
-
+///
 /// Trait Implementations:
 /// - `TypedBuilder`: Implements the builder pattern for constructing a `Filter` instance.
 ///
