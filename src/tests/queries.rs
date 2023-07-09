@@ -8,6 +8,29 @@ use bb8_postgres::tokio_postgres::NoTls;
 const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
 const POOL_SIZE: u32 = 5;
 
+fn calculate_color_difference(hex_color1: &str, hex_color2: &str) -> f64 {
+    let color1 = hex_to_rgb(hex_color1);
+    let color2 = hex_to_rgb(hex_color2);
+
+    let r_diff = color1.0 as f64 - color2.0 as f64;
+    let g_diff = color1.1 as f64 - color2.1 as f64;
+    let b_diff = color1.2 as f64 - color2.2 as f64;
+
+    let distance = (r_diff * r_diff + g_diff * g_diff + b_diff * b_diff).sqrt();
+
+    distance
+}
+
+fn hex_to_rgb(hex_color: &str) -> (u8, u8, u8) {
+    let hex = hex_color.trim_start_matches('#');
+
+    let r = u8::from_str_radix(&hex[0..2], 16).unwrap();
+    let g = u8::from_str_radix(&hex[2..4], 16).unwrap();
+    let b = u8::from_str_radix(&hex[4..6], 16).unwrap();
+
+    (r, g, b)
+}
+
 #[tokio::test]
 async fn test_get_item_query_text() {
     let vinted = VintedWrapper::new();
@@ -155,6 +178,32 @@ async fn test_get_items_by_material() {
         Ok(items) => {
             assert_eq!(items.items.len(), 20);
             //TODO: Check they are all from the same material
+        }
+        Err(err) => match err {
+            VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::CookiesError(_) => (),
+        },
+    };
+}
+
+#[tokio::test]
+#[should_panic]
+async fn test_get_items_by_color() {
+    let vinted = VintedWrapper::new();
+    let id = 2; //Brown
+    let hex = "#663300"; //Brown
+
+    let filter: Filter = Filter::builder().color_ids(id.to_string()).build();
+
+    match vinted.get_items(&filter, 20).await {
+        Ok(items) => {
+            assert_eq!(items.items.len(), 20);
+            let ok: bool = items.items.iter().all(|item| {
+                let dif = calculate_color_difference(hex, &item.photo.dominant_color);
+                println!("{}{:?}", &item.photo.dominant_color, dif.to_string());
+                dif < 150.0
+            });
+            assert!(ok)
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
