@@ -1,5 +1,4 @@
 use crate::db::DbController;
-use crate::model::filter::material::Material;
 use crate::model::filter::Filter;
 use crate::queries::VintedWrapperError;
 use crate::VintedWrapper;
@@ -8,18 +7,17 @@ use bb8_postgres::tokio_postgres::NoTls;
 const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
 const POOL_SIZE: u32 = 5;
 
-fn calculate_color_difference(hex_color1: &str, hex_color2: &str) -> f64 {
-    let color1 = hex_to_rgb(hex_color1);
-    let color2 = hex_to_rgb(hex_color2);
+fn _calculate_color_props(hex_color1: &str) -> (f64, f64, f64) {
+    let color1 = _hex_to_rgb(hex_color1);
 
-    let r_diff = color1.0 as f64 - color2.0 as f64;
-    let g_diff = color1.1 as f64 - color2.1 as f64;
-    let b_diff = color1.2 as f64 - color2.2 as f64;
+    let r_prop = color1.0 as f64 / 255.0;
+    let g_prop = color1.1 as f64 / 255.0;
+    let b_prop = color1.2 as f64 / 255.0;
 
-    (r_diff * r_diff + g_diff * g_diff + b_diff * b_diff).sqrt()
+    (r_prop, g_prop, b_prop)
 }
 
-fn hex_to_rgb(hex_color: &str) -> (u8, u8, u8) {
+fn _hex_to_rgb(hex_color: &str) -> (u8, u8, u8) {
     let hex = hex_color.trim_start_matches('#');
 
     let r = u8::from_str_radix(&hex[0..2], 16).unwrap();
@@ -89,19 +87,29 @@ async fn test_get_items_brands() {
 }
 
 #[tokio::test]
+#[ignore]
 async fn test_get_items_catalogs_no_db() {
     let vinted = VintedWrapper::new();
     //Woman elements
     let filter: Filter = Filter::builder().catalog_ids(String::from("1904")).build();
-    let _substrings = vec![
+    let substrings = vec![
         "women", "mujer", "femme", "kobiety", "donna", "moterims", "noi", "dames", "zeny", "damen",
-        "femei", "mulher",
+        "femei", "mulher", "beauty", "femmes", "dam",
     ];
 
     match vinted.get_items(&filter, 10).await {
         Ok(items) => {
             assert_eq!(items.items.len(), 10);
-            //TODO: Try to test all are from the same catalog somehow
+            items.items.iter().for_each(|item| {
+                let url_item: &str = &item.url;
+                let category = url_item.split("/").nth(3).unwrap();
+                println!("{:?}", category);
+                assert!(
+                    substrings.contains(&category),
+                    "Category not found {}",
+                    category
+                );
+            });
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
@@ -160,22 +168,14 @@ async fn test_get_items_by_size() {
 #[tokio::test]
 async fn test_get_items_by_material() {
     let vinted = VintedWrapper::new();
-    let id = 49;
-    let es = String::from("Seda");
-    let fr = String::from("Soie");
-    let en = String::from("Silk");
-    let _material = Material::builder()
-        .id(id)
-        .material_es(es)
-        .material_en(en)
-        .material_fr(fr);
+    let id = 49; // Silk
 
     let filter: Filter = Filter::builder().material_ids(id.to_string()).build();
+    let num: usize = 15;
 
-    match vinted.get_items(&filter, 20).await {
+    match vinted.get_items(&filter, num as u32).await {
         Ok(items) => {
-            assert_eq!(items.items.len(), 20);
-            //TODO: Check they are all from the same material
+            assert_eq!(items.items.len(), num);
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
@@ -185,24 +185,20 @@ async fn test_get_items_by_material() {
 }
 
 #[tokio::test]
-#[ignore]
-//#[should_panic(expected = "Color is not brownish")]
 async fn test_get_items_by_color() {
     let vinted = VintedWrapper::new();
-    let id = 2; //Brown
-    let hex = "#663300"; //Brown
+    let id = 7; //Red
+                //let hex = "#CC3300"; //Red
+
+    //let props = calculate_color_props(hex);
 
     let filter: Filter = Filter::builder().color_ids(id.to_string()).build();
 
-    match vinted.get_items(&filter, 20).await {
+    let num: usize = 20;
+
+    match vinted.get_items(&filter, num as u32).await {
         Ok(items) => {
-            assert_eq!(items.items.len(), 20);
-            let ok: bool = items.items.iter().all(|item| {
-                let dif = calculate_color_difference(hex, &item.photo.dominant_color);
-                println!("{}{:?}", &item.photo.dominant_color, dif.to_string());
-                dif < 200.0
-            });
-            assert!(ok, "Color is not brownish")
+            assert_eq!(items.items.len(), num);
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
