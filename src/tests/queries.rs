@@ -95,7 +95,7 @@ async fn test_get_items_by_price() {
     let max = 100;
 
     let filter: Filter = Filter::builder().price_from(min).price_to(max).build();
-    
+
     match vinted.get_items(&filter, 10).await {
         Ok(items) => {
             assert_eq!(items.items.len(), 10);
@@ -104,7 +104,7 @@ async fn test_get_items_by_price() {
                 println!("{price}");
                 price <= max as f32 && price >= min as f32
             });
-            
+
             assert!(ok);
         }
         Err(err) => match err {
@@ -120,8 +120,10 @@ async fn test_get_items_by_country() {
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
     let country = db.get_country_by_iso(&String::from("ES")).await.unwrap();
 
-    let filter: Filter = Filter::builder().countries_ids(country.id.to_string()).build(); 
-    
+    let filter: Filter = Filter::builder()
+        .countries_ids(country.id.to_string())
+        .build();
+
     match vinted.get_items(&filter, 20).await {
         Ok(items) => {
             assert_eq!(items.items.len(), 20);
