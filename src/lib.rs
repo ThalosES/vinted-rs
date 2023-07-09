@@ -68,6 +68,7 @@ async fn main() {
 pub mod db;
 pub mod model;
 pub mod queries;
+pub use model::filter::Filter;
 pub use queries::CookieError;
 pub use queries::VintedWrapper;
 pub use queries::VintedWrapperError;
