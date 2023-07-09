@@ -102,7 +102,6 @@ async fn test_get_items_by_price() {
             assert_eq!(items.items.len(), 10);
             let ok: bool = items.items.iter().all(|item| {
                 let price: f32 = item.price.parse().unwrap();
-                println!("{price}");
                 price <= max as f32 && price >= min as f32
             });
 
