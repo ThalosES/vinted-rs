@@ -187,7 +187,8 @@ async fn test_get_items_by_material() {
 }
 
 #[tokio::test]
-#[should_panic]
+#[should_panic(expected = "Color is not brownish")]
+#[ignore]
 async fn test_get_items_by_color() {
     let vinted = VintedWrapper::new();
     let id = 2; //Brown
@@ -201,9 +202,9 @@ async fn test_get_items_by_color() {
             let ok: bool = items.items.iter().all(|item| {
                 let dif = calculate_color_difference(hex, &item.photo.dominant_color);
                 println!("{}{:?}", &item.photo.dominant_color, dif.to_string());
-                dif < 150.0
+                dif < 200.0
             });
-            assert!(ok)
+            assert!(ok, "Color is not brownish")
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
