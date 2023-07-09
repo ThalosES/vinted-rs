@@ -30,6 +30,9 @@ pub mod size;
 ///
 ///```
 ///
+///
+/// `price_from` filter should be always <= `price_to` , otherwise Vinted will not found anything
+///
 #[derive(TypedBuilder, Debug, Clone)]
 pub struct Filter {
     ///The search text to filter items by.
@@ -170,6 +173,30 @@ pub struct Filter {
     ///
     #[builder(default, setter(strip_option))]
     pub sort_by: Option<SortBy>,
+    /// The minimum price of the article
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().price_from(10u32).build();
+    ///```
+    ///
+    #[builder(default, setter(strip_option))]
+    pub price_from: Option<u32>,
+    /// The max price of the article
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().price_from(20u32).build();
+    ///```
+    ///
+    #[builder(default, setter(strip_option))]
+    pub price_to: Option<u32>,
 }
 
 /*
