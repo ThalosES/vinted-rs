@@ -1,3 +1,33 @@
+/*! The `queries` module provides functionality for querying the Vinted API.
+
+ This module contains the `VintedWrapper` struct, which represents the main wrapper for interacting with the Vinted API. It provides methods for retrieving items based on filters and handling cookies.
+
+ # Examples
+
+ ```rust
+ use crate::vinted_rs::model::items::Items;
+ use crate::vinted_rs::model::filter::Filter;
+ use crate::vinted_rs::queries::VintedWrapper;
+ use crate::vinted_rs::queries::VintedWrapperError;
+
+ async fn get_items_example() {
+     let wrapper = VintedWrapper::new();
+     let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
+     let num = 10;
+
+     match wrapper.get_items(&filter, num).await {
+         Ok(items) => {
+             println!("Retrieved {} items: {:?}", items.items.len(), items);
+             assert_eq!(items.items.len(), 10);
+         }
+         Err(err) => match err {
+             VintedWrapperError::ItemNumberError => unreachable!(),
+             VintedWrapperError::CookiesError(_) => (),
+         },
+     }
+ }
+ ```
+*/
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
@@ -84,6 +114,21 @@ impl From<Host> for &str {
     }
 }
 
+/// Returns a random Vinted host domain.
+///
+/// The `random_host` function selects a random Vinted host domain from a predefined list of domains.
+///
+/// # Returns
+///
+/// A string reference containing the randomly selected Vinted host domain.
+///
+/// # Examples
+///
+/// ```rust
+/// use vinted_rs::queries::random_host;
+/// let host = random_host();
+/// println!("Random host: {}", host);
+/// ```
 pub fn random_host<'a>() -> &'a str {
     let random_index = rand::thread_rng().gen_range(0..DOMAINS.len());
     DOMAINS[random_index]
@@ -91,6 +136,10 @@ pub fn random_host<'a>() -> &'a str {
 
 static CLIENT: OnceCell<Client> = OnceCell::new();
 
+/// Represents the main wrapper for interacting with the Vinted API.
+///
+/// The `VintedWrapper` struct provides methods for retrieving items based on filters and handling cookies.
+///
 #[derive(Debug, Clone)]
 pub struct VintedWrapper<'a> {
     host: &'a str,
@@ -104,6 +153,16 @@ impl<'a> Default for VintedWrapper<'a> {
 }
 
 impl<'a> VintedWrapper<'a> {
+    /// Creates a new `VintedWrapper` with a random host.
+    ///
+    /// The `new` function creates a new `VintedWrapper` instance with a random host domain. It initializes the cookie store and client for making requests to the Vinted API.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use vinted_rs::VintedWrapper;
+    /// let wrapper = VintedWrapper::new();
+    /// ```
     pub fn new() -> Self {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
@@ -113,7 +172,21 @@ impl<'a> VintedWrapper<'a> {
             cookie_store,
         }
     }
-
+    /// Creates a new `VintedWrapper` with the specified host.
+    ///
+    /// The `new_with_host` function creates a new `VintedWrapper` instance with the specified host domain. It initializes the cookie store and client for making requests to the Vinted API.
+    ///
+    /// # Arguments
+    ///
+    /// * `host` - The host domain to use for the wrapper.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use vinted_rs::VintedWrapper;
+    /// use vinted_rs::queries::Host;
+    /// let wrapper = VintedWrapper::new_with_host(Host::Fr);
+    /// ```
     pub fn new_with_host(host: Host) -> Self {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
@@ -123,7 +196,22 @@ impl<'a> VintedWrapper<'a> {
             cookie_store,
         }
     }
-
+    /// Returns the current host domain.
+    ///
+    /// The `get_host` method returns the current host domain used by the `VintedWrapper` instance.
+    ///
+    /// # Returns
+    ///
+    /// A string reference containing the current host domain.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use vinted_rs::VintedWrapper;
+    /// let wrapper = VintedWrapper::new();
+    /// let host = wrapper.get_host();
+    /// println!("Current host: {}", host);
+    /// ```
     pub fn get_host(&self) -> &str {
         self.host
     }
@@ -144,7 +232,38 @@ impl<'a> VintedWrapper<'a> {
                 .unwrap()
         })
     }
-
+    /// Refreshes the cookies for the Vinted API.
+    ///
+    /// The `refresh_cookies` method clears the existing cookies, sends a request to refresh the cookies from the Vinted API, and retrieves the updated cookies.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` enum indicating the success or failure of refreshing the cookies. An `Ok` value indicates that the cookies were successfully refreshed, while an `Err` value contains a `CookieError` indicating the specific error encountered during the process.
+    ///
+    /// # Errors
+    ///
+    /// The method can return a `CookieError` if there was an error in retrieving the cookies. The possible error variants are:
+    ///
+    /// - `ReqWestError`: Represents an error from the `reqwest` crate while making the HTTP request.
+    /// - `GetCookiesError`: Indicates an error occurred while trying to get the cookies.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use vinted_rs::{VintedWrapper, CookieError};
+    ///
+    /// async fn refresh_cookies_example() {
+    ///     let wrapper = VintedWrapper::new();
+    ///
+    ///     match wrapper.refresh_cookies().await {
+    ///         Ok(()) => println!("Cookies refreshed successfully"),
+    ///         Err(err) => match err {
+    ///             CookieError::ReqWestError(_) => (),
+    ///             CookieError::GetCookiesError => (),
+    ///         },
+    ///     }
+    /// }
+    /// ```
     pub async fn refresh_cookies(&self) -> Result<(), CookieError> {
         self.cookie_store.lock().unwrap().clear();
 
@@ -159,7 +278,6 @@ impl<'a> VintedWrapper<'a> {
         while response_cookies.status() != StatusCode::OK && i < max_retries {
             response_cookies = client.post(&request).send().await?;
             i += 1;
-            // valorar meter un sleep 0.1 s
         }
 
         if response_cookies.status() != StatusCode::OK {
