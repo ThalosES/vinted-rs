@@ -185,8 +185,8 @@ async fn test_get_items_by_material() {
 }
 
 #[tokio::test]
-#[should_panic(expected = "Color is not brownish")]
 #[ignore]
+//#[should_panic(expected = "Color is not brownish")]
 async fn test_get_items_by_color() {
     let vinted = VintedWrapper::new();
     let id = 2; //Brown
