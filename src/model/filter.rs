@@ -31,7 +31,7 @@ pub mod size;
 ///```
 ///
 ///
-/// `price_from` filter should be always <= `price_to` , otherwise Vinted will not found anything
+/// `price_from` filter should be always <= `price_to` , otherwise Vinted will not find anything
 ///
 #[derive(TypedBuilder, Debug, Clone)]
 pub struct Filter {
