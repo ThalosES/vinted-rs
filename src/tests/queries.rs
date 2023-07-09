@@ -79,6 +79,53 @@ async fn test_get_items_catalogs_no_db() {
     match vinted.get_items(&filter, 10).await {
         Ok(items) => {
             assert_eq!(items.items.len(), 10);
+            //TODO: Try to test all are from the same catalog somehow
+        }
+        Err(err) => match err {
+            VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::CookiesError(_) => (),
+        },
+    };
+}
+
+#[tokio::test]
+async fn test_get_items_by_price() {
+    let vinted = VintedWrapper::new();
+    let min = 50;
+    let max = 100;
+
+    let filter: Filter = Filter::builder().price_from(min).price_to(max).build();
+    
+    match vinted.get_items(&filter, 10).await {
+        Ok(items) => {
+            assert_eq!(items.items.len(), 10);
+            let ok: bool = items.items.iter().all(|item| {
+                let price: f32 = item.price.parse().unwrap();
+                println!("{price}");
+                price <= max as f32 && price >= min as f32
+            });
+            
+            assert!(ok);
+        }
+        Err(err) => match err {
+            VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::CookiesError(_) => (),
+        },
+    };
+}
+
+#[tokio::test]
+async fn test_get_items_by_country() {
+    let vinted = VintedWrapper::new();
+    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let country = db.get_country_by_iso(&String::from("ES")).await.unwrap();
+
+    let filter: Filter = Filter::builder().countries_ids(country.id.to_string()).build(); 
+    
+    match vinted.get_items(&filter, 20).await {
+        Ok(items) => {
+            assert_eq!(items.items.len(), 20);
+            //TODO: Try to test all are from the same country somehow
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),

@@ -79,6 +79,8 @@ pub struct Filter {
     ///
     ///Try it in [Regex 101](https://regex101.com/r/u8ZEpv/1)
     ///
+    /// 
+    /// **Note:** Color names are only avalible in French in our database at the moment
     ///### Example
     ///```rust
     /// use vinted_rs::Filter;

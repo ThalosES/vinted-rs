@@ -1,6 +1,6 @@
 use crate::{
     db::DbController,
-    model::filter::{brand::Brand, category::Category},
+    model::filter::{brand::Brand, category::Category, country::Country},
 };
 use bb8_postgres::tokio_postgres::NoTls;
 
@@ -53,6 +53,23 @@ async fn test_get_category_by_name() {
             .title(String::from("Women"))
             .id(1904)
             .parent_id(0)
+            .build()
+    );
+}
+
+#[tokio::test]
+async fn test_get_country_by_iso() {
+    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let c = db.get_country_by_iso(&String::from("ES")).await.unwrap();
+
+    assert_eq!(
+        c,
+        Country::builder()
+            .id(7)
+            .name(String::from("Espagne"))
+            .local_name(String::from("España"))
+            .iso_code(String::from("ES"))
+            .flag(String::from("🇪🇸"))
             .build()
     );
 }

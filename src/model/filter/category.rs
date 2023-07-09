@@ -4,13 +4,13 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Category {
-    id: i32,
+    pub id: i32,
     // TODO creo que estos titulos solo estan en ingles
-    title: String,
-    code: String,
-    parent_id: i32,
-    url: String,
-    url_en: String,
+    pub title: String,
+    pub code: String,
+    pub parent_id: i32,
+    pub url: String,
+    pub url_en: String,
 }
 
 #[cfg(feature = "advanced_filters")]

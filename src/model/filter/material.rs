@@ -4,10 +4,10 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Material {
-    id: i32,
-    material_es: String,
-    material_fr: String,
-    material_en: String,
+    pub id: i32,
+    pub material_es: String,
+    pub material_fr: String,
+    pub material_en: String,
 }
 
 #[cfg(feature = "advanced_filters")]
