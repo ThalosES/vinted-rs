@@ -381,6 +381,7 @@ impl<'a> VintedWrapper<'a> {
             url = format!("{url}{color_args}");
         }
 
+        //Filter brand
         if let Some(brand_ids) = &filters.brand_ids {
             let mut brand_args: String = format!("&brand_ids={}", brand_ids);
 
@@ -389,6 +390,24 @@ impl<'a> VintedWrapper<'a> {
             url = format!("{url}{brand_args}");
         }
 
+        //Filter sizes
+        if let Some(size_ids) = &filters.size_ids {
+            let mut size_args: String = format!("&size_ids={}", size_ids);
+
+            VintedWrapper::substitute_if_first(&mut first, &mut size_args);
+
+            url = format!("{url}{size_args}");
+        }
+
+        //Filter materials
+        if let Some(material_ids) = &filters.material_ids {
+            let mut material_args: String = format!("&material_ids={}", material_ids);
+
+            VintedWrapper::substitute_if_first(&mut first, &mut material_args);
+
+            url = format!("{url}{material_args}");
+        }
+        //Filter country
         if let Some(countries_ids) = &filters.countries_ids {
             let mut countries_args: String = format!("&country_ids={}", countries_ids);
 
@@ -397,6 +416,7 @@ impl<'a> VintedWrapper<'a> {
             url = format!("{url}{countries_args}");
         }
 
+        //Filter price from
         if let Some(price_from) = &filters.price_from {
             let mut price_from_arg: String = format!("&price_from={}", price_from);
 
@@ -405,6 +425,7 @@ impl<'a> VintedWrapper<'a> {
             url = format!("{url}{price_from_arg}");
         }
 
+        //Filter price to
         if let Some(price_to) = &filters.price_to {
             let mut price_to_arg: String = format!("&price_to={}", price_to);
 
@@ -424,6 +445,7 @@ impl<'a> VintedWrapper<'a> {
             url = format!("{url}{article_status_args}");
         }
 
+        //Order by
         if let Some(sort_by) = &filters.sort_by {
             let sort_by_str: &str = sort_by.into();
 

@@ -1,4 +1,5 @@
 use crate::db::DbController;
+use crate::model::filter::material::Material;
 use crate::model::filter::Filter;
 use crate::queries::VintedWrapperError;
 use crate::VintedWrapper;
@@ -115,19 +116,46 @@ async fn test_get_items_by_price() {
 }
 
 #[tokio::test]
-async fn test_get_items_by_country() {
+async fn test_get_items_by_size() {
     let vinted = VintedWrapper::new();
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
-    let country = db.get_country_by_iso(&String::from("ES")).await.unwrap();
+    let size_id = String::from("1568");
+    let size_title = String::from("XS");
 
-    let filter: Filter = Filter::builder()
-        .countries_ids(country.id.to_string())
-        .build();
+    let filter: Filter = Filter::builder().size_ids(size_id).build();
 
     match vinted.get_items(&filter, 20).await {
         Ok(items) => {
             assert_eq!(items.items.len(), 20);
-            //TODO: Try to test all are from the same country somehow
+            let ok: bool = items.items.iter().all(|item| item.size_title == size_title);
+
+            assert!(ok);
+        }
+        Err(err) => match err {
+            VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::CookiesError(_) => (),
+        },
+    };
+}
+
+#[tokio::test]
+async fn test_get_items_by_material() {
+    let vinted = VintedWrapper::new();
+    let id = 49;
+    let es = String::from("Seda");
+    let fr = String::from("Soie");
+    let en = String::from("Silk");
+    let _material = Material::builder()
+        .id(id)
+        .material_es(es)
+        .material_en(en)
+        .material_fr(fr);
+
+    let filter: Filter = Filter::builder().material_ids(id.to_string()).build();
+
+    match vinted.get_items(&filter, 20).await {
+        Ok(items) => {
+            assert_eq!(items.items.len(), 20);
+            //TODO: Check they are all from the same material
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),

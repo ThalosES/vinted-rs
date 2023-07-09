@@ -152,6 +152,26 @@ pub struct Filter {
     ///```
     ///
     #[builder(default, setter(strip_option))]
+    pub material_ids: Option<String>,
+    /// The material IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
+    ///
+    ///If not formated with the specified regex, undefined behaviour. (Input will not be checked).
+    ///
+    ///
+    ///Try it in [Regex 101](https://regex101.com/r/u8ZEpv/1)
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().material_ids(String::from("44,102")).build();
+    /// // Where 7 and 16 are country_ids from Vinted
+    /// // 44 is material_id for coton
+    /// // 49 is material_id for silk
+    ///```
+    ///
+    #[builder(default, setter(strip_option))]
     pub size_ids: Option<String>,
     #[builder(default, setter(strip_option))]
     /// The article statuses to filter items by.
