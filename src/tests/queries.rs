@@ -16,9 +16,7 @@ fn calculate_color_difference(hex_color1: &str, hex_color2: &str) -> f64 {
     let g_diff = color1.1 as f64 - color2.1 as f64;
     let b_diff = color1.2 as f64 - color2.2 as f64;
 
-    let distance = (r_diff * r_diff + g_diff * g_diff + b_diff * b_diff).sqrt();
-
-    distance
+    (r_diff * r_diff + g_diff * g_diff + b_diff * b_diff).sqrt()
 }
 
 fn hex_to_rgb(hex_color: &str) -> (u8, u8, u8) {
