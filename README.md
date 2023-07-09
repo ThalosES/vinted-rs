@@ -6,7 +6,17 @@
  [crates-io]: https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
  [docs-rs]: https://img.shields.io/badge/docs.rs-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs
 
-A complete Vinted API-Wrapper in Rust
+## Table of Contents
+
+- [Vinted-rs: A Vinted API wrapper](#vinted-rs-a-vinted-api-wrapper)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [DB setup](#db-setup)
+    - [Create a migration](#create-a-migration)
+    - [Run a Docker container with PostgreSQL](#run-a-docker-container-with-postgresql)
+    - [Run migrations](#run-migrations)
+    - [Stop DB](#stop-db)
+  - [Running Tests](#running-tests)
 
 ## Installation
 
@@ -14,14 +24,8 @@ Via `cargo` you can add the library to your project's `Cargo.toml`
 
 ```toml
 [dependencies]
-vinted-rs = "0.0.1"
+vinted-rs = "0.1.1"
 ```
-
-## Authors
-
-[Álvaro Cabo](https://github.com/alvarocabo)
-
-[Pepe Márquez](https://github.com/pxp9)
 
 ## DB setup
 
@@ -29,9 +33,7 @@ Advanced filtering features must require this setup before running.
 
 - First start installing diesel-cli (in order to run the migrations in PostgreSQL database)
 
-### VERY IMPORTANT
-
-diesel-cli installation may fail if you do not have `libpq` library installed.
+⚠️**Very important:** diesel-cli installation may fail if you do not have `libpq` library installed.
 
 To install `libpq`, just install PostgreSQL package on your machine.
 
@@ -85,9 +87,7 @@ make stop
 
 ## Running Tests
 
-### Very important
-
-Before running tests is important to do the DB setup
+⚠️**Very important:** Before running tests is important to do the [DB setup](#db-setup)
 
 Then run the tests
 
