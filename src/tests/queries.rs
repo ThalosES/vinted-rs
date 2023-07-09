@@ -102,7 +102,7 @@ async fn test_get_items_catalogs_no_db() {
             assert_eq!(items.items.len(), 10);
             items.items.iter().for_each(|item| {
                 let url_item: &str = &item.url;
-                let category = url_item.split("/").nth(3).unwrap();
+                let category = url_item.split('/').nth(3).unwrap();
                 println!("{:?}", category);
                 assert!(
                     substrings.contains(&category),
