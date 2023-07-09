@@ -19,6 +19,7 @@ pub mod size;
 ///### Example
 ///
 ///```rust
+/// use vinted_rs::Filter;
 ///
 /// let filter: Filter = Filter::builder()
 ///      .catalog_ids(String::from("4,16"))
@@ -38,6 +39,8 @@ pub struct Filter {
     ///The search text to filter items by.
     ///### Example
     ///```rust
+    /// use vinted_rs::Filter;
+    ///
     ///let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
     ///```
     ///
@@ -120,7 +123,7 @@ pub struct Filter {
     /// use vinted_rs::Filter;
     ///
     ///
-    /// let filter: Filter = Filter::builder().country_ids(String::from("7,16")).build();
+    /// let filter: Filter = Filter::builder().countries_ids(String::from("7,16")).build();
     /// // Where 7 and 16 are country_ids from Vinted
     /// // 7 is country_id for Spain
     /// // 16 is country_id for France
@@ -154,7 +157,7 @@ pub struct Filter {
     ///### Example
     ///```rust
     /// use vinted_rs::Filter;
-    ///
+    /// use vinted_rs::model::filter::ArticleStatus;
     ///
     /// let filter: Filter = Filter::builder().article_status(vec![ArticleStatus::NewTags ,
     /// ArticleStatus::NewNoTags]).build();
@@ -166,7 +169,8 @@ pub struct Filter {
     ///### Example
     ///```rust
     /// use vinted_rs::Filter;
-    ///
+    /// use vinted_rs::model::filter::SortBy;
+
     ///
     /// let filter: Filter = Filter::builder().sort_by(SortBy::PriceAscendant).build();
     ///```
