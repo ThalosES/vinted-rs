@@ -22,11 +22,12 @@ use bb8_postgres::{
 use postgres_types::ToSql;
 use thiserror::Error;
 
-use crate::model::filter::{brand::Brand, category::Category};
+use crate::model::filter::{brand::Brand, category::Category, country::Country};
 
 const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql");
 const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");
 const GET_CATEGORY_BY_NAME: &str = include_str!("sql_queries/GET_CATEGORY_BY_NAME.sql");
+const GET_COUNTRY_BY_ISO_CODE: &str = include_str!("sql_queries/GET_COUNTRY_BY_ISO_CODE.sql");
 
 /**
 Represents an error that can occur during database operations.
@@ -121,5 +122,19 @@ where
         let cat: Category = row.into();
 
         Ok(cat)
+    }
+
+    /// Retrieves a category by its title from the database
+    pub async fn get_country_by_iso<S: AsRef<str> + Sync + ToSql + Display>(
+        &self,
+        code: &S,
+    ) -> Result<Country, DbError> {
+        let conn = self.pool.get().await?;
+        let row: Row = conn.query_one(GET_COUNTRY_BY_ISO_CODE, &[&code]).await?;
+
+        // Works because From<Row> for Category is implemented
+        let country: Country = row.into();
+
+        Ok(country)
     }
 }

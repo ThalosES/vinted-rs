@@ -4,10 +4,9 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Color {
-    id: i32,
-    // TODO el titulo solo está en francés valorar que podemos hacer
-    title: String,
-    hex: String,
+    pub id: i32,
+    pub title: String,
+    pub hex: String,
 }
 
 #[cfg(feature = "advanced_filters")]

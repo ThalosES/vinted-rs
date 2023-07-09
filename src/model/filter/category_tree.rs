@@ -4,9 +4,9 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct CategoryTree {
-    id: i32,
-    parent_id: i32,
-    child_id: i32,
+    pub id: i32,
+    pub parent_id: i32,
+    pub child_id: i32,
 }
 
 #[cfg(feature = "advanced_filters")]
