@@ -12,30 +12,162 @@ pub mod size;
 
 /// Trait Implementations:
 /// - `TypedBuilder`: Implements the builder pattern for constructing a `Filter` instance.
+///
+///
+///You can create a filter with multiple constraints.
+///
+///### Example
+///
+///```rust
+///
+/// let filter: Filter = Filter::builder()
+///      .catalog_ids(String::from("4,16"))
+///      .brand_ids(String::from("14,53"))
+///      .build();
+///
+/// // Women shoes and Women clothes that are only from brands Adidas and Nike.
+///
+///
+///```
+///
 #[derive(TypedBuilder, Debug, Clone)]
 pub struct Filter {
     ///The search text to filter items by.
+    ///### Example
+    ///```rust
+    ///let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
+    ///```
+    ///
+    ///
     #[builder(default, setter(strip_option))]
     pub search_text: Option<String>,
-    ///The catalog IDs to filter items by. Must be formatted as `(i32,)*` regex.
+    ///
+    ///
+    ///
+    ///
+    ///The catalog IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
+    ///
+    ///
+    ///If not formated with the specified regex, undefined behaviour. (Input will not be checked).
+    ///
+    ///
+    ///Try it in [Regex 101](https://regex101.com/r/u8ZEpv/1)
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().catalog_ids(String::from("4,16")).build();
+    /// // Where 4 and 16 are catalog_ids from Vinted
+    /// // 4 is catalog_id for Women clothes
+    /// // 16 is catalog_id for Women Shoes
+    ///```
     #[builder(default, setter(strip_option))]
     pub catalog_ids: Option<String>,
     #[builder(default, setter(strip_option))]
-    ///The color IDs to filter items by. Must be formatted as `(i32,)*` regex.
+    ///The color IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
+    ///
+    ///If not formated with the specified regex, undefined behaviour. (Input will not be checked).
+    ///
+    ///
+    ///Try it in [Regex 101](https://regex101.com/r/u8ZEpv/1)
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().color_ids(String::from("1,5")).build();
+    /// // Where 1 and 5 are color_ids from Vinted
+    /// // 1 is color_id for Black
+    /// // 5 is color_id for Pink
+    ///```
+    ///
     pub color_ids: Option<String>,
-    /// The brand IDs to filter items by. Must be formatted as `(i32,)*` regex.
+    /// The brand IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
+    ///
+    ///If not formated with the specified regex, undefined behaviour. (Input will not be checked).
+    ///
+    ///
+    ///Try it in [Regex 101](https://regex101.com/r/u8ZEpv/1)
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().brand_ids(String::from("14,53")).build();
+    /// // Where 14 and 53 are brand_ids from Vinted
+    /// // 14 is brand_id for Adidas
+    /// // 53 is brand_id for Nike
+    ///```
+    ///
     #[builder(default, setter(strip_option))]
     pub brand_ids: Option<String>,
-    /// The country IDs to filter items by. Must be formatted as `(i32,)*` regex.
+    /// The country IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
+    ///
+    ///If not formated with the specified regex, undefined behaviour. (Input will not be checked).
+    ///
+    ///
+    ///Try it in [Regex 101](https://regex101.com/r/u8ZEpv/1)
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().country_ids(String::from("7,16")).build();
+    /// // Where 7 and 16 are country_ids from Vinted
+    /// // 7 is country_id for Spain
+    /// // 16 is country_id for France
+    ///```
+    ///
     #[builder(default, setter(strip_option))]
     pub countries_ids: Option<String>,
-    /// The size IDs to filter items by. Must be formatted as `(i32,)*` regex.
+    /// The size IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
+    ///
+    ///If not formated with the specified regex, undefined behaviour. (Input will not be checked).
+    ///
+    ///
+    ///Try it in [Regex 101](https://regex101.com/r/u8ZEpv/1)
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().size_ids(String::from("1226,102")).build();
+    /// // Where 7 and 16 are country_ids from Vinted
+    /// // 1226 is size_id for XXXS / 30 / 2
+    /// // 102 is size_id for XXS / 32 / 4
+    ///```
+    ///
     #[builder(default, setter(strip_option))]
     pub size_ids: Option<String>,
     #[builder(default, setter(strip_option))]
     /// The article statuses to filter items by.
+    ///
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().article_status(vec![ArticleStatus::NewTags ,
+    /// ArticleStatus::NewNoTags]).build();
+    ///```
+    ///
     pub article_status: Option<Vec<ArticleStatus>>,
     /// The sort order for the retrieved items.
+
+    ///### Example
+    ///```rust
+    /// use vinted_rs::Filter;
+    ///
+    ///
+    /// let filter: Filter = Filter::builder().sort_by(SortBy::PriceAscendant).build();
+    ///```
+    ///
     #[builder(default, setter(strip_option))]
     pub sort_by: Option<SortBy>,
 }
