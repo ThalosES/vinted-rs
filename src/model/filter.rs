@@ -261,7 +261,7 @@ pub enum Currency {
 }
 
 impl From<Currency> for Host {
-    fn from(currency: Currency) -> Self { 
+    fn from(currency: Currency) -> Self {
         match currency {
             Currency::USD => Host::Com,
             Currency::GBP => Host::Uk,
@@ -270,8 +270,7 @@ impl From<Currency> for Host {
             Currency::SEK => Host::Se,
             Currency::RON => Host::Ro,
             Currency::HUF => Host::Hu,
-            Currency::EUR => Host::random_euro_host()
-
+            Currency::EUR => Host::random_euro_host(),
         }
     }
 }
