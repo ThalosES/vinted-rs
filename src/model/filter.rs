@@ -1,5 +1,7 @@
 use typed_builder::TypedBuilder;
 
+use crate::queries::Host;
+
 pub mod brand;
 pub mod category;
 pub mod category_tree;
@@ -224,25 +226,71 @@ pub struct Filter {
     #[builder(default, setter(strip_option))]
     pub price_to: Option<u32>,
 }
+/**
+Represents the currency for filtering items
 
-/*
+*/
+
+// TODO problema si se quiere filtrar por moneda , se tiene que cambiar el host del pais y al cambiar el host del pais se debe refrescar cookies
+// GBP => Host uk
+// EUR => Pais de Europa sera el default
+// USD => Host com
+// CSK => Host cz
+// PLN => Host pl
+// SEK => Host se
+// RON => Host ro
+// HUF => Host hu
+#[derive(Debug, Clone)]
+pub enum Currency {
+    /// Euro
+    EUR,
+    /// US Dollar
+    USD,
+    /// Great Britain Pound
+    GBP,
+    /// Czech koruna
+    CZK,
+    /// Polish złoty
+    PLN,
+    /// Swedish krona
+    SEK,
+    /// Romanian leu
+    RON,
+    /// Hungarian forint
+    HUF,
+}
+
+impl From<Currency> for Host {
+    fn from(currency: Currency) -> Self { 
+        match currency {
+            Currency::USD => Host::Com,
+            Currency::GBP => Host::Uk,
+            Currency::CZK => Host::Cz,
+            Currency::PLN => Host::Pl,
+            Currency::SEK => Host::Se,
+            Currency::RON => Host::Ro,
+            Currency::HUF => Host::Hu,
+            Currency::EUR => Host::random_euro_host()
+
+        }
+    }
+}
+
+/**
 Represents the article status for filtering items.
 
-Variants:
-- `NewTags`: The article status for new items with tags.
-- `NewNoTags`: The article status for new items without tags.
-- `VeryGood`: The article status for items in very good condition.
-- `Good`: The article status for items in good condition.
-- `Satisfactory`: The article status for items in satisfactory condition.
-
-Trait Implementations:
-- `From<&ArticleStatus> for &str>`: Converts an `ArticleStatus` variant to a string slice. */
+*/
 #[derive(Debug, Clone)]
 pub enum ArticleStatus {
+    /// The article status for new items with tags.
     NewTags,
+    /// The article status for new items without tags.
     NewNoTags,
+    /// The article status for items in very good condition.
     VeryGood,
+    /// Good`: The article status for items in good condition.
     Good,
+    /// The article status for items in satisfactory condition.
     Satisfactory,
 }
 

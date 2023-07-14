@@ -37,6 +37,7 @@ use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::Arc;
 use thiserror::Error;
 
+use crate::model::filter::Currency;
 use crate::model::filter::Filter;
 use crate::model::items::Items;
 
@@ -87,6 +88,55 @@ pub enum Host {
     Se,
     Ro,
     Hu,
+}
+
+impl Host {
+    /// Returns true if a Host has the Euro as the currency
+    pub fn is_euro_host(&self) -> bool {
+        !matches!(
+            self,
+            Host::Com | Host::Uk | Host::Cz | Host::Pl | Host::Se | Host::Ro | Host::Hu
+        )
+    }
+
+    /// Returns a Host that has Euro as currency
+    pub fn random_euro_host() -> Self {
+        let domains_euro: Vec<Host> = DOMAINS
+            .iter()
+            .map(|domain_str| (*domain_str).into())
+            .filter(|domain: &Host| domain.is_euro_host())
+            .collect();
+
+        let random_index = rand::thread_rng().gen_range(0..domains_euro.len());
+
+        domains_euro[random_index].clone()
+    }
+}
+
+impl From<&str> for Host {
+    fn from(string: &str) -> Self {
+        match string {
+            "fr" => Host::Fr,
+            "be" => Host::Be,
+            "es" => Host::Es,
+            "lu" => Host::Lu,
+            "nl" => Host::Nl,
+            "lt" => Host::Lt,
+            "de" => Host::De,
+            "at" => Host::At,
+            "it" => Host::It,
+            "uk" => Host::Uk,
+            "pt" => Host::Pt,
+            "com" => Host::Com,
+            "cz" => Host::Cz,
+            "sk" => Host::Sk,
+            "pl" => Host::Pl,
+            "se" => Host::Se,
+            "ro" => Host::Ro,
+            "hu" => Host::Hu,
+            _ => panic!("Not valid host"),
+        }
+    }
 }
 
 impl From<Host> for &str {
@@ -215,13 +265,28 @@ impl<'a> VintedWrapper<'a> {
     pub fn get_host(&self) -> &str {
         self.host
     }
+    /**
 
+    After changing host is always necessary to refresh cookies
+    */
     pub fn set_new_random_host(&mut self) {
         self.host = random_host();
     }
 
     pub fn set_new_host(&mut self, host: Host) {
         self.host = host.into();
+    }
+
+    pub fn set_host_by_currency(&mut self, currency: Currency) {
+        let host: Host = currency.into();
+
+        let actual_host: Host = self.host.into();
+
+        if !host.is_euro_host() || !actual_host.is_euro_host() {
+            let host_str: &str = host.into();
+
+            self.host = host_str;
+        }
     }
 
     fn get_client(&self) -> &'static Client {
