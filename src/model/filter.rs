@@ -20,7 +20,7 @@ pub mod size;
 /// Represents a filter for querying items.
 ///
 /// Trait Implementations:
-/// - TypedBuilder: Implements the builder pattern for constructing a `Filter` instance.
+/// - `TypedBuilder`: Implements the builder pattern for constructing a `Filter` instance.
 ///
 ///
 ///You can create a filter with multiple constraints.
