@@ -46,7 +46,7 @@ pub enum CookieError {
     #[error(transparent)]
     ReqWestError(#[from] reqwest::Error),
     #[error("Error to get cookies")]
-    GetCookiesError,
+    GetCookiesError((StatusCode, String)),
 }
 
 #[derive(Error, Debug)]
@@ -64,7 +64,7 @@ impl From<reqwest::Error> for VintedWrapperError {
 }
 
 const DOMAINS: [&str; 18] = [
-    "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "uk", "pt", "com", "cz", "sk", "pl",
+    "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl",
     "se", "ro", "hu",
 ];
 
@@ -125,7 +125,7 @@ impl From<&str> for Host {
             "de" => Host::De,
             "at" => Host::At,
             "it" => Host::It,
-            "uk" => Host::Uk,
+            "co.uk" => Host::Uk,
             "pt" => Host::Pt,
             "com" => Host::Com,
             "cz" => Host::Cz,
@@ -310,6 +310,7 @@ impl<'a> VintedWrapper<'a> {
     fn get_client(&self) -> &'static Client {
         CLIENT.get_or_init(|| -> Client {
             reqwest::ClientBuilder::new()
+                .user_agent("PostmanRuntime/7.32.3")
                 .cookie_provider(Arc::clone(&self.cookie_store))
                 .build()
                 .unwrap()
@@ -360,11 +361,15 @@ impl<'a> VintedWrapper<'a> {
 
         while response_cookies.status() != StatusCode::OK && i < max_retries {
             response_cookies = client.post(&request).send().await?;
+            // tokio::time::sleep(Duration::from_millis(100)).await;
             i += 1;
         }
 
         if response_cookies.status() != StatusCode::OK {
-            return Err(CookieError::GetCookiesError);
+            return Err(CookieError::GetCookiesError((
+                response_cookies.status(),
+                String::from(self.get_host()),
+            )));
         }
 
         Ok(())
