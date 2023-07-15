@@ -13,7 +13,6 @@ impl Items {
     }
 }
 
-
 impl fmt::Display for Items {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for item in &self.items {

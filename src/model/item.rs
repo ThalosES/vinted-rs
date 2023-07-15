@@ -1,6 +1,6 @@
+use super::photo::Photo;
 use crate::model::{Deserialize, Serialize};
 use std::fmt;
-use super::photo::Photo;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
@@ -15,7 +15,6 @@ pub struct Item {
     pub is_visible: i32,
     pub promoted: bool,
     pub favourite_count: i32,
-
 }
 
 impl fmt::Display for Item {
