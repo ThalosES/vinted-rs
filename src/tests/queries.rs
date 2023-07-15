@@ -1,5 +1,5 @@
 use crate::db::DbController;
-use crate::model::filter::Filter;
+use crate::model::filter::{Filter, Currency};
 use crate::queries::VintedWrapperError;
 use crate::VintedWrapper;
 use bb8_postgres::tokio_postgres::NoTls;
@@ -206,3 +206,31 @@ async fn test_get_items_by_color() {
         },
     };
 }
+
+#[tokio::test]
+async fn test_get_items_by_currency() {
+    let vinted = VintedWrapper::new_with_currency(Currency::CZK);
+
+    let filter: Filter = Filter::builder().build();
+
+    let num: usize = 20;
+
+    match vinted.get_items(&filter, num as u32).await {
+        Ok(items) => {
+            assert_eq!(items.items.len(), num);
+            let ok: bool = items.items.iter().all(|item| {
+                let c: &str = Currency::CZK.into();
+                item.currency == c
+            }
+            );
+
+            assert!(ok);
+        }
+        Err(err) => match err {
+            VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::CookiesError(_) => (),
+        },
+    };
+}
+
+

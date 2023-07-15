@@ -248,7 +248,7 @@ pub enum Currency {
     USD,
     /// Great Britain Pound
     GBP,
-    /// Czech koruna
+    /// Czech korona
     CZK,
     /// Polish złoty
     PLN,
@@ -271,6 +271,21 @@ impl From<Currency> for Host {
             Currency::RON => Host::Ro,
             Currency::HUF => Host::Hu,
             Currency::EUR => Host::random_euro_host(),
+        }
+    }
+}
+
+impl From<Currency> for &str {
+    fn from(currency: Currency) -> Self {
+        match currency {
+            Currency::USD => "USD",
+            Currency::GBP => "GBP",
+            Currency::CZK => "CZK",
+            Currency::PLN => "PLN",
+            Currency::SEK => "SEK",
+            Currency::RON => "RON",
+            Currency::HUF => "HUF",
+            Currency::EUR => "EUR",
         }
     }
 }
