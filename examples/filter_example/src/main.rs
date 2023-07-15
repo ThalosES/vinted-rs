@@ -1,8 +1,19 @@
 use bb8_postgres::tokio_postgres::NoTls;
-use vinted_rs::{db::DbController, Filter, VintedWrapper , queries::Host};
+use std::env;
+use vinted_rs::{db::DbController, queries::Host, Filter, VintedWrapper};
 
 #[tokio::main]
 async fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() < 2 {
+        println!("Please provide the host as a command-line parameter.");
+        return;
+    }
+
+    let host_arg = args[1].as_str();
+    let host: Host = host_arg.into();
+
     let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
         .await
         .unwrap();
@@ -18,13 +29,13 @@ async fn main() {
         .price_to(20)
         .build();
 
-    let vinted = VintedWrapper::new_with_host(Host::Uk);
+    let vinted = VintedWrapper::new_with_host(host);
 
-    println!("Host : {}" , vinted.get_host());
+    println!("Host: {}", vinted.get_host());
 
     let items = vinted.get_items(&filter, 10).await.unwrap();
 
-    if items.items.len() <=  0 {
+    if items.items.is_empty() {
         println!("No items found");
     }
     println!("{}", items);
