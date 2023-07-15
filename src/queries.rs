@@ -64,7 +64,7 @@ impl From<reqwest::Error> for VintedWrapperError {
 }
 
 const DOMAINS: [&str; 18] = [
-    "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "uk", "pt", "com", "cz", "sk", "pl",
+    "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl",
     "se", "ro", "hu",
 ];
 
@@ -125,7 +125,7 @@ impl From<&str> for Host {
             "de" => Host::De,
             "at" => Host::At,
             "it" => Host::It,
-            "uk" => Host::Uk,
+            "co.uk" => Host::Uk,
             "pt" => Host::Pt,
             "com" => Host::Com,
             "cz" => Host::Cz,

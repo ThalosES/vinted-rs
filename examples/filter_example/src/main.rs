@@ -1,5 +1,5 @@
 use bb8_postgres::tokio_postgres::NoTls;
-use vinted_rs::{db::DbController, Filter, VintedWrapper};
+use vinted_rs::{db::DbController, Filter, VintedWrapper , queries::Host};
 
 #[tokio::main]
 async fn main() {
@@ -18,7 +18,7 @@ async fn main() {
         .price_to(20)
         .build();
 
-    let vinted = VintedWrapper::new();
+    let vinted = VintedWrapper::new_with_host(Host::Uk);
 
     let items = vinted.get_items(&filter, 10).await.unwrap();
 
