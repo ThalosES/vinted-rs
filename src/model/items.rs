@@ -13,9 +13,11 @@ impl Items {
     }
 }
 
+
 impl fmt::Display for Items {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for item in &self.items {
+        for (index, item) in self.items.iter().enumerate() {
+            writeln!(f, "Item #{}", index + 1)?;
             writeln!(f, "{}", item)?;
             writeln!(f, "----------------------")?;
         }
