@@ -35,6 +35,7 @@ use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::Arc;
+use std::time::Duration;
 use thiserror::Error;
 
 use crate::model::filter::Currency;
@@ -46,7 +47,7 @@ pub enum CookieError {
     #[error(transparent)]
     ReqWestError(#[from] reqwest::Error),
     #[error("Error to get cookies")]
-    GetCookiesError,
+    GetCookiesError(StatusCode),
 }
 
 #[derive(Error, Debug)]
@@ -360,11 +361,12 @@ impl<'a> VintedWrapper<'a> {
 
         while response_cookies.status() != StatusCode::OK && i < max_retries {
             response_cookies = client.post(&request).send().await?;
+            // tokio::time::sleep(Duration::from_millis(100)).await;
             i += 1;
         }
 
         if response_cookies.status() != StatusCode::OK {
-            return Err(CookieError::GetCookiesError);
+            return Err(CookieError::GetCookiesError(response_cookies.status()));
         }
 
         Ok(())
