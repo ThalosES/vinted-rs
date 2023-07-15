@@ -1,5 +1,5 @@
 use crate::db::DbController;
-use crate::model::filter::{Filter, Currency};
+use crate::model::filter::{Currency, Filter};
 use crate::queries::VintedWrapperError;
 use crate::VintedWrapper;
 use bb8_postgres::tokio_postgres::NoTls;
@@ -221,8 +221,7 @@ async fn test_get_items_by_currency() {
             let ok: bool = items.items.iter().all(|item| {
                 let c: &str = Currency::CZK.into();
                 item.currency == c
-            }
-            );
+            });
 
             assert!(ok);
         }
@@ -232,5 +231,3 @@ async fn test_get_items_by_currency() {
         },
     };
 }
-
-
