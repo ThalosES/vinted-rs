@@ -35,7 +35,6 @@ use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::Arc;
-use std::time::Duration;
 use thiserror::Error;
 
 use crate::model::filter::Currency;
@@ -47,7 +46,7 @@ pub enum CookieError {
     #[error(transparent)]
     ReqWestError(#[from] reqwest::Error),
     #[error("Error to get cookies")]
-    GetCookiesError(StatusCode),
+    GetCookiesError((StatusCode, String)),
 }
 
 #[derive(Error, Debug)]
@@ -311,6 +310,7 @@ impl<'a> VintedWrapper<'a> {
     fn get_client(&self) -> &'static Client {
         CLIENT.get_or_init(|| -> Client {
             reqwest::ClientBuilder::new()
+                .user_agent("PostmanRuntime/7.32.3")
                 .cookie_provider(Arc::clone(&self.cookie_store))
                 .build()
                 .unwrap()
@@ -366,7 +366,10 @@ impl<'a> VintedWrapper<'a> {
         }
 
         if response_cookies.status() != StatusCode::OK {
-            return Err(CookieError::GetCookiesError(response_cookies.status()));
+            return Err(CookieError::GetCookiesError((
+                response_cookies.status(),
+                String::from(self.get_host()),
+            )));
         }
 
         Ok(())

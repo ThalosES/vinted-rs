@@ -20,7 +20,12 @@ async fn main() {
 
     let vinted = VintedWrapper::new_with_host(Host::Uk);
 
+    println!("Host : {}" , vinted.get_host());
+
     let items = vinted.get_items(&filter, 10).await.unwrap();
 
+    if items.items.len() <=  0 {
+        println!("No items found");
+    }
     println!("{}", items);
 }
