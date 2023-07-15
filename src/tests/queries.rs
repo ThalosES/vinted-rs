@@ -199,7 +199,6 @@ async fn test_get_items_by_color() {
     match vinted.get_items(&filter, num as u32).await {
         Ok(items) => {
             assert_eq!(items.items.len(), num);
-
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
