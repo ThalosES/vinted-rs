@@ -22,5 +22,5 @@ async fn main() {
 
     let items = vinted.get_items(&filter, 10).await.unwrap();
 
-    println!("{:?}", items);
+    println!("{}", items);
 }
