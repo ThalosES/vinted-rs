@@ -1,3 +1,2 @@
-/target
-**/main.rs
+/**/target
 Cargo.lock
