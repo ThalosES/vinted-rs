@@ -246,6 +246,24 @@ impl<'a> VintedWrapper<'a> {
             cookie_store,
         }
     }
+    /// Creates a new `VintedWrapper` with the specified currency.
+    ///
+    /// The `new_with_currency` function creates a new `VintedWrapper` instance with the specified currency. It initializes the cookie store and client for making requests to the Vinted API.
+    ///
+    /// # Arguments
+    ///
+    /// * `currency` - The currency is translated to a Host that will be used in the wrapper.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use vinted_rs::VintedWrapper;
+    /// use vinted_rs::model::filter::Currency;
+    /// let wrapper = VintedWrapper::new_with_currency(Currency::EUR);
+    /// ```
+    pub fn new_with_currency(currency: Currency) -> Self {
+        VintedWrapper::new_with_host(currency.into())
+    }
     /// Returns the current host domain.
     ///
     /// The `get_host` method returns the current host domain used by the `VintedWrapper` instance.
