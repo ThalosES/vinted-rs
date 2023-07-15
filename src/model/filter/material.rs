@@ -4,9 +4,13 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Material {
+    /// Material id given by Vinted
     pub id: i32,
+    /// Material name in Spanish
     pub material_es: String,
+    /// Material name in French
     pub material_fr: String,
+    /// Material name in English
     pub material_en: String,
 }
 

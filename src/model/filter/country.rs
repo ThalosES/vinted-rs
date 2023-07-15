@@ -4,10 +4,15 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Country {
+    /// Country id given by Vinted
     pub id: i32,
+    /// Country's name in French
     pub name: String,
+    /// Country's name in the local language
     pub local_name: String,
+    /// Country ISO code
     pub iso_code: String,
+    /// Country's unicode flag emoji
     pub flag: String,
 }
 

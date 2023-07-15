@@ -4,12 +4,17 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Category {
+    /// Category id given by Vinted
     pub id: i32,
-    // TODO creo que estos titulos solo estan en ingles
+    /// Category name
     pub title: String,
+    /// Category Vinted iso code
     pub code: String,
+    /// Category's father id
     pub parent_id: i32,
+    /// Category URL in Vinted
     pub url: String,
+    /// Category URL in Vinted in English
     pub url_en: String,
 }
 

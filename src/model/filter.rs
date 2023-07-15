@@ -2,18 +2,26 @@ use typed_builder::TypedBuilder;
 
 use crate::queries::Host;
 
+/// Provides functionality related to filtering by brand.
 pub mod brand;
+/// Provides functionality related to filtering by category.
 pub mod category;
+/// Provides functionality for retrieving the category tree.
 pub mod category_tree;
+/// Provides functionality related to filtering by color.
 pub mod colors;
+/// Provides functionality related to filtering by country.
 pub mod country;
+/// Provides functionality related to filtering by material.
 pub mod material;
+/// Provides functionality related to filtering by size.
 pub mod size;
+
 
 /// Represents a filter for querying items.
 ///
 /// Trait Implementations:
-/// - `TypedBuilder`: Implements the builder pattern for constructing a `Filter` instance.
+/// Implements the builder pattern for constructing a `Filter` instance.
 ///
 ///
 ///You can create a filter with multiple constraints.
@@ -230,8 +238,6 @@ pub struct Filter {
 Represents the currency for filtering items
 
 */
-
-// TODO problema si se quiere filtrar por moneda , se tiene que cambiar el host del pais y al cambiar el host del pais se debe refrescar cookies
 // GBP => Host uk
 // EUR => Pais de Europa sera el default
 // USD => Host com
@@ -320,23 +326,19 @@ impl From<&ArticleStatus> for &str {
         }
     }
 }
-/*
+/**
 Represents the sort order for the retrieved items.
-
-Variants:
-- `Relevance`: Sort items by relevance.
-- `PriceDescendant`: Sort items by price in descending order.
-- `PriceAscendant`: Sort items by price in ascending order.
-- `NewestFirst`: Sort items by newest first.
-
-Trait Implementations:
-- `From<&SortBy> for &str>`: Converts a `SortBy` variant to a string slice.
 */
+
 #[derive(Debug, Clone)]
 pub enum SortBy {
+    /// Sort items by relevance.
     Relevance,
+    /// Sort items by price in descending order.
     PriceDescendant,
+    /// Sort items by price in ascending order.
     PriceAscendant,
+    /// Sort items by newest first.
     NewestFirst,
 }
 
