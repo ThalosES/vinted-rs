@@ -1,4 +1,16 @@
-import os
+"""
+CookieErrors Benchmark Script
+
+This script benchmarks the amount of CookieErrors obtained when running the main.rs example.
+
+The script runs the main.rs example multiple times for each host, capturing the number of
+GetCookiesError occurrences. It then generates a bar chart to visualize the error counts.
+
+*Discalimer:* Because this file is intended for internal debug, it is certainly not the most
+efficient implementation and it is not tested at all
+
+"""
+import os, sys
 import subprocess
 from enum import Enum
 import matplotlib.pyplot as plt
@@ -25,11 +37,15 @@ class Host(Enum):
     Ro = "ro"
     Hu = "hu"
 
+# Check the number of command-line arguments
+if len(sys.argv) != 2:
+    print("Invalid number of arguments. Usage: python benchmark.py <n>")
+    sys.exit(1)
+
+n = int(sys.argv[1])
+
 # Define the binary command
 binary_command = "target/debug/filter_example"
-
-# Set the number of times to run each host
-n = 10
 
 # Initialize a dictionary to store the error counts
 ok_counts = {}
@@ -59,12 +75,28 @@ progress_bar.close()
 hosts = list(ok_counts.keys())
 errors = list(ok_counts.values())
 
+# Set the style and color palette
+colors = plt.cm.Set3(range(len(hosts)))
+
+# Create a figure with a larger size
+fig, ax = plt.subplots(figsize=(10, 6))
+
 # Plot the chart
-plt.bar(hosts, errors)
-plt.xlabel("Host")
-plt.ylabel("Error Count")
-plt.title("GetCookiesError Occurrences by Host")
-plt.gca().yaxis.set_major_locator(MultipleLocator(1))  # Set y-axis tick frequency to 1
+bars = ax.bar(hosts, errors, color=colors)
+
+# Customize the plot
+plt.xlabel("Host", fontsize=12)
+plt.ylabel("Error Count", fontsize=12)
+plt.title("200-OK status code received", fontsize=14)
+ax.yaxis.set_major_locator(MultipleLocator(1))  # Set y-axis tick frequency to 1
+ax.grid(axis="y", linestyle="--", alpha=0.5)
+
+# Add data labels to the bars
+for bar in bars:
+    height = bar.get_height()
+    ax.annotate(f"{height}", xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 3), textcoords="offset points",
+                ha="center", va="bottom")
 
 # Create the "results" directory if it doesn't exist
 os.makedirs("results", exist_ok=True)
