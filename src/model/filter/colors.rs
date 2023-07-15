@@ -4,8 +4,11 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Color {
+    /// Color id given by Vinted
     pub id: i32,
+    /// Color name in French
     pub title: String,
+    /// Color hex representation with format `\#[0-9A-Fa-f]{6}`
     pub hex: String,
 }
 

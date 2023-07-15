@@ -5,14 +5,6 @@
 
 /// The `filter` module provides structures and enums for filtering items in the Vinted API.
 ///
-/// It contains the following modules:
-/// - `brand`: Provides functionality related to filtering by brand.
-/// - `category`: Provides functionality related to filtering by category.
-/// - `category_tree`: Provides functionality for retrieving the category tree.
-/// - `colors`: Provides functionality related to filtering by color.
-/// - `country`: Provides functionality related to filtering by country.
-/// - `material`: Provides functionality related to filtering by material.
-/// - `size`: Provides functionality related to filtering by size.
 pub mod filter;
 
 /// The `item` module provides the `Item` struct representing an item in the Vinted API.
