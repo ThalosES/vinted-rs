@@ -4,8 +4,11 @@ use typed_builder::TypedBuilder;
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
 pub struct Brand {
+    /// Brand id given by Vinted
     pub id: i32,
+    /// Brand name
     pub title: String,
+    /// Brand URl in vinted
     pub url: String,
 }
 

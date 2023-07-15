@@ -1,10 +1,10 @@
 # Vinted-rs: A Vinted API wrapper
 
- [![github]](https://github.com/TuTarea/vinted-rs/)&ensp;[![crates-io]](https://crates.io/crates/vinted-rs)&ensp;[![docs-rs]](https://docs.rs/vinted-rs/latest/vinted_rs/)
+[![github]](https://github.com/TuTarea/vinted-rs/)&ensp;[![crates-io]](https://crates.io/crates/vinted-rs)&ensp;[![docs-rs]](https://docs.rs/vinted-rs/latest/vinted_rs/)
 
- [github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
- [crates-io]: https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
- [docs-rs]: https://img.shields.io/badge/docs.rs-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs
+[github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
+[crates-io]: https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
+[docs-rs]: https://img.shields.io/badge/docs.rs-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@ Via `cargo` you can add the library to your project's `Cargo.toml`
 
 ```toml
 [dependencies]
-vinted-rs = "0.2"
+vinted-rs = "0.3"
 ```
 
 ## DB setup

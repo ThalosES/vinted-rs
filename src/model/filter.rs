@@ -1,11 +1,20 @@
 use typed_builder::TypedBuilder;
 
+use crate::queries::Host;
+
+/// Provides functionality related to filtering by brand.
 pub mod brand;
+/// Provides functionality related to filtering by category.
 pub mod category;
+/// Provides functionality for retrieving the category tree.
 pub mod category_tree;
+/// Provides functionality related to filtering by color.
 pub mod colors;
+/// Provides functionality related to filtering by country.
 pub mod country;
+/// Provides functionality related to filtering by material.
 pub mod material;
+/// Provides functionality related to filtering by size.
 pub mod size;
 
 /// Represents a filter for querying items.
@@ -224,25 +233,83 @@ pub struct Filter {
     #[builder(default, setter(strip_option))]
     pub price_to: Option<u32>,
 }
+/**
+Represents the currency for filtering items
 
-/*
+*/
+// GBP => Host uk
+// EUR => Pais de Europa sera el default
+// USD => Host com
+// CSK => Host cz
+// PLN => Host pl
+// SEK => Host se
+// RON => Host ro
+// HUF => Host hu
+#[derive(Debug, Clone)]
+pub enum Currency {
+    /// Euro
+    EUR,
+    /// US Dollar
+    USD,
+    /// Great Britain Pound
+    GBP,
+    /// Czech korona
+    CZK,
+    /// Polish złoty
+    PLN,
+    /// Swedish krona
+    SEK,
+    /// Romanian leu
+    RON,
+    /// Hungarian forint
+    HUF,
+}
+
+impl From<Currency> for Host {
+    fn from(currency: Currency) -> Self {
+        match currency {
+            Currency::USD => Host::Com,
+            Currency::GBP => Host::Uk,
+            Currency::CZK => Host::Cz,
+            Currency::PLN => Host::Pl,
+            Currency::SEK => Host::Se,
+            Currency::RON => Host::Ro,
+            Currency::HUF => Host::Hu,
+            Currency::EUR => Host::random_euro_host(),
+        }
+    }
+}
+
+impl From<Currency> for &str {
+    fn from(currency: Currency) -> Self {
+        match currency {
+            Currency::USD => "USD",
+            Currency::GBP => "GBP",
+            Currency::CZK => "CZK",
+            Currency::PLN => "PLN",
+            Currency::SEK => "SEK",
+            Currency::RON => "RON",
+            Currency::HUF => "HUF",
+            Currency::EUR => "EUR",
+        }
+    }
+}
+
+/**
 Represents the article status for filtering items.
 
-Variants:
-- `NewTags`: The article status for new items with tags.
-- `NewNoTags`: The article status for new items without tags.
-- `VeryGood`: The article status for items in very good condition.
-- `Good`: The article status for items in good condition.
-- `Satisfactory`: The article status for items in satisfactory condition.
-
-Trait Implementations:
-- `From<&ArticleStatus> for &str>`: Converts an `ArticleStatus` variant to a string slice. */
+*/
 #[derive(Debug, Clone)]
 pub enum ArticleStatus {
+    /// The article status for new items with tags.
     NewTags,
+    /// The article status for new items without tags.
     NewNoTags,
+    /// The article status for items in very good condition.
     VeryGood,
+    /// Good`: The article status for items in good condition.
     Good,
+    /// The article status for items in satisfactory condition.
     Satisfactory,
 }
 
@@ -258,23 +325,19 @@ impl From<&ArticleStatus> for &str {
         }
     }
 }
-/*
+/**
 Represents the sort order for the retrieved items.
-
-Variants:
-- `Relevance`: Sort items by relevance.
-- `PriceDescendant`: Sort items by price in descending order.
-- `PriceAscendant`: Sort items by price in ascending order.
-- `NewestFirst`: Sort items by newest first.
-
-Trait Implementations:
-- `From<&SortBy> for &str>`: Converts a `SortBy` variant to a string slice.
 */
+
 #[derive(Debug, Clone)]
 pub enum SortBy {
+    /// Sort items by relevance.
     Relevance,
+    /// Sort items by price in descending order.
     PriceDescendant,
+    /// Sort items by price in ascending order.
     PriceAscendant,
+    /// Sort items by newest first.
     NewestFirst,
 }
 
