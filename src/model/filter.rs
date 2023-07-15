@@ -17,7 +17,6 @@ pub mod material;
 /// Provides functionality related to filtering by size.
 pub mod size;
 
-
 /// Represents a filter for querying items.
 ///
 /// Trait Implementations:
