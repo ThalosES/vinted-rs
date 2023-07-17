@@ -1,7 +1,7 @@
 #[cfg(feature = "advanced_filters")]
 use bb8_postgres::tokio_postgres::Row;
+use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
-use serde:: {Serialize, Deserialize};
 
 // TODO las tallas y las categorias de tallas están solo en Castellano
 /**

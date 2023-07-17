@@ -1,5 +1,5 @@
+use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
-use serde:: {Serialize, Deserialize};
 
 use crate::queries::Host;
 
@@ -300,7 +300,7 @@ impl From<Currency> for &str {
 Represents the article status for filtering items.
 
 */
-#[derive(Debug, Clone,  Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ArticleStatus {
     /// The article status for new items with tags.
     NewTags,
@@ -330,7 +330,7 @@ impl From<&ArticleStatus> for &str {
 Represents the sort order for the retrieved items.
 */
 
-#[derive(Debug, Clone,  Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum SortBy {
     /// Sort items by relevance.
     Relevance,

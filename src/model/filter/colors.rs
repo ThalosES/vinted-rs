@@ -1,7 +1,7 @@
 #[cfg(feature = "advanced_filters")]
 use bb8_postgres::tokio_postgres::Row;
+use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
-use serde:: {Serialize, Deserialize};
 
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Color {
