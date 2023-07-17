@@ -1,8 +1,9 @@
 #[cfg(feature = "advanced_filters")]
 use bb8_postgres::tokio_postgres::Row;
 use typed_builder::TypedBuilder;
+use serde:: {Serialize, Deserialize};
 
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
+#[derive(Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Brand {
     /// Brand id given by Vinted
     pub id: i32,
