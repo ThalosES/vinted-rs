@@ -1,8 +1,9 @@
 #[cfg(feature = "advanced_filters")]
 use bb8_postgres::tokio_postgres::Row;
+use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Eq)]
+#[derive(Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Color {
     /// Color id given by Vinted
     pub id: i32,

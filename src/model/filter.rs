@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
 use crate::queries::Host;
@@ -43,7 +44,7 @@ pub mod size;
 ///
 /// `price_from` filter should be always <= `price_to` , otherwise Vinted will not find anything
 ///
-#[derive(TypedBuilder, Debug, Clone)]
+#[derive(TypedBuilder, Debug, Clone, Serialize, Deserialize)]
 pub struct Filter {
     ///The search text to filter items by.
     ///### Example
@@ -299,7 +300,7 @@ impl From<Currency> for &str {
 Represents the article status for filtering items.
 
 */
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ArticleStatus {
     /// The article status for new items with tags.
     NewTags,
@@ -329,7 +330,7 @@ impl From<&ArticleStatus> for &str {
 Represents the sort order for the retrieved items.
 */
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum SortBy {
     /// Sort items by relevance.
     Relevance,
