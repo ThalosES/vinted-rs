@@ -24,7 +24,8 @@ Via `cargo` you can add the library to your project's `Cargo.toml`
 
 ```toml
 [dependencies]
-vinted-rs = "0.3.1"
+vinted-rs = "0.3.2
+"
 ```
 
 ## DB setup
