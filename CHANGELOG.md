@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.2 (2023-07-15) [#44](https://github.com/TuTarea/vinted-rs/pull/44/)
+## 0.3.2 (2023-07-17) [#44](https://github.com/TuTarea/vinted-rs/pull/44/)
 
 ## Added
 
@@ -10,7 +10,7 @@
 
 - Example project, python benchmark added [#41](https://github.com/TuTarea/vinted-rs/pull/41/)
 
-## 0.3.1 (2023-07-15) #42
+## 0.3.1 (2023-07-15) [#42](https://github.com/TuTarea/vinted-rs/pull/42/)
 
 ### Fixed
 
@@ -21,7 +21,7 @@
 
 - CookieError now returns the Status Code of the requests [#38](https://github.com/TuTarea/vinted-rs/pull/38/)
 
-## 0.3.0 (2023-07-15) #34
+## 0.3.0 (2023-07-15) [#34]((https://github.com/TuTarea/vinted-rs/pull/34/))
 
 ### Added
 
