@@ -9,6 +9,7 @@
  use crate::vinted_rs::model::filter::Filter;
  use crate::vinted_rs::queries::VintedWrapper;
  use crate::vinted_rs::queries::VintedWrapperError;
+ use fang::FangError;
 
  async fn get_items_example() {
      let wrapper = VintedWrapper::new();
@@ -28,6 +29,7 @@
  }
  ```
 */
+use fang::FangError;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
@@ -60,6 +62,14 @@ pub enum VintedWrapperError {
 impl From<reqwest::Error> for VintedWrapperError {
     fn from(value: reqwest::Error) -> Self {
         VintedWrapperError::CookiesError(CookieError::ReqWestError(value))
+    }
+}
+
+impl From<VintedWrapperError> for FangError {
+    fn from(value: VintedWrapperError) -> FangError {
+        FangError {
+            description: format!("{value:?}"),
+        }
     }
 }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.3 (2023-07-26) [#45](https://github.com/TuTarea/vinted-rs/pull/45/)
+
+## Added
+
+- Convert VintedWrapperError to FangError support.
+
 ## 0.3.2 (2023-07-17) [#44](https://github.com/TuTarea/vinted-rs/pull/44/)
 
 ## Added

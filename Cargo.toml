@@ -1,6 +1,6 @@
 [package]
 name = "vinted-rs"
-version = "0.3.2"
+version = "0.3.3"
 edition = "2021"
 repository = "https://github.com/TuTarea/vinted-rs"
 authors = ["Pepe Márquez <pepe.marquezromero@gmail.com>" , "Álvaro Cabo <alvarocaboac2@gmail.com>"]
@@ -29,6 +29,7 @@ once_cell = "1.18"
 rand = "0.8"
 reqwest_cookie_store = "0.6"
 typed-builder = "0.15"
+fang = { version = "0.10.3" , features = ["asynk"], default-features = false }
 
 [dependencies.bb8-postgres]
 version = "0.8"

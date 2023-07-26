@@ -41,25 +41,43 @@ const POOL_SIZE: u32 = 5;
 
 #[tokio::main]
 async fn main() {
-    let vinted = VintedWrapper::new();
+    l    let args: Vec<String> = env::args().collect();
 
-    let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
+    if args.len() < 2 {
+        println!("Please provide the host as a command-line parameter.");
+        return;
+    }
 
-    let items = vinted.get_items(&filter, 5).await.unwrap();
+    let host_arg = args[1].as_str();
+    let host: Host = host_arg.into();
 
-    print!("{items:?}");
+    let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
+        .await
+        .unwrap();
 
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let adidas = db.get_brand_by_name(&"Adidas").await.unwrap();
+    let nike = db.get_brand_by_name(&"Nike").await.unwrap();
 
-    let brand_name: String = String::from("adidas");
+    let brands = format!("{},{}", adidas.id, nike.id);
 
-    let b: Brand = db.get_brand_by_name(&brand_name).await.unwrap();
+    let filter = Filter::builder()
+        .brand_ids(brands)
+        .price_from(15)
+        .price_to(20)
+        .build();
 
-    let brands = db.get_brands_by_name(&brand_name).await.unwrap();
+    let vinted = VintedWrapper::new_with_host(host);
 
-    println!("\n\n\n\nBrand {b:?}\n\n\n\n");
+    println!("Host: {}", vinted.get_host());
 
-    println!("Brands:  {brands:?}");
+    let items = vinted.get_items(&filter, 10).await.unwrap();
+
+    if items.items.is_empty() {
+
+        println!("No items found");
+    }
+    println!("{}", items);
+
 }
 
 ```
