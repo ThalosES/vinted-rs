@@ -1,6 +1,6 @@
 [package]
 name = "vinted-rs"
-version = "0.3.2"
+version = "0.3.3"
 edition = "2021"
 repository = "https://github.com/TuTarea/vinted-rs"
 authors = ["Pepe Márquez <pepe.marquezromero@gmail.com>" , "Álvaro Cabo <alvarocaboac2@gmail.com>"]
