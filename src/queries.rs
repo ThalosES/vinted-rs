@@ -67,9 +67,11 @@ impl From<reqwest::Error> for VintedWrapperError {
 
 impl From<VintedWrapperError> for FangError {
     fn from(value: VintedWrapperError) -> FangError {
-        FangError { description: format!("{value:?}") }
+        FangError {
+            description: format!("{value:?}"),
+        }
     }
-} 
+}
 
 const DOMAINS: [&str; 18] = [
     "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl",
