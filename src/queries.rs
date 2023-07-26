@@ -9,6 +9,7 @@
  use crate::vinted_rs::model::filter::Filter;
  use crate::vinted_rs::queries::VintedWrapper;
  use crate::vinted_rs::queries::VintedWrapperError;
+ use fang::FangError;
 
  async fn get_items_example() {
      let wrapper = VintedWrapper::new();
@@ -28,6 +29,7 @@
  }
  ```
 */
+use fang::FangError;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
@@ -62,6 +64,12 @@ impl From<reqwest::Error> for VintedWrapperError {
         VintedWrapperError::CookiesError(CookieError::ReqWestError(value))
     }
 }
+
+impl From<VintedWrapperError> for FangError {
+    fn from(value: VintedWrapperError) -> FangError {
+        FangError { description: format!("{value:?}") }
+    }
+} 
 
 const DOMAINS: [&str; 18] = [
     "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl",
