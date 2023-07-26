@@ -153,7 +153,7 @@ async fn test_get_items_by_size() {
 
     match vinted.get_items(&filter, 20).await {
         Ok(items) => {
-            assert!(items.items.len() <=  20);
+            assert!(items.items.len() <= 20);
             let ok: bool = items.items.iter().all(|item| item.size_title == size_title);
 
             assert!(ok);
@@ -175,7 +175,7 @@ async fn test_get_items_by_material() {
 
     match vinted.get_items(&filter, num as u32).await {
         Ok(items) => {
-            assert!(items.items.len() <=  num);
+            assert!(items.items.len() <= num);
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
