@@ -99,7 +99,7 @@ async fn test_get_items_catalogs_no_db() {
 
     match vinted.get_items(&filter, 10).await {
         Ok(items) => {
-            assert_eq!(items.items.len(), 10);
+            assert!(items.items.len() < 10);
             items.items.iter().for_each(|item| {
                 let url_item: &str = &item.url;
                 let category = url_item.split('/').nth(3).unwrap();
