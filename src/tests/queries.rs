@@ -31,7 +31,7 @@ fn _hex_to_rgb(hex_color: &str) -> (u8, u8, u8) {
 async fn test_get_item_query_text() {
     let vinted = VintedWrapper::new();
 
-    let filter: Filter = Filter::builder().search_text(String::from("shoes")).build();
+    let filter: Filter = Filter::builder().search_text(Some(String::from("shoes"))).build();
 
     match vinted.get_items(&filter, 1).await {
         // Limitado el numero de elementos a 1
@@ -51,7 +51,7 @@ async fn test_get_item_brands() {
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
-    let filter: Filter = Filter::builder().brand_ids(brand.id.to_string()).build();
+    let filter: Filter = Filter::builder().brand_ids(Some(brand.id.to_string())).build();
 
     match vinted.get_items(&filter, 1).await {
         // Limitado el numero de elementos a 1
@@ -71,7 +71,7 @@ async fn test_get_items_brands() {
     let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
-    let filter: Filter = Filter::builder().brand_ids(brand.id.to_string()).build();
+    let filter: Filter = Filter::builder().brand_ids(Some(brand.id.to_string())).build();
 
     match vinted.get_items(&filter, 10).await {
         Ok(items) => {
@@ -124,7 +124,7 @@ async fn test_get_items_by_price() {
     let min = 50;
     let max = 100;
 
-    let filter: Filter = Filter::builder().price_from(min).price_to(max).build();
+    let filter: Filter = Filter::builder().price_from(Some(min)).price_to(Some(max)).build();
 
     match vinted.get_items(&filter, 10).await {
         Ok(items) => {
@@ -149,7 +149,7 @@ async fn test_get_items_by_size() {
     let size_id = String::from("1568");
     let size_title = String::from("XS");
 
-    let filter: Filter = Filter::builder().size_ids(size_id).build();
+    let filter: Filter = Filter::builder().size_ids(Some(size_id)).build();
 
     match vinted.get_items(&filter, 20).await {
         Ok(items) => {
@@ -170,7 +170,7 @@ async fn test_get_items_by_material() {
     let vinted = VintedWrapper::new();
     let id = 49; // Silk
 
-    let filter: Filter = Filter::builder().material_ids(id.to_string()).build();
+    let filter: Filter = Filter::builder().material_ids(Some(id.to_string())).build();
     let num: usize = 15;
 
     match vinted.get_items(&filter, num as u32).await {
@@ -192,7 +192,7 @@ async fn test_get_items_by_color() {
 
     //let props = calculate_color_props(hex);
 
-    let filter: Filter = Filter::builder().color_ids(id.to_string()).build();
+    let filter: Filter = Filter::builder().color_ids(Some(id.to_string())).build();
 
     let num: usize = 20;
 
