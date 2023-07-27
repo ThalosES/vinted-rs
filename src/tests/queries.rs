@@ -102,7 +102,7 @@ async fn test_get_items_catalogs_no_db() {
         .build();
     let substrings = vec![
         "women", "mujer", "femme", "kobiety", "donna", "moterims", "noi", "dames", "zeny", "damen",
-        "femei", "mulher", "beauty", "femmes", "dam",
+        "femei", "mulher", "beauty", "femmes", "dam", "hombre",
     ];
 
     match vinted.get_items(&filter, 10).await {
