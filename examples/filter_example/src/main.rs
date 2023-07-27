@@ -3,7 +3,6 @@ use bb8_postgres::tokio_postgres::NoTls;
 use std::env;
 use vinted_rs::{db::DbController, queries::Host, Filter, VintedWrapper};
 
-
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,9 +25,9 @@ async fn main() {
     let brands = format!("{},{}", adidas.id, nike.id);
 
     let filter = Filter::builder()
-        .brand_ids(brands)
-        .price_from(15)
-        .price_to(20)
+        .brand_ids(Some(brands))
+        .price_from(Some(15))
+        .price_to(Some(20))
         .build();
 
     let vinted = VintedWrapper::new_with_host(host);
@@ -38,7 +37,6 @@ async fn main() {
     let items = vinted.get_items(&filter, 10).await.unwrap();
 
     if items.items.is_empty() {
-
         println!("No items found");
     }
     println!("{}", items);
