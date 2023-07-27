@@ -79,7 +79,7 @@ pub struct Filter {
     /// // 4 is catalog_id for Women clothes
     /// // 16 is catalog_id for Women Shoes
     ///```
-    #[builder(default, setter(strip_option))]
+    #[builder(default)]
     pub catalog_ids: Option<String>,
     ///The color IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
     ///
@@ -141,7 +141,7 @@ pub struct Filter {
     /// // 16 is country_id for France
     ///```
     ///
-    #[builder(default, setter(strip_option))]
+    #[builder(default)]
     pub countries_ids: Option<String>,
     /// The size IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
     ///
