@@ -3,7 +3,6 @@ use bb8_postgres::tokio_postgres::NoTls;
 use std::env;
 use vinted_rs::{db::DbController, queries::Host, Filter, VintedWrapper};
 
-
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
@@ -38,7 +37,6 @@ async fn main() {
     let items = vinted.get_items(&filter, 10).await.unwrap();
 
     if items.items.is_empty() {
-
         println!("No items found");
     }
     println!("{}", items);

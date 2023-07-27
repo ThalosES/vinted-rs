@@ -183,7 +183,7 @@ pub struct Filter {
     ///
     #[builder(default)]
     pub size_ids: Option<String>,
-    
+
     /// The article statuses to filter items by.
     ///
     ///### Example
