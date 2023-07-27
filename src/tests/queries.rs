@@ -97,7 +97,9 @@ async fn test_get_items_brands() {
 async fn test_get_items_catalogs_no_db() {
     let vinted = VintedWrapper::new();
     //Woman elements
-    let filter: Filter = Filter::builder().catalog_ids(Some(String::from("1904"))).build();
+    let filter: Filter = Filter::builder()
+        .catalog_ids(Some(String::from("1904")))
+        .build();
     let substrings = vec![
         "women", "mujer", "femme", "kobiety", "donna", "moterims", "noi", "dames", "zeny", "damen",
         "femei", "mulher", "beauty", "femmes", "dam",
