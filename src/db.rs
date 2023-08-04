@@ -169,10 +169,8 @@ where
             _ => unreachable!("Invalid language"),
         }
 
-        let query = format!(
-            "SELECT * FROM SIZE WHERE {0} = '{2}' AND {1} = '{3}'",
-            col1, col2, title, size_type
-        );
+        let query =
+            format!("SELECT * FROM SIZE WHERE {col1} = '{title}' AND {col2} = '{size_type}'");
 
         let row: Row = conn.query_one(&query, &[]).await?;
 
