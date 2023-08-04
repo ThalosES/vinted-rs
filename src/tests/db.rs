@@ -100,3 +100,10 @@ async fn test_get_size_by_title_and_type() {
             .build()
     );
 }
+#[tokio::test]
+async fn test_get_sizes_for_category() {
+    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let sizes = db.get_sizes_for_category(5).await.unwrap();
+
+    assert!(sizes.into_iter().all(|size| { size.category_id == 5 }));
+}

@@ -31,6 +31,8 @@ const GET_COUNTRY_BY_ISO_CODE: &str = include_str!("sql_queries/GET_COUNTRY_BY_I
 const _GET_SIZE_BY_TITLE_AND_TYPE: &str =
     include_str!("sql_queries/GET_SIZE_BY_TITLE_AND_TYPE.sql");
 
+const GET_SIZES_FOR_CATEGORY: &str = include_str!("sql_queries/GET_SIZES_FOR_CATEGORY.sql");
+
 /**
 Represents an error that can occur during database operations.
 Variants:
@@ -140,6 +142,7 @@ where
         Ok(country)
     }
 
+    /// Retreives a size by its tittle and type
     pub async fn get_size_by_title_and_type<S: AsRef<str> + Sync + ToSql + Display>(
         &self,
         lang: &S,
@@ -163,7 +166,7 @@ where
                 col1 = "title_fr";
                 col2 = "size_type_fr";
             }
-            _ => unreachable!(),
+            _ => unreachable!("Invalid language"),
         }
 
         let query = format!(
@@ -176,5 +179,25 @@ where
         let size: Size = row.into();
 
         Ok(size)
+    }
+
+    /// Retreives the sizes that are related to a parent category
+    /// ## Valid categories
+    /// - Men
+    /// - Women
+    /// - Kids
+    /// - Pet Care
+    /// - Home
+    pub async fn get_sizes_for_category(&self, category_id: i32) -> Result<Vec<Size>, DbError> {
+        let conn = self.pool.get().await?;
+
+        let rows: Vec<Row> = conn
+            .query(GET_SIZES_FOR_CATEGORY, &[&category_id])
+            .await
+            .unwrap();
+
+        let sizes: Vec<Size> = rows.into_iter().map(|row| row.into()).collect();
+
+        Ok(sizes)
     }
 }
