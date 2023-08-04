@@ -4,6 +4,8 @@
 
 ## Improved
 
+### Size struct
+
 Added more fields:
 
 - title name: Actual size, as `XL` 🇪🇸 🇫🇷 🇬🇧
