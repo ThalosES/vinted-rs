@@ -1,8 +1,19 @@
 # Changelog
 
+## 0.5.0 (2023-08-04) [#52](https://github.com/TuTarea/vinted-rs/pull/52/)
+
+## Improved
+
+Added more fields:
+
+- title name: Actual size, as `XL` 🇪🇸 🇫🇷 🇬🇧
+- size_type: More information about the size,as `Jean's sizes` 🇪🇸 🇫🇷 🇬🇧
+- category_id: Father category related
+
 ## 0.4.0 (2023-07-27) [#47](https://github.com/TuTarea/vinted-rs/pull/47/)
 
 ## Improved
+
 - Remove `strip_option` in `Filter` struct for compatilbility.
 
 ## 0.3.3 (2023-07-26) [#45](https://github.com/TuTarea/vinted-rs/pull/45/)
@@ -32,14 +43,14 @@
 
 - CookieError now returns the Status Code of the requests [#38](https://github.com/TuTarea/vinted-rs/pull/38/)
 
-## 0.3.0 (2023-07-15) [#34]((https://github.com/TuTarea/vinted-rs/pull/34/))
+## 0.3.0 (2023-07-15) [#34](<(https://github.com/TuTarea/vinted-rs/pull/34/)>)
 
 ### Added
 
 - Filter by Currency implemented - [#32](https://github.com/TuTarea/vinted-rs/pull/32/)
-- Example project using advanced filters feature - [#33]((https://github.com/TuTarea/vinted-rs/pull/33/))
+- Example project using advanced filters feature - [#33](<(https://github.com/TuTarea/vinted-rs/pull/33/)>)
 - CHANGELOG file
 
 ### Improved
 
-- Documentation for `filter` module - [#35]((https://github.com/TuTarea/vinted-rs/pull/35/))
+- Documentation for `filter` module - [#35](<(https://github.com/TuTarea/vinted-rs/pull/35/)>)
