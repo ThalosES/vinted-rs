@@ -1,0 +1,1 @@
+SELECT * FROM SIZE WHERE category_id = $1 

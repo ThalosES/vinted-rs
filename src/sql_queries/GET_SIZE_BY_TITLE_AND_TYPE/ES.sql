@@ -1,0 +1,1 @@
+SELECT * FROM SIZE WHERE UPPER(title_es) = UPPER($1) AND UPPER(size_type_es) = UPPER($2);
