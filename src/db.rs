@@ -22,12 +22,14 @@ use bb8_postgres::{
 use postgres_types::ToSql;
 use thiserror::Error;
 
-use crate::model::filter::{brand::Brand, category::Category, country::Country};
+use crate::model::filter::{brand::Brand, category::Category, country::Country, size::Size};
 
 const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql");
 const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");
 const GET_CATEGORY_BY_NAME: &str = include_str!("sql_queries/GET_CATEGORY_BY_NAME.sql");
 const GET_COUNTRY_BY_ISO_CODE: &str = include_str!("sql_queries/GET_COUNTRY_BY_ISO_CODE.sql");
+const _GET_SIZE_BY_TITLE_AND_TYPE: &str =
+    include_str!("sql_queries/GET_SIZE_BY_TITLE_AND_TYPE.sql");
 
 /**
 Represents an error that can occur during database operations.
@@ -136,5 +138,43 @@ where
         let country: Country = row.into();
 
         Ok(country)
+    }
+
+    pub async fn get_size_by_title_and_type<S: AsRef<str> + Sync + ToSql + Display>(
+        &self,
+        lang: &S,
+        title: &S,
+        size_type: &S,
+    ) -> Result<Size, DbError> {
+        let conn = self.pool.get().await?;
+        let col1;
+        let col2;
+
+        match lang.as_ref() {
+            "es" | "ES" | "esp" => {
+                col1 = "title_es";
+                col2 = "size_type_es";
+            }
+            "en" | "EN" | "eng" => {
+                col1 = "title_en";
+                col2 = "size_type_en";
+            }
+            "fr" | "FR" => {
+                col1 = "title_fr";
+                col2 = "size_type_fr";
+            }
+            _ => unreachable!(),
+        }
+
+        let query = format!(
+            "SELECT * FROM SIZE WHERE {0} = '{2}' AND {1} = '{3}'",
+            col1, col2, title, size_type
+        );
+
+        let row: Row = conn.query_one(&query, &[]).await?;
+
+        let size: Size = row.into();
+
+        Ok(size)
     }
 }

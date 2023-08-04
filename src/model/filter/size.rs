@@ -34,12 +34,12 @@ impl From<Row> for Size {
         Size::builder()
             .id(row.get("id"))
             .title_es(row.get("title_es"))
-            .title_en(row.get("title_es"))
-            .title_fr(row.get("title_es"))
+            .title_en(row.get("title_en"))
+            .title_fr(row.get("title_fr"))
             .size_type_es(row.get("size_type_es"))
             .size_type_en(row.get("size_type_en"))
             .size_type_fr(row.get("size_type_fr"))
-            .category_id(row.get("category"))
+            .category_id(row.get("category_id"))
             .build()
     }
 }
