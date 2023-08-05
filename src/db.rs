@@ -143,11 +143,15 @@ where
     }
 
     /// Retreives a size by its tittle and type
-    pub async fn get_size_by_title_and_type<S: AsRef<str> + Sync + ToSql + Display>(
+    pub async fn get_size_by_title_and_type<
+        S1: AsRef<str> + Sync + ToSql + Display,
+        S2: AsRef<str> + Sync + ToSql + Display,
+        S3: AsRef<str> + Sync + ToSql + Display,
+    >(
         &self,
-        lang: &S,
-        title: &S,
-        size_type: &S,
+        lang: S1,
+        title: S2,
+        size_type: S3,
     ) -> Result<Size, DbError> {
         let conn = self.pool.get().await?;
         let col1;
