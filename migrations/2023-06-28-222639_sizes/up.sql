@@ -23,11 +23,11 @@ INSERT INTO
     SIZE (
         id,
         title_es,
-        title_en,
         title_fr,
+        title_en,
         size_type_es,
-        size_type_en,
         size_type_fr,
+        size_type_en,
         category_id
     )
 VALUES (
