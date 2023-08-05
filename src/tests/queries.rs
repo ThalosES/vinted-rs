@@ -155,7 +155,7 @@ async fn test_get_items_by_price() {
 }
 
 #[tokio::test]
-async fn test_get_items_by_size() {
+async fn test_get_items_by_size_no_db() {
     let vinted = VintedWrapper::new();
     let size_id = String::from("1568");
     let size_title = String::from("XS");
@@ -166,6 +166,40 @@ async fn test_get_items_by_size() {
         Ok(items) => {
             assert!(items.items.len() <= 20);
             let ok: bool = items.items.iter().all(|item| item.size_title == size_title);
+
+            assert!(ok);
+        }
+        Err(err) => match err {
+            VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::CookiesError(_) => (),
+        },
+    };
+}
+
+#[tokio::test]
+async fn test_get_items_by_size() {
+    let vinted = VintedWrapper::new();
+    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let size = db
+        .get_size_by_title_and_type(
+            &String::from("ES"),
+            &"XL".to_string(),
+            &"Pantalones de hombre".to_string(),
+        )
+        .await
+        .unwrap();
+
+    let filter: Filter = Filter::builder()
+        .size_ids(Some(size.id.to_string()))
+        .build();
+
+    match vinted.get_items(&filter, 20).await {
+        Ok(items) => {
+            assert!(items.items.len() <= 20);
+            let ok: bool = items
+                .items
+                .iter()
+                .all(|item| item.size_title == size.title_es);
 
             assert!(ok);
         }

@@ -1,6 +1,6 @@
 use crate::{
     db::DbController,
-    model::filter::{brand::Brand, category::Category, country::Country},
+    model::filter::{brand::Brand, category::Category, country::Country, size::Size},
 };
 use bb8_postgres::tokio_postgres::NoTls;
 
@@ -72,4 +72,38 @@ async fn test_get_country_by_iso() {
             .flag(String::from("🇪🇸"))
             .build()
     );
+}
+
+#[tokio::test]
+async fn test_get_size_by_title_and_type() {
+    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let size = db
+        .get_size_by_title_and_type(
+            &String::from("ES"),
+            &"XL".to_string(),
+            &"Pantalones de hombre".to_string(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(
+        size,
+        Size::builder()
+            .id(1654)
+            .title_es(String::from("XL"))
+            .title_en(String::from("XL"))
+            .title_fr(String::from("XL"))
+            .size_type_es(String::from("Pantalones de hombre"))
+            .size_type_en(String::from("Pantalons homme"))
+            .size_type_fr(String::from("Men's trousers"))
+            .category_id(5)
+            .build()
+    );
+}
+#[tokio::test]
+async fn test_get_sizes_for_category() {
+    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let sizes = db.get_sizes_for_category(5).await.unwrap();
+
+    assert!(sizes.into_iter().all(|size| { size.category_id == 5 }));
 }

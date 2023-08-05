@@ -22,12 +22,16 @@ use bb8_postgres::{
 use postgres_types::ToSql;
 use thiserror::Error;
 
-use crate::model::filter::{brand::Brand, category::Category, country::Country};
+use crate::model::filter::{brand::Brand, category::Category, country::Country, size::Size};
 
 const GET_BRAND_BY_NAME: &str = include_str!("sql_queries/GET_BRAND_BY_NAME.sql");
 const GET_BRANDS_BY_NAME: &str = include_str!("sql_queries/GET_BRANDS_BY_NAME.sql");
 const GET_CATEGORY_BY_NAME: &str = include_str!("sql_queries/GET_CATEGORY_BY_NAME.sql");
 const GET_COUNTRY_BY_ISO_CODE: &str = include_str!("sql_queries/GET_COUNTRY_BY_ISO_CODE.sql");
+const _GET_SIZE_BY_TITLE_AND_TYPE: &str =
+    include_str!("sql_queries/GET_SIZE_BY_TITLE_AND_TYPE.sql");
+
+const GET_SIZES_FOR_CATEGORY: &str = include_str!("sql_queries/GET_SIZES_FOR_CATEGORY.sql");
 
 /**
 Represents an error that can occur during database operations.
@@ -136,5 +140,66 @@ where
         let country: Country = row.into();
 
         Ok(country)
+    }
+
+    /// Retreives a size by its tittle and type
+    pub async fn get_size_by_title_and_type<
+        S1: AsRef<str> + Sync + ToSql + Display,
+        S2: AsRef<str> + Sync + ToSql + Display,
+        S3: AsRef<str> + Sync + ToSql + Display,
+    >(
+        &self,
+        lang: S1,
+        title: S2,
+        size_type: S3,
+    ) -> Result<Size, DbError> {
+        let conn = self.pool.get().await?;
+        let col1;
+        let col2;
+
+        match lang.as_ref() {
+            "es" | "ES" | "esp" => {
+                col1 = "title_es";
+                col2 = "size_type_es";
+            }
+            "en" | "EN" | "eng" => {
+                col1 = "title_en";
+                col2 = "size_type_en";
+            }
+            "fr" | "FR" => {
+                col1 = "title_fr";
+                col2 = "size_type_fr";
+            }
+            _ => unreachable!("Invalid language"),
+        }
+
+        let query =
+            format!("SELECT * FROM SIZE WHERE {col1} = '{title}' AND {col2} = '{size_type}'");
+
+        let row: Row = conn.query_one(&query, &[]).await?;
+
+        let size: Size = row.into();
+
+        Ok(size)
+    }
+
+    /// Retreives the sizes that are related to a parent category
+    /// ## Valid categories
+    /// - Men
+    /// - Women
+    /// - Kids
+    /// - Pet Care
+    /// - Home
+    pub async fn get_sizes_for_category(&self, category_id: i32) -> Result<Vec<Size>, DbError> {
+        let conn = self.pool.get().await?;
+
+        let rows: Vec<Row> = conn
+            .query(GET_SIZES_FOR_CATEGORY, &[&category_id])
+            .await
+            .unwrap();
+
+        let sizes: Vec<Size> = rows.into_iter().map(|row| row.into()).collect();
+
+        Ok(sizes)
     }
 }
