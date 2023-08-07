@@ -11,11 +11,11 @@ CREATE TABLE
         id INT,
         --Es única
         title_es VARCHAR(80),
-        size_type_es VARCHAR(80),
-        title_en VARCHAR(80),
-        size_type_en VARCHAR(80),
         title_fr VARCHAR(80),
+        title_en VARCHAR(80),
+        size_type_es VARCHAR(80),
         size_type_fr VARCHAR(80),
+        size_type_en VARCHAR(80),
         category_id INTEGER
     );
 
