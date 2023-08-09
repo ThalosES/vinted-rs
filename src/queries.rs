@@ -41,6 +41,7 @@ use thiserror::Error;
 
 use crate::model::filter::Currency;
 use crate::model::filter::Filter;
+use crate::model::item::AdvancedItem;
 use crate::model::items::Items;
 
 #[derive(Error, Debug)]
@@ -564,5 +565,24 @@ impl<'a> VintedWrapper<'a> {
         let items: Items = client.get(url).send().await?.json().await?;
 
         Ok(items)
+    }
+
+    /// Results additional information from an item based on its id
+    ///
+    /// **Warning** This querie result is affected by the host country, it has to be the same as the item is hosted at
+    pub async fn get_advanced_item(
+        &self,
+        item_id: i64,
+    ) -> Result<AdvancedItem, VintedWrapperError> {
+        let client = self.get_client();
+        let url = format!(
+            "https://www.vinted.{}/api/v2/catalog/items/{}",
+            self.host, item_id
+        );
+
+        //TODO: Procesar si devuelve un code distinto de 200
+
+        let item = client.get(url).send().await?.json().await?;
+        Ok(item)
     }
 }

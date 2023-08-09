@@ -62,4 +62,5 @@ pub mod photo;
 /// - `login`: The username of the user.
 /// - `photo`: The photo of the user.
 pub mod user;
+
 pub use serde::{Deserialize, Serialize};
