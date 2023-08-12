@@ -26,8 +26,8 @@ async fn main() {
 
     let filter = Filter::builder()
         .brand_ids(Some(brands))
-        .price_from(Some(15))
-        .price_to(Some(20))
+        .price_from(Some(15.0))
+        .price_to(Some(20.0))
         .build();
 
     let vinted = VintedWrapper::new_with_host(host);

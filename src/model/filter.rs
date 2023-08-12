@@ -217,11 +217,11 @@ pub struct Filter {
     /// use vinted_rs::Filter;
     ///
     ///
-    /// let filter: Filter = Filter::builder().price_from(10u32)).build();
+    /// let filter: Filter = Filter::builder().price_from(10f32)).build();
     ///```
     ///
     #[builder(default)]
-    pub price_from: Option<u32>,
+    pub price_from: Option<f32>,
     /// The max price of the article
     ///
     ///### Example
@@ -229,11 +229,11 @@ pub struct Filter {
     /// use vinted_rs::Filter;
     ///
     ///
-    /// let filter: Filter = Filter::builder().price_from(20u32)).build();
+    /// let filter: Filter = Filter::builder().price_from(20f32)).build();
     ///```
     ///
     #[builder(default)]
-    pub price_to: Option<u32>,
+    pub price_to: Option<f32>,
 }
 /**
 Represents the currency for filtering items

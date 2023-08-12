@@ -1,5 +1,13 @@
 # Changelog
 
+# Changelog
+
+## 0.5.0 (2023-08-04) [#52](https://github.com/TuTarea/vinted-rs/pull/52/)
+
+## Fixed
+- Fix type of `price_from` and `price_to` atribute.
+- Fix a test related to sizes.
+
 ## 0.5.0 (2023-08-04) [#52](https://github.com/TuTarea/vinted-rs/pull/52/)
 
 ## Improved

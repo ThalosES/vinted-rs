@@ -129,8 +129,8 @@ async fn test_get_items_catalogs_no_db() {
 #[tokio::test]
 async fn test_get_items_by_price() {
     let vinted = VintedWrapper::new();
-    let min = 50;
-    let max = 100;
+    let min = 50.0;
+    let max = 100.0;
 
     let filter: Filter = Filter::builder()
         .price_from(Some(min))
@@ -142,7 +142,7 @@ async fn test_get_items_by_price() {
             assert!(items.items.len() <= 10);
             let ok: bool = items.items.iter().all(|item| {
                 let price: f32 = item.price.parse().unwrap();
-                price <= max as f32 && price >= min as f32
+                price <= max && price >= min
             });
 
             assert!(ok);
