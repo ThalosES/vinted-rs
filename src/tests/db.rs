@@ -94,8 +94,8 @@ async fn test_get_size_by_title_and_type() {
             .title_en(String::from("XL"))
             .title_fr(String::from("XL"))
             .size_type_es(String::from("Pantalones de hombre"))
-            .size_type_en(String::from("Pantalons homme"))
-            .size_type_fr(String::from("Men's trousers"))
+            .size_type_fr(String::from("Pantalons homme"))
+            .size_type_en(String::from("Men's trousers"))
             .category_id(5)
             .build()
     );
