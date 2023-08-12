@@ -2,7 +2,7 @@
 
 # Changelog
 
-## 0.5.0 (2023-08-04) [#52](https://github.com/TuTarea/vinted-rs/pull/52/)
+## 0.5.1 (2023-08-04) [#54](https://github.com/TuTarea/vinted-rs/pull/54/)
 
 ## Fixed
 - Fix type of `price_from` and `price_to` atribute.
