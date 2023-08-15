@@ -52,6 +52,7 @@ pub mod items;
 ///    - `dominant_color_opaque`: The opaque dominant color of the photo.
 pub mod photo;
 
+pub mod payment_method;
 /// The `User` struct represents a user in the Vinted API.
 ///
 /// It depends on the `photo` module for handling user photos.
@@ -63,4 +64,5 @@ pub mod photo;
 /// - `photo`: The photo of the user.
 pub mod user;
 
+pub use redis_macros::{FromRedisValue, ToRedisArgs};
 pub use serde::{Deserialize, Serialize};

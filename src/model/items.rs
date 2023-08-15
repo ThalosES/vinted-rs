@@ -2,6 +2,8 @@ use std::fmt;
 
 use crate::model::item::Item;
 use crate::model::{Deserialize, Serialize};
+
+use super::item::AdvancedItem;
 #[derive(Debug, Serialize, Deserialize)]
 
 pub struct Items {
@@ -37,4 +39,9 @@ pub struct Pagination {
     per_page: i32,
     #[serde(rename = "time")]
     timestamp: u32, // Use custom name for deserialization
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AdvancedItems {
+    pub item: AdvancedItem,
 }

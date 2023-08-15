@@ -33,6 +33,7 @@ use fang::FangError;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
+use reqwest::Response;
 use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
@@ -42,6 +43,7 @@ use thiserror::Error;
 use crate::model::filter::Currency;
 use crate::model::filter::Filter;
 use crate::model::item::AdvancedItem;
+use crate::model::items::AdvancedItems;
 use crate::model::items::Items;
 
 #[derive(Error, Debug)]
@@ -58,6 +60,8 @@ pub enum VintedWrapperError {
     CookiesError(#[from] CookieError),
     #[error("Number of items must be non-zero value")]
     ItemNumberError,
+    #[error("Could not get deatiled info for item `{1}` with code: {0}")]
+    AdvancedItemError(StatusCode, i64),
 }
 
 impl From<reqwest::Error> for VintedWrapperError {
@@ -575,14 +579,16 @@ impl<'a> VintedWrapper<'a> {
         item_id: i64,
     ) -> Result<AdvancedItem, VintedWrapperError> {
         let client = self.get_client();
-        let url = format!(
-            "https://www.vinted.{}/api/v2/catalog/items/{}",
-            self.host, item_id
-        );
+        let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
 
-        //TODO: Procesar si devuelve un code distinto de 200
+        let json: Response = client.get(url).send().await?;
 
-        let item = client.get(url).send().await?.json().await?;
-        Ok(item)
+        match json.status() {
+            StatusCode::OK => {
+                let items: AdvancedItems = json.json().await?;
+                Ok(items.item)
+            }
+            code => Err(VintedWrapperError::AdvancedItemError(code, item_id)),
+        }
     }
 }

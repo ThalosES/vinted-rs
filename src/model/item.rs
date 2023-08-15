@@ -1,7 +1,5 @@
-use redis_macros::{FromRedisValue, ToRedisArgs};
-
 use super::{photo::Photo, user::AdvancedUser};
-use crate::model::{Deserialize, Serialize};
+use crate::model::{Deserialize, FromRedisValue, Serialize, ToRedisArgs};
 use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs)]
@@ -44,17 +42,23 @@ pub struct AdvancedItem {
     pub id: i64,
     pub title: String,
     pub description: String,
+    #[serde(rename = "size")]
     pub size_title: String,
+    #[serde(rename = "brand")]
     pub brand_title: String,
     pub composition: String,
     pub extra_conditions: String,
-    pub brand_id: i32,
-    pub size_id: i32,
-    pub status_id: i32,
-    pub disposal_conditions: i32,
-    pub catalog_id: i32,
-    pub color1_id: i32,
+    pub brand_id: Option<i32>,
+    pub size_id: Option<i32>,
+    pub status_id: Option<i32>,
+    #[serde(rename = "status")]
+    pub status_fr: String,
+    pub disposal_conditions: Option<i32>,
+    pub catalog_id: Option<i32>,
+    pub color1_id: Option<i32>,
+    pub color1: String,
     pub color2_id: Option<i32>,
+    pub color2: Option<String>,
     pub package_size_id: i32,
     //Location
     pub country_id: i32,
@@ -70,9 +74,9 @@ pub struct AdvancedItem {
     pub related_catalog_ids: Vec<i32>,
 
     // Pricing
-    pub original_price_numeric: i64,
+    pub original_price_numeric: String,
     pub currency: String,
-    pub price_numeric: i64,
+    pub price_numeric: String,
 
     // Order by stats
     pub created_at_ts: String,
@@ -80,7 +84,7 @@ pub struct AdvancedItem {
     pub user_updated_at_ts: String,
 
     // Asets
-    pub photos: Vec<Photo>,
+    pub photos: Vec<Option<Photo>>,
     pub url: String,
     pub user: AdvancedUser,
 
@@ -107,19 +111,23 @@ impl fmt::Display for AdvancedItem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "ID: {}", self.id)?;
         writeln!(f, "Title: {}", self.title)?;
-        writeln!(f, "ID: {}", self.id)?;
-        writeln!(f, "Title: {}", self.title)?;
         writeln!(f, "Description: {}", self.description)?;
-        writeln!(f, "Size Title: {}", self.size_title)?;
-        writeln!(f, "Brand Title: {}", self.brand_title)?;
+        writeln!(
+            f,
+            "Size [Title: {}, ID: {:?}]",
+            self.size_title, self.size_id
+        )?;
+        writeln!(
+            f,
+            "Brand [ Title: {}, ID: {:?}]",
+            self.brand_title, self.brand_id
+        )?;
         writeln!(f, "Composition: {}", self.composition)?;
         writeln!(f, "Extra Conditions: {}", self.extra_conditions)?;
-        writeln!(f, "Brand ID: {}", self.brand_id)?;
-        writeln!(f, "Size ID: {}", self.size_id)?;
-        writeln!(f, "Status ID: {}", self.status_id)?;
-        writeln!(f, "Disposal Conditions: {}", self.disposal_conditions)?;
-        writeln!(f, "Catalog ID: {}", self.catalog_id)?;
-        writeln!(f, "Color1 ID: {}", self.color1_id)?;
+        writeln!(f, "Status ID: {:?}", self.status_id)?;
+        writeln!(f, "Disposal Conditions: {:?}", self.disposal_conditions)?;
+        writeln!(f, "Catalog ID: {:?}", self.catalog_id)?;
+        writeln!(f, "Color1 ID: {:?}", self.color1_id)?;
         writeln!(f, "Color2 ID: {:?}", self.color2_id)?;
         writeln!(f, "Package Size ID: {}", self.package_size_id)?;
         writeln!(f, "Country ID: {}", self.country_id)?;
@@ -136,11 +144,8 @@ impl fmt::Display for AdvancedItem {
             self.original_price_numeric, self.currency
         )?;
         writeln!(f, "Price: {} {}", self.price_numeric, self.currency)?;
-        writeln!(f, "Photos: {:?}", self.photos)?;
-        writeln!(f, "URL: {}", self.url)?;
-        // ... (format remaining fields)
 
-        writeln!(f, "Flags: {{")?;
+        writeln!(f, "\nFlags: {{")?;
         writeln!(f, "  is_for_sell: {}", self.is_for_sell)?;
         writeln!(f, "  is_for_swap: {}", self.is_for_swap)?;
         writeln!(f, "  is_for_give_away: {}", self.is_for_give_away)?;
@@ -159,7 +164,20 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "  is_visible: {}", self.is_visible)?;
         writeln!(f, "  is_unisex: {}", self.is_unisex)?;
         writeln!(f, "  is_closed: {}", self.is_closed)?;
-        writeln!(f, "}}")?;
+        writeln!(f, "}}\n")?;
+
+        for (num, photo) in self.photos.iter().enumerate() {
+            if let Some(p) = photo {
+                writeln!(f, "Pic {})", num)?;
+                writeln!(f, "{}", p)?;
+            }
+        }
+
+        writeln!(f, "URL: {}\n", self.url)?;
+
+        writeln!(f, "@@@@@@@@@@@@@@@@@@@@@@@@@")?;
+        writeln!(f, "{}", self.user)?;
+        writeln!(f, "@@@@@@@@@@@@@@@@@@@@@@@@@")?;
 
         Ok(())
     }
