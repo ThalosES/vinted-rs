@@ -1,7 +1,9 @@
 use super::{photo::Photo, user::AdvancedUser};
 use crate::model::{Deserialize, FromRedisValue, Serialize, ToRedisArgs};
 use std::fmt;
-#[derive(Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs, PartialEq, Hash)]
+#[derive(
+    Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs, PartialEq, Hash, Eq,
+)]
 
 pub struct Item {
     pub id: i64,
@@ -35,7 +37,9 @@ impl fmt::Display for Item {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs, PartialEq, Hash)]
+#[derive(
+    Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs, PartialEq, Hash, Eq,
+)]
 pub struct AdvancedItem {
     // Products filter info
     pub id: i64,

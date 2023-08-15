@@ -2,7 +2,7 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Hash)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Hash, Eq)]
 pub struct PayInMethod {
     id: i32,
     code: String,

@@ -11,7 +11,7 @@ pub struct User {
     photo: Photo,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
 pub struct AdvancedUser {
     id: i64,
     login: String, //username
