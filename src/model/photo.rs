@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::model::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Photo {
     pub id: i64,
     pub url: String,
