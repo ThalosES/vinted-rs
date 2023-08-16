@@ -1,6 +1,6 @@
 [package]
 name = "vinted-rs"
-version = "0.5.1"
+version = "0.6.0"
 edition = "2021"
 repository = "https://github.com/TuTarea/vinted-rs"
 authors = [
@@ -18,8 +18,9 @@ rust-version = "1.70"
 doctest = false
 
 [features]
-default = ["advanced_filters"]
+default = ["advanced_filters", "redis"]
 advanced_filters = ["bb8-postgres", "postgres-types"]
+redis = ["dep:redis", "dep:redis-macros"]
 minimal = []
 
 
@@ -33,6 +34,13 @@ rand = "0.8"
 reqwest_cookie_store = "0.6"
 typed-builder = "0.15"
 fang = { version = "0.10.3", features = ["asynk"], default-features = false }
+redis-macros = { version = "0.2.1", optional = true}
+redis = { version = "0.23.2",  optional = true}
+serde_json = { version = "1.0.91" }
+
+[dev-dependencies]
+redis-macros = { version = "0.2.1" }
+redis = { version = "0.23.2" }
 
 [dependencies.bb8-postgres]
 version = "0.8"

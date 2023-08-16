@@ -32,9 +32,9 @@ pub mod size;
 /// use vinted_rs::Filter;
 ///
 /// let filter: Filter = Filter::builder()
-///      .catalog_ids(Some(String::from("4,16"))
-///      .brand_ids(Some(String::from("14,53"))
-///      ).build();
+///      .catalog_ids(Some(String::from("4,16")))
+///      .brand_ids(Some(String::from("14,53")))
+///      .build();  
 ///
 /// // Women shoes and Women clothes that are only from brands Adidas and Nike.
 ///
@@ -54,7 +54,7 @@ pub struct Filter {
     ///let filter: Filter = Filter::builder().search_text(Some(String::from("shoes"))).build();
     ///```
     ///
-    ///
+
     #[builder(default)]
     pub search_text: Option<String>,
     ///
@@ -79,6 +79,7 @@ pub struct Filter {
     /// // 4 is catalog_id for Women clothes
     /// // 16 is catalog_id for Women Shoes
     ///```
+
     #[builder(default)]
     pub catalog_ids: Option<String>,
     ///The color IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
@@ -100,7 +101,7 @@ pub struct Filter {
     /// // 1 is color_id for Black
     /// // 5 is color_id for Pink
     ///```
-    ///
+
     #[builder(default)]
     pub color_ids: Option<String>,
     /// The brand IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
@@ -120,7 +121,7 @@ pub struct Filter {
     /// // 14 is brand_id for Adidas
     /// // 53 is brand_id for Nike
     ///```
-    ///
+
     #[builder(default)]
     pub brand_ids: Option<String>,
     /// The country IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
@@ -140,7 +141,7 @@ pub struct Filter {
     /// // 7 is country_id for Spain
     /// // 16 is country_id for France
     ///```
-    ///
+
     #[builder(default)]
     pub countries_ids: Option<String>,
     /// The size IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
@@ -160,7 +161,7 @@ pub struct Filter {
     /// // 1226 is size_id for XXXS / 30 / 2
     /// // 102 is size_id for XXS / 32 / 4
     ///```
-    ///
+
     #[builder(default)]
     pub material_ids: Option<String>,
     /// The material IDs to filter items by. Must be formatted as `^[\d+,]*\d+$` regex.
@@ -180,7 +181,7 @@ pub struct Filter {
     /// // 44 is material_id for coton
     /// // 49 is material_id for silk
     ///```
-    ///
+
     #[builder(default)]
     pub size_ids: Option<String>,
 
@@ -191,10 +192,9 @@ pub struct Filter {
     /// use vinted_rs::Filter;
     /// use vinted_rs::model::filter::ArticleStatus;
     ///
-    /// let filter: Filter = Filter::builder().article_status(vec![ArticleStatus::NewTags ,
-    /// ArticleStatus::NewNoTags])).build();
+    /// let filter: Filter = Filter::builder().article_status(Some(vec![ArticleStatus::NewTags,ArticleStatus::NewNoTags])).build();
     ///```
-    ///
+
     #[builder(default)]
     pub article_status: Option<Vec<ArticleStatus>>,
     /// The sort order for the retrieved items.
@@ -205,9 +205,9 @@ pub struct Filter {
     /// use vinted_rs::model::filter::SortBy;
 
     ///
-    /// let filter: Filter = Filter::builder().sort_by(SortBy::PriceAscendant)).build();
+    /// let filter: Filter = Filter::builder().sort_by(Some(SortBy::PriceAscendant)).build();
     ///```
-    ///
+
     #[builder(default)]
     pub sort_by: Option<SortBy>,
     /// The minimum price of the article
@@ -217,7 +217,7 @@ pub struct Filter {
     /// use vinted_rs::Filter;
     ///
     ///
-    /// let filter: Filter = Filter::builder().price_from(10f32)).build();
+    /// let filter: Filter = Filter::builder().price_from(Some(10f32)).build();
     ///```
     ///
     #[builder(default)]
@@ -229,7 +229,7 @@ pub struct Filter {
     /// use vinted_rs::Filter;
     ///
     ///
-    /// let filter: Filter = Filter::builder().price_from(20f32)).build();
+    /// let filter: Filter = Filter::builder().price_from(Some(20f32)).build();
     ///```
     ///
     #[builder(default)]

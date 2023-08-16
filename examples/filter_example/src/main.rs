@@ -38,6 +38,10 @@ async fn main() {
 
     if items.items.is_empty() {
         println!("No items found");
+    } else {
+        for item in items.items {
+            let advanced = vinted.get_advanced_item(item.id).await.unwrap();
+            println!("{}", advanced);
+        }
     }
-    println!("{}", items);
 }

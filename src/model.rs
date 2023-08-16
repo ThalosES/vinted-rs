@@ -35,6 +35,8 @@ pub mod item;
 ///
 /// - `Items`: Represents a collection of items in the Vinted API.
 ///    - `items`: The list of items.
+///    - `pagination`: Pagination metadata of the query
+/// - `Pagination`: Some query metadata about the data given
 ///
 /// # Methods
 ///
@@ -52,6 +54,8 @@ pub mod items;
 ///    - `dominant_color_opaque`: The opaque dominant color of the photo.
 pub mod photo;
 
+/// Reprents a valid payment method accepted by a user
+pub mod payment_method;
 /// The `User` struct represents a user in the Vinted API.
 ///
 /// It depends on the `photo` module for handling user photos.
@@ -62,4 +66,7 @@ pub mod photo;
 /// - `login`: The username of the user.
 /// - `photo`: The photo of the user.
 pub mod user;
+
+#[cfg(feature = "redis")]
+pub use redis_macros::{FromRedisValue, ToRedisArgs};
 pub use serde::{Deserialize, Serialize};

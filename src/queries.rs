@@ -33,6 +33,7 @@ use fang::FangError;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
+use reqwest::Response;
 use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
@@ -41,6 +42,8 @@ use thiserror::Error;
 
 use crate::model::filter::Currency;
 use crate::model::filter::Filter;
+use crate::model::item::AdvancedItem;
+use crate::model::items::AdvancedItems;
 use crate::model::items::Items;
 
 #[derive(Error, Debug)]
@@ -57,6 +60,8 @@ pub enum VintedWrapperError {
     CookiesError(#[from] CookieError),
     #[error("Number of items must be non-zero value")]
     ItemNumberError,
+    #[error("Could not get deatiled info for item `{1}` with code: {0}")]
+    ItemError(StatusCode, String),
 }
 
 impl From<reqwest::Error> for VintedWrapperError {
@@ -561,8 +566,35 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
-        let items: Items = client.get(url).send().await?.json().await?;
+        let json: Response = client.get(url).send().await?;
 
-        Ok(items)
+        match json.status() {
+            StatusCode::OK => {
+                let items: Items = json.json().await?;
+                Ok(items)
+            }
+            code => Err(VintedWrapperError::ItemError(code, json.url().to_string())),
+        }
+    }
+
+    /// Results additional information from an item based on its id
+    ///
+    /// **Warning** This querie result is affected by the host country, it has to be the same as the item is hosted at
+    pub async fn get_advanced_item(
+        &self,
+        item_id: i64,
+    ) -> Result<AdvancedItem, VintedWrapperError> {
+        let client = self.get_client();
+        let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
+
+        let json: Response = client.get(url).send().await?;
+
+        match json.status() {
+            StatusCode::OK => {
+                let items: AdvancedItems = json.json().await?;
+                Ok(items.item)
+            }
+            code => Err(VintedWrapperError::ItemError(code, item_id.to_string())),
+        }
     }
 }
