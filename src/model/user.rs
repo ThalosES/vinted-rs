@@ -1,10 +1,13 @@
 use std::fmt;
 
-use crate::model::{Deserialize, FromRedisValue, Serialize, ToRedisArgs};
+use crate::model::{Deserialize, Serialize};
+#[cfg(feature = "redis")]
+use crate::model::{FromRedisValue, ToRedisArgs};
 
 use super::{payment_method::PayInMethod, photo::Photo};
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs)]
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct User {
     id: i64,
     login: String, //username

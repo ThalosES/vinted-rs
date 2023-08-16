@@ -1,9 +1,11 @@
 use super::{photo::Photo, user::AdvancedUser};
-use crate::model::{Deserialize, FromRedisValue, Serialize, ToRedisArgs};
+use crate::model::{Deserialize, Serialize};
+#[cfg(feature = "redis")]
+use crate::model::{FromRedisValue, ToRedisArgs};
 use std::fmt;
-#[derive(
-    Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs, PartialEq, Hash, Eq,
-)]
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 
 pub struct Item {
     pub id: i64,
@@ -39,9 +41,8 @@ impl fmt::Display for Item {
     }
 }
 
-#[derive(
-    Debug, Clone, Serialize, Deserialize, FromRedisValue, ToRedisArgs, PartialEq, Hash, Eq,
-)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct AdvancedItem {
     // Products filter info
     pub id: i64,

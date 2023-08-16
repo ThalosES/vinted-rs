@@ -67,5 +67,6 @@ pub mod payment_method;
 /// - `photo`: The photo of the user.
 pub mod user;
 
+#[cfg(feature = "redis")]
 pub use redis_macros::{FromRedisValue, ToRedisArgs};
 pub use serde::{Deserialize, Serialize};
