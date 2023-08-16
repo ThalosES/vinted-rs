@@ -42,6 +42,7 @@ async fn test_get_item_query_text() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -64,6 +65,7 @@ async fn test_get_item_brands() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -87,6 +89,7 @@ async fn test_get_items_brands() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -121,6 +124,7 @@ async fn test_get_items_catalogs_no_db() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -149,6 +153,7 @@ async fn test_get_items_by_price() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -171,6 +176,7 @@ async fn test_get_items_by_size_no_db() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -205,6 +211,7 @@ async fn test_get_items_by_size() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -224,6 +231,7 @@ async fn test_get_items_by_material() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -247,6 +255,7 @@ async fn test_get_items_by_color() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -272,6 +281,43 @@ async fn test_get_items_by_currency() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => unreachable!(),
+            VintedWrapperError::CookiesError(_) => (),
+        },
+    };
+}
+
+#[tokio::test]
+async fn test_get_advanced_items() {
+    let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
+        .await
+        .unwrap();
+
+    let adidas = db.get_brand_by_name(&"Adidas").await.unwrap();
+    let nike = db.get_brand_by_name(&"Nike").await.unwrap();
+
+    let brands = format!("{},{}", adidas.id, nike.id);
+
+    let filter = Filter::builder()
+        .brand_ids(Some(brands))
+        .price_from(Some(15.0))
+        .price_to(Some(20.0))
+        .build();
+
+    let vinted = VintedWrapper::new();
+
+    match vinted.get_items(&filter, 10).await {
+        Ok(items) => {
+            if !items.items.is_empty() {
+                for item in items.items {
+                    let advanced = vinted.get_advanced_item(item.id).await.unwrap();
+                    assert_eq!(item.id, advanced.id);
+                }
+            }
+        }
+        Err(err) => match err {
+            VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::ItemError(_, _) => (),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
