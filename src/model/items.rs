@@ -38,7 +38,7 @@ pub struct Pagination {
     pub total_entries: i32,
     pub per_page: i32,
     #[serde(rename = "time")]
-    pub timestamp: u32, 
+    pub timestamp: u32,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
