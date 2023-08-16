@@ -12,7 +12,7 @@ pub struct Item {
     pub brand_title: String,
     pub currency: String,
     pub price: String,
-    pub photo: Photo,
+    pub photo: Option<Photo>,
     pub url: String,
     pub is_visible: i32,
     pub promoted: bool,
@@ -27,7 +27,9 @@ impl fmt::Display for Item {
         writeln!(f, "Brand Title: {}", self.brand_title)?;
         writeln!(f, "Currency: {}", self.currency)?;
         writeln!(f, "Price: {}", self.price)?;
-        writeln!(f, "Photo: {}", self.photo)?;
+        if let Some(ph) = &self.photo {
+            writeln!(f, "Photo: {}", ph)?;
+        }
         writeln!(f, "URL: {}", self.url)?;
         writeln!(f, "Is Visible: {}", self.is_visible)?;
         writeln!(f, "Promoted: {}", self.promoted)?;
