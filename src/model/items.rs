@@ -33,12 +33,12 @@ impl fmt::Display for Items {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Pagination {
-    current_page: i32,
-    total_pages: i32,
-    total_entries: i32,
-    per_page: i32,
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub total_entries: i32,
+    pub per_page: i32,
     #[serde(rename = "time")]
-    timestamp: u32, // Use custom name for deserialization
+    pub timestamp: u32, 
 }
 
 #[derive(Debug, Deserialize, Serialize)]
