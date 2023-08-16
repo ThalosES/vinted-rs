@@ -1,6 +1,10 @@
 # Changelog
 
-# Changelog
+## 0.6.0 (2923-08-16) [#57](https://github.com/TuTarea/vinted-rs/pull/57/)
+
+## Improved 
+- Added support for redis bindings
+- Added support for Advanced Item query thanks to @alvarocabo.
 
 ## 0.5.1 (2023-08-04) [#54](https://github.com/TuTarea/vinted-rs/pull/54/)
 
