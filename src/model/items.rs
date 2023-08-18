@@ -3,8 +3,11 @@ use std::fmt;
 use crate::model::item::Item;
 use crate::model::{Deserialize, Serialize};
 
+#[cfg(feature = "redis")]
+use redis_macros::{FromRedisValue, ToRedisArgs};
+
 use super::item::AdvancedItem;
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, FromRedisValue, ToRedisArgs)]
 
 pub struct Items {
     pub items: Vec<Item>,

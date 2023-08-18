@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
 use crate::queries::Host;
+#[cfg(feature = "redis")]
+use redis_macros::{FromRedisValue, ToRedisArgs};
 
 /// Provides functionality related to filtering by brand.
 pub mod brand;
@@ -247,7 +249,7 @@ Represents the currency for filtering items
 // SEK => Host se
 // RON => Host ro
 // HUF => Host hu
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, FromRedisValue, ToRedisArgs)]
 pub enum Currency {
     /// Euro
     EUR,
@@ -301,7 +303,7 @@ impl From<Currency> for &str {
 Represents the article status for filtering items.
 
 */
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, FromRedisValue, ToRedisArgs)]
 pub enum ArticleStatus {
     /// The article status for new items with tags.
     NewTags,
@@ -331,7 +333,7 @@ impl From<&ArticleStatus> for &str {
 Represents the sort order for the retrieved items.
 */
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, FromRedisValue, ToRedisArgs)]
 pub enum SortBy {
     /// Sort items by relevance.
     Relevance,

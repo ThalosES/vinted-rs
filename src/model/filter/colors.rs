@@ -3,7 +3,12 @@ use bb8_postgres::tokio_postgres::Row;
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg(feature = "redis")]
+use redis_macros::{FromRedisValue, ToRedisArgs};
+
+#[derive(
+    Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize, FromRedisValue, ToRedisArgs,
+)]
 pub struct Color {
     /// Color id given by Vinted
     pub id: i32,

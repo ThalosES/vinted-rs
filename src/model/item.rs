@@ -52,8 +52,8 @@ pub struct AdvancedItem {
     pub size_title: String,
     #[serde(rename = "brand")]
     pub brand_title: String,
-    pub composition: String,
-    pub extra_conditions: String,
+    pub composition: Option<String>,
+    pub extra_conditions: Option<String>,
     pub brand_id: Option<i32>,
     pub size_id: Option<i32>,
     pub status_id: Option<i32>,
@@ -128,8 +128,8 @@ impl fmt::Display for AdvancedItem {
             "Brand [ Title: {}, ID: {:?}]",
             self.brand_title, self.brand_id
         )?;
-        writeln!(f, "Composition: {}", self.composition)?;
-        writeln!(f, "Extra Conditions: {}", self.extra_conditions)?;
+        writeln!(f, "Composition: {:?}", self.composition)?;
+        writeln!(f, "Extra Conditions: {:?}", self.extra_conditions)?;
         writeln!(f, "Status ID: {:?}", self.status_id)?;
         writeln!(f, "Disposal Conditions: {:?}", self.disposal_conditions)?;
         writeln!(f, "Catalog ID: {:?}", self.catalog_id)?;

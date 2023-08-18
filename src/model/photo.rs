@@ -1,8 +1,13 @@
 use std::fmt;
 
+#[cfg(feature = "redis")]
+use redis_macros::{FromRedisValue, ToRedisArgs};
+
 use crate::model::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
+#[derive(
+    Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq, FromRedisValue, ToRedisArgs,
+)]
 pub struct Photo {
     pub id: i64,
     pub url: String,
