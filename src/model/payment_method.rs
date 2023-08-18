@@ -2,7 +2,11 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "redis")]
+use redis_macros::{FromRedisValue, ToRedisArgs};
+
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct PayInMethod {
     id: i32,
     code: String,

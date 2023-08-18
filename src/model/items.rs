@@ -7,7 +7,8 @@ use crate::model::{Deserialize, Serialize};
 use redis_macros::{FromRedisValue, ToRedisArgs};
 
 use super::item::AdvancedItem;
-#[derive(Debug, Serialize, Deserialize, FromRedisValue, ToRedisArgs)]
+#[derive(Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 
 pub struct Items {
     pub items: Vec<Item>,
@@ -35,6 +36,7 @@ impl fmt::Display for Items {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct Pagination {
     pub current_page: i32,
     pub total_pages: i32,
@@ -45,6 +47,7 @@ pub struct Pagination {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct AdvancedItems {
     pub item: AdvancedItem,
 }

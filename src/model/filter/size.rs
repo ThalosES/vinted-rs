@@ -10,10 +10,8 @@ XL for Men is not the same as XL for children
 */
 #[cfg(feature = "redis")]
 use redis_macros::{FromRedisValue, ToRedisArgs};
-
-#[derive(
-    Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize, FromRedisValue, ToRedisArgs,
-)]
+#[derive(Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct Size {
     /// Size id given by Vinted
     pub id: i32,

@@ -10,7 +10,7 @@ use super::{payment_method::PayInMethod, photo::Photo};
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct User {
     id: i64,
-    login: String, //username
+    login: String, //usernameredis_macros
     photo: Photo,
 }
 

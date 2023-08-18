@@ -5,9 +5,8 @@ use redis_macros::{FromRedisValue, ToRedisArgs};
 
 use crate::model::{Deserialize, Serialize};
 
-#[derive(
-    Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq, FromRedisValue, ToRedisArgs,
-)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct Photo {
     pub id: i64,
     pub url: String,
