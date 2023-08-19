@@ -76,7 +76,7 @@ pub struct AdvancedItem {
     pub favourite_count: i32,
     pub view_count: i32,
     pub moderation_status: i32,
-    pub last_push_up_at: String,
+    pub last_push_up_at: Option<String>,
     pub related_catalog_ids: Vec<i32>,
 
     // Pricing
