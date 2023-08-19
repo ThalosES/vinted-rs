@@ -90,7 +90,7 @@ pub struct AdvancedItem {
     pub user_updated_at_ts: String,
 
     // Asets
-    pub photos: Vec<Option<Photo>>,
+    pub photos: Vec<Photo>,
     pub url: String,
     pub user: AdvancedUser,
 
@@ -173,10 +173,8 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "}}\n")?;
 
         for (num, photo) in self.photos.iter().enumerate() {
-            if let Some(p) = photo {
-                writeln!(f, "Pic {})", num)?;
-                writeln!(f, "{}", p)?;
-            }
+            writeln!(f, "Pic {})", num)?;
+            writeln!(f, "{}", photo)?;
         }
 
         writeln!(f, "URL: {}\n", self.url)?;
