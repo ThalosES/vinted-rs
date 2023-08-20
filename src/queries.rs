@@ -584,8 +584,20 @@ impl<'a> VintedWrapper<'a> {
         &self,
         item_id: i64,
     ) -> Result<AdvancedItem, VintedWrapperError> {
-        let client = self.get_client();
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
+
+        let cookie_store_clone = self.cookie_store.clone();
+
+        if cookie_store_clone
+            .lock()
+            .unwrap()
+            .get(&url, "/", "__cf_bm")
+            .is_none()
+        {
+            self.refresh_cookies().await?;
+        }
+
+        let client = self.get_client();
 
         let json: Response = client.get(url).send().await?;
 
