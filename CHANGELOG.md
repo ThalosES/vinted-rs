@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.6.0 (2923-08-16) [#57](https://github.com/TuTarea/vinted-rs/pull/57/)
+# 0.7.0 (2023-08-20) [#59](https://github.com/TuTarea/vinted-rs/pull/59/)
+
+## Improved
+- Added support for Redis for all objects.
+- Auto request cookies in get_advanced_item.
+
+## 0.6.0 (2023-08-16) [#57](https://github.com/TuTarea/vinted-rs/pull/57/)
 
 ## Improved 
 - Added support for redis bindings
