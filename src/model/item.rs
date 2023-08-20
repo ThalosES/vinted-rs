@@ -52,23 +52,37 @@ pub struct AdvancedItem {
     pub size_title: String,
     #[serde(rename = "brand")]
     pub brand_title: String,
-    pub composition: String,
-    pub extra_conditions: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub composition: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_conditions: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub brand_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub size_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status_id: Option<i32>,
     #[serde(rename = "status")]
-    pub status_fr: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status_fr: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub disposal_conditions: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub catalog_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color1_id: Option<i32>,
-    pub color1: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color1: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color2_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color2: Option<String>,
     pub package_size_id: i32,
     //Location
     pub country_id: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub city_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
     //Stats
@@ -76,7 +90,8 @@ pub struct AdvancedItem {
     pub favourite_count: i32,
     pub view_count: i32,
     pub moderation_status: i32,
-    pub last_push_up_at: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_push_up_at: Option<String>,
     pub related_catalog_ids: Vec<i32>,
 
     // Pricing
@@ -86,11 +101,13 @@ pub struct AdvancedItem {
 
     // Order by stats
     pub created_at_ts: String,
-    pub updated_at_ts: String,
-    pub user_updated_at_ts: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated_at_ts: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_updated_at_ts: Option<String>,
 
     // Asets
-    pub photos: Vec<Option<Photo>>,
+    pub photos: Vec<Photo>,
     pub url: String,
     pub user: AdvancedUser,
 
@@ -107,6 +124,7 @@ pub struct AdvancedItem {
     // More flags, just in i32
     pub is_hidden: i32,
     pub is_reserved: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reserved_for_user_id: Option<i32>,
     pub is_visible: i32,
     pub is_unisex: i32,
@@ -128,8 +146,8 @@ impl fmt::Display for AdvancedItem {
             "Brand [ Title: {}, ID: {:?}]",
             self.brand_title, self.brand_id
         )?;
-        writeln!(f, "Composition: {}", self.composition)?;
-        writeln!(f, "Extra Conditions: {}", self.extra_conditions)?;
+        writeln!(f, "Composition: {:?}", self.composition)?;
+        writeln!(f, "Extra Conditions: {:?}", self.extra_conditions)?;
         writeln!(f, "Status ID: {:?}", self.status_id)?;
         writeln!(f, "Disposal Conditions: {:?}", self.disposal_conditions)?;
         writeln!(f, "Catalog ID: {:?}", self.catalog_id)?;
@@ -173,10 +191,8 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "}}\n")?;
 
         for (num, photo) in self.photos.iter().enumerate() {
-            if let Some(p) = photo {
-                writeln!(f, "Pic {})", num)?;
-                writeln!(f, "{}", p)?;
-            }
+            writeln!(f, "Pic {})", num)?;
+            writeln!(f, "{}", photo)?;
         }
 
         writeln!(f, "URL: {}\n", self.url)?;
