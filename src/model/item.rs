@@ -58,7 +58,7 @@ pub struct AdvancedItem {
     pub size_id: Option<i32>,
     pub status_id: Option<i32>,
     #[serde(rename = "status")]
-    pub status_fr: String,
+    pub status_fr: Option<String>,
     pub disposal_conditions: Option<i32>,
     pub catalog_id: Option<i32>,
     pub color1_id: Option<i32>,
@@ -86,8 +86,8 @@ pub struct AdvancedItem {
 
     // Order by stats
     pub created_at_ts: String,
-    pub updated_at_ts: String,
-    pub user_updated_at_ts: String,
+    pub updated_at_ts: Option<String>,
+    pub user_updated_at_ts: Option<String>,
 
     // Asets
     pub photos: Vec<Photo>,
