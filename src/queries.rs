@@ -573,7 +573,10 @@ impl<'a> VintedWrapper<'a> {
                 let items: Items = json.json().await?;
                 Ok(items)
             }
-            code => Err(VintedWrapperError::ItemError(code, json.url().to_string())),
+            code => Err(VintedWrapperError::ItemError(
+                code,
+                format!("{}::{}", self.host, json.url()),
+            )),
         }
     }
 
@@ -606,7 +609,10 @@ impl<'a> VintedWrapper<'a> {
                 let items: AdvancedItems = json.json().await?;
                 Ok(items.item)
             }
-            code => Err(VintedWrapperError::ItemError(code, item_id.to_string())),
+            code => Err(VintedWrapperError::ItemError(
+                code,
+                format!("{}::{}", self.host, item_id),
+            )),
         }
     }
 }
