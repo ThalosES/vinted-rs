@@ -11,10 +11,14 @@ pub struct PayInMethod {
     id: i32,
     code: String,
     requires_credit_card: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     event_tracking_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     icon: Option<String>,
     enabled: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     translated_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     note: Option<String>,
     method_change_possible: bool,
 }

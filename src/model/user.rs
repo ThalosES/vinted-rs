@@ -18,21 +18,32 @@ pub struct User {
 pub struct AdvancedUser {
     id: i64,
     login: String, //username
+    #[serde(skip_serializing_if = "Option::is_none")]
     photo: Option<Photo>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     real_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     email: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     birthday: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     gender: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     last_loged_on_ts: Option<String>,
     expose_location: bool,
     country_id: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     city_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     city: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     path: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     about: Option<String>,
+
     accepted_pay_in_methods: Vec<PayInMethod>,
 }
 

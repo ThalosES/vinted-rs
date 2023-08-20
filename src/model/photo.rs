@@ -10,7 +10,9 @@ use crate::model::{Deserialize, Serialize};
 pub struct Photo {
     pub id: i64,
     pub url: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dominant_color: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dominant_color_opaque: Option<String>,
 }
 

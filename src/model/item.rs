@@ -52,23 +52,37 @@ pub struct AdvancedItem {
     pub size_title: String,
     #[serde(rename = "brand")]
     pub brand_title: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub composition: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub extra_conditions: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub brand_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub size_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status_id: Option<i32>,
     #[serde(rename = "status")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status_fr: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub disposal_conditions: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub catalog_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color1_id: Option<i32>,
-    pub color1: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color1: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color2_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color2: Option<String>,
     pub package_size_id: i32,
     //Location
     pub country_id: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub city_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
     //Stats
@@ -76,6 +90,7 @@ pub struct AdvancedItem {
     pub favourite_count: i32,
     pub view_count: i32,
     pub moderation_status: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_push_up_at: Option<String>,
     pub related_catalog_ids: Vec<i32>,
 
@@ -86,7 +101,9 @@ pub struct AdvancedItem {
 
     // Order by stats
     pub created_at_ts: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at_ts: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user_updated_at_ts: Option<String>,
 
     // Asets
@@ -107,6 +124,7 @@ pub struct AdvancedItem {
     // More flags, just in i32
     pub is_hidden: i32,
     pub is_reserved: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reserved_for_user_id: Option<i32>,
     pub is_visible: i32,
     pub is_unisex: i32,
