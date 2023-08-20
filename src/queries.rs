@@ -78,15 +78,16 @@ impl From<VintedWrapperError> for FangError {
     }
 }
 
-const DOMAINS: [&str; 18] = [
-    "fr", "be", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl",
-    "se", "ro", "hu",
+const DOMAINS: [&str; 17] = [
+    "fr", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl", "se",
+    "ro", "hu",
+    //"be",
 ];
 
 #[derive(Debug, Clone)]
 pub enum Host {
     Fr,
-    Be,
+    //Be,
     Es,
     Lu,
     Nl,
@@ -132,7 +133,6 @@ impl From<&str> for Host {
     fn from(string: &str) -> Self {
         match string {
             "fr" => Host::Fr,
-            "be" => Host::Be,
             "es" => Host::Es,
             "lu" => Host::Lu,
             "nl" => Host::Nl,
@@ -149,6 +149,7 @@ impl From<&str> for Host {
             "se" => Host::Se,
             "ro" => Host::Ro,
             "hu" => Host::Hu,
+            //"be" => Host::Be,
             _ => panic!("Not valid host"),
         }
     }
@@ -158,23 +159,23 @@ impl From<Host> for &str {
     fn from(val: Host) -> Self {
         match val {
             Host::Fr => DOMAINS[0],
-            Host::Be => DOMAINS[1],
-            Host::Es => DOMAINS[2],
-            Host::Lu => DOMAINS[3],
-            Host::Nl => DOMAINS[4],
-            Host::Lt => DOMAINS[5],
-            Host::De => DOMAINS[6],
-            Host::At => DOMAINS[7],
-            Host::It => DOMAINS[8],
-            Host::Uk => DOMAINS[9],
-            Host::Pt => DOMAINS[10],
-            Host::Com => DOMAINS[11],
-            Host::Cz => DOMAINS[12],
-            Host::Sk => DOMAINS[13],
-            Host::Pl => DOMAINS[14],
-            Host::Se => DOMAINS[15],
-            Host::Ro => DOMAINS[16],
-            Host::Hu => DOMAINS[17],
+            Host::Es => DOMAINS[1],
+            Host::Lu => DOMAINS[2],
+            Host::Nl => DOMAINS[3],
+            Host::Lt => DOMAINS[4],
+            Host::De => DOMAINS[5],
+            Host::At => DOMAINS[6],
+            Host::It => DOMAINS[7],
+            Host::Uk => DOMAINS[8],
+            Host::Pt => DOMAINS[9],
+            Host::Com => DOMAINS[10],
+            Host::Cz => DOMAINS[11],
+            Host::Sk => DOMAINS[12],
+            Host::Pl => DOMAINS[13],
+            Host::Se => DOMAINS[14],
+            Host::Ro => DOMAINS[15],
+            Host::Hu => DOMAINS[16],
+            //Host::Be => DOMAINS[17],
         }
     }
 }
