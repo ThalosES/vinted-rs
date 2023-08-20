@@ -15,6 +15,7 @@ pub struct User {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct AdvancedUser {
     id: i64,
     login: String, //username
