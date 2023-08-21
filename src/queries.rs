@@ -206,35 +206,25 @@ static CLIENT: OnceCell<Client> = OnceCell::new();
 #[derive(Debug, Clone)]
 pub struct VintedWrappers<'a> {
     wrappers: Vec<VintedWrapper<'a>>,
-    current: usize,
-    len: usize,
 }
 
 impl<'a> VintedWrappers<'a> {
     pub fn new_with_hosts(hosts: Vec<Host>) -> Self {
-        let len = hosts.len();
-        let current = 0usize;
-
         let wrappers = hosts
             .into_iter()
             .map(VintedWrapper::new_with_host)
             .collect();
 
-        VintedWrappers {
-            wrappers,
-            current,
-            len,
-        }
+        VintedWrappers { wrappers }
     }
 
     pub async fn lineal_fetch(
         &mut self,
         filters: &Filter,
         num: u32,
+        current: usize,
     ) -> Result<Items, VintedWrapperError> {
-        let vinted_wrapper = &self.wrappers[self.current];
-
-        self.current = (self.current + 1) % self.len;
+        let vinted_wrapper = &self.wrappers[current];
 
         vinted_wrapper.get_items(filters, num).await
     }
@@ -242,10 +232,9 @@ impl<'a> VintedWrappers<'a> {
     pub async fn lineal_to_advance_items(
         &mut self,
         item_id: i64,
+        current: usize,
     ) -> Result<AdvancedItem, VintedWrapperError> {
-        let vinted_wrapper = &self.wrappers[self.current];
-
-        self.current = (self.current + 1) % self.len;
+        let vinted_wrapper = &self.wrappers[current];
 
         vinted_wrapper.get_advanced_item(item_id).await
     }
