@@ -202,6 +202,62 @@ pub fn random_host<'a>() -> &'a str {
 
 static CLIENT: OnceCell<Client> = OnceCell::new();
 
+/// This will allow you to operate with multiple hosts using just one struct
+#[derive(Debug, Clone)]
+pub struct VintedWrappers<'a> {
+    wrappers: Vec<VintedWrapper<'a>>,
+    current: usize,
+    len: usize,
+}
+
+impl<'a> VintedWrappers<'a> {
+    pub fn new_with_hosts(hosts: Vec<Host>) -> Self {
+        let len = hosts.len();
+        let current = 0usize;
+
+        let wrappers = hosts
+            .into_iter()
+            .map(|host| VintedWrapper::new_with_host(host))
+            .collect();
+
+        VintedWrappers {
+            wrappers,
+            current,
+            len,
+        }
+    }
+
+    pub async fn lineal_fetch(
+        &mut self,
+        filters: &Filter,
+        num: u32,
+    ) -> Result<Items, VintedWrapperError> {
+        let vinted_wrapper = &self.wrappers[self.current];
+
+        self.current = (self.current + 1) % self.len;
+
+        vinted_wrapper.get_items(filters, num).await
+    }
+
+    pub async fn lineal_to_advance_items(
+        &mut self,
+        item_id: i64,
+    ) -> Result<AdvancedItem, VintedWrapperError> {
+        let vinted_wrapper = &self.wrappers[self.current];
+
+        self.current = (self.current + 1) % self.len;
+
+        vinted_wrapper.get_advanced_item(item_id).await
+    }
+}
+
+impl<'a> Default for VintedWrappers<'a> {
+    fn default() -> Self {
+        let hosts = vec![Host::Es, Host::Fr, Host::Lu, Host::Pt, Host::It, Host::Nl];
+        VintedWrappers::new_with_hosts(hosts)
+    }
+}
+
 /// Represents the main wrapper for interacting with the Vinted API.
 ///
 /// The `VintedWrapper` struct provides methods for retrieving items based on filters and handling cookies.
