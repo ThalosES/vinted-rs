@@ -217,7 +217,7 @@ impl<'a> VintedWrappers<'a> {
 
         let wrappers = hosts
             .into_iter()
-            .map(|host| VintedWrapper::new_with_host(host))
+            .map(VintedWrapper::new_with_host)
             .collect();
 
         VintedWrappers {
