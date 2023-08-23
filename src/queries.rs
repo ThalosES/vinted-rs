@@ -206,16 +206,19 @@ static CLIENT: OnceCell<Client> = OnceCell::new();
 #[derive(Debug, Clone)]
 pub struct VintedWrappers<'a> {
     wrappers: Vec<VintedWrapper<'a>>,
+    pub len: usize,
 }
 
 impl<'a> VintedWrappers<'a> {
     pub fn new_with_hosts(hosts: Vec<Host>) -> Self {
+        let len = hosts.len();
+
         let wrappers = hosts
             .into_iter()
             .map(VintedWrapper::new_with_host)
             .collect();
 
-        VintedWrappers { wrappers }
+        VintedWrappers { wrappers, len }
     }
 
     pub async fn lineal_fetch(
