@@ -657,7 +657,9 @@ impl<'a> VintedWrapper<'a> {
             }
             code => Err(VintedWrapperError::ItemError(
                 code,
-                json.text().await?, // format!("{}::{}", self.host, item_id),
+                json.headers().into_iter().fold(String::new(), |init, h| {
+                    init + &format!("{:?} :: {:?}", h.0, h.1) + "\n"
+                }), // format!("{}::{}", self.host, item_id),
             )),
         }
     }
