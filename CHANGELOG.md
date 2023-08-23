@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.8.0 (2023-08-23) [#62](https://github.com/TuTarea/vinted-rs/pull/62/)
+# 0.8.1 (2023-08-23) [#62](https://github.com/TuTarea/vinted-rs/pull/62/)
 
 ## Improved
 - Added support for multiple vinted wrappers.
