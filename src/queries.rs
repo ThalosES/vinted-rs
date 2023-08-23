@@ -61,7 +61,7 @@ pub enum VintedWrapperError {
     #[error("Number of items must be non-zero value")]
     ItemNumberError,
     #[error("Could not get deatiled info for item `{2}` with code: {0}")]
-    ItemError(StatusCode, Option<String>, String),
+    ItemError(StatusCode, Option<i32>, String),
 }
 
 impl From<reqwest::Error> for VintedWrapperError {
@@ -620,10 +620,10 @@ impl<'a> VintedWrapper<'a> {
                 Ok(items)
             }
             code => {
-                let retry_after = match json.headers().get("retry-after") {
-                    Some(value) => Some(value.to_str().unwrap().to_string()),
-                    None => None,
-                };
+                let retry_after = json
+                    .headers()
+                    .get("retry-after")
+                    .map(|value| value.to_str().unwrap().to_string().parse().unwrap());
                 Err(VintedWrapperError::ItemError(
                     code,
                     retry_after,
@@ -663,10 +663,10 @@ impl<'a> VintedWrapper<'a> {
                 Ok(items.item)
             }
             code => {
-                let retry_after = match json.headers().get("retry-after") {
-                    Some(value) => Some(value.to_str().unwrap().to_string()),
-                    None => None,
-                };
+                let retry_after = json
+                    .headers()
+                    .get("retry-after")
+                    .map(|value| value.to_str().unwrap().to_string().parse().unwrap());
                 Err(VintedWrapperError::ItemError(
                     code,
                     retry_after,
