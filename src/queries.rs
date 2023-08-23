@@ -60,8 +60,8 @@ pub enum VintedWrapperError {
     CookiesError(#[from] CookieError),
     #[error("Number of items must be non-zero value")]
     ItemNumberError,
-    #[error("Could not get deatiled info for item `{1}` with code: {0}")]
-    ItemError(StatusCode, String),
+    #[error("Could not get deatiled info for item `{2}` with code: {0}")]
+    ItemError(StatusCode, Option<String>, String),
 }
 
 impl From<reqwest::Error> for VintedWrapperError {
@@ -619,10 +619,17 @@ impl<'a> VintedWrapper<'a> {
                 let items: Items = json.json().await?;
                 Ok(items)
             }
-            code => Err(VintedWrapperError::ItemError(
-                code,
-                format!("{}::{}", self.host, json.url()),
-            )),
+            code => {
+                let retry_after = match json.headers().get("retry-after") {
+                    Some(value) => Some(value.to_str().unwrap().to_string()),
+                    None => None,
+                };
+                Err(VintedWrapperError::ItemError(
+                    code,
+                    retry_after,
+                    format!("{}::{}", self.host, json.url()),
+                ))
+            }
         }
     }
 
@@ -655,12 +662,17 @@ impl<'a> VintedWrapper<'a> {
                 let items: AdvancedItems = json.json().await?;
                 Ok(items.item)
             }
-            code => Err(VintedWrapperError::ItemError(
-                code,
-                json.headers().into_iter().fold(String::new(), |init, h| {
-                    init + &format!("{:?} :: {:?}", h.0, h.1) + "\n"
-                }), // format!("{}::{}", self.host, item_id),
-            )),
+            code => {
+                let retry_after = match json.headers().get("retry-after") {
+                    Some(value) => Some(value.to_str().unwrap().to_string()),
+                    None => None,
+                };
+                Err(VintedWrapperError::ItemError(
+                    code,
+                    retry_after,
+                    format!("{}::{}", self.host, item_id),
+                ))
+            }
         }
     }
 }
