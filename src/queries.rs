@@ -221,6 +221,10 @@ impl<'a> VintedWrappers<'a> {
         VintedWrappers { wrappers, len }
     }
 
+    pub fn get_wrapper(&self, index: usize) -> VintedWrapper<'_> {
+        self.wrappers[index].clone()
+    }
+
     pub async fn lineal_fetch(
         &mut self,
         filters: &Filter,
