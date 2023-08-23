@@ -221,6 +221,29 @@ impl<'a> VintedWrappers<'a> {
         VintedWrappers { wrappers, len }
     }
 
+    pub fn all_wrappers() -> Self {
+        let hosts = vec![
+            Host::Es,
+            Host::Fr,
+            Host::Lu,
+            Host::Pt,
+            Host::It,
+            Host::Nl,
+            Host::Lt,
+            Host::De,
+            Host::At,
+            Host::Uk,
+            Host::Com,
+            Host::Cz,
+            Host::Sk,
+            Host::Pl,
+            Host::Se,
+            Host::Ro,
+            Host::Hu,
+        ];
+        VintedWrappers::new_with_hosts(hosts)
+    }
+
     pub fn get_wrapper(&self, index: usize) -> &VintedWrapper<'_> {
         &self.wrappers[index]
     }
