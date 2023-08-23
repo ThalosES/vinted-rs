@@ -60,8 +60,8 @@ pub enum VintedWrapperError {
     CookiesError(#[from] CookieError),
     #[error("Number of items must be non-zero value")]
     ItemNumberError,
-    #[error("Could not get deatiled info for item `{1}` with code: {0}")]
-    ItemError(StatusCode, String),
+    #[error("Could not get deatiled info for item `{2}` with code: {0}")]
+    ItemError(StatusCode, Option<i32>, String),
 }
 
 impl From<reqwest::Error> for VintedWrapperError {
@@ -201,6 +201,58 @@ pub fn random_host<'a>() -> &'a str {
 }
 
 static CLIENT: OnceCell<Client> = OnceCell::new();
+
+/// This will allow you to operate with multiple hosts using just one struct
+#[derive(Debug, Clone)]
+pub struct VintedWrappers<'a> {
+    wrappers: Vec<VintedWrapper<'a>>,
+    pub len: usize,
+}
+
+impl<'a> VintedWrappers<'a> {
+    pub fn new_with_hosts(hosts: Vec<Host>) -> Self {
+        let len = hosts.len();
+
+        let wrappers = hosts
+            .into_iter()
+            .map(VintedWrapper::new_with_host)
+            .collect();
+
+        VintedWrappers { wrappers, len }
+    }
+
+    pub fn get_wrapper(&self, index: usize) -> VintedWrapper<'_> {
+        self.wrappers[index].clone()
+    }
+
+    pub async fn lineal_fetch(
+        &mut self,
+        filters: &Filter,
+        num: u32,
+        current: usize,
+    ) -> Result<Items, VintedWrapperError> {
+        let vinted_wrapper = &self.wrappers[current];
+
+        vinted_wrapper.get_items(filters, num).await
+    }
+
+    pub async fn lineal_to_advance_items(
+        &mut self,
+        item_id: i64,
+        current: usize,
+    ) -> Result<AdvancedItem, VintedWrapperError> {
+        let vinted_wrapper = &self.wrappers[current];
+
+        vinted_wrapper.get_advanced_item(item_id).await
+    }
+}
+
+impl<'a> Default for VintedWrappers<'a> {
+    fn default() -> Self {
+        let hosts = vec![Host::Es, Host::Fr, Host::Lu, Host::Pt, Host::It, Host::Nl];
+        VintedWrappers::new_with_hosts(hosts)
+    }
+}
 
 /// Represents the main wrapper for interacting with the Vinted API.
 ///
@@ -574,10 +626,17 @@ impl<'a> VintedWrapper<'a> {
                 let items: Items = json.json().await?;
                 Ok(items)
             }
-            code => Err(VintedWrapperError::ItemError(
-                code,
-                format!("{}::{}", self.host, json.url()),
-            )),
+            code => {
+                let retry_after = json
+                    .headers()
+                    .get("retry-after")
+                    .map(|value| value.to_str().unwrap().to_string().parse().unwrap());
+                Err(VintedWrapperError::ItemError(
+                    code,
+                    retry_after,
+                    format!("{}::{}", self.host, json.url()),
+                ))
+            }
         }
     }
 
@@ -610,10 +669,17 @@ impl<'a> VintedWrapper<'a> {
                 let items: AdvancedItems = json.json().await?;
                 Ok(items.item)
             }
-            code => Err(VintedWrapperError::ItemError(
-                code,
-                format!("{}::{}", self.host, item_id),
-            )),
+            code => {
+                let retry_after = json
+                    .headers()
+                    .get("retry-after")
+                    .map(|value| value.to_str().unwrap().to_string().parse().unwrap());
+                Err(VintedWrapperError::ItemError(
+                    code,
+                    retry_after,
+                    format!("{}::{}", self.host, item_id),
+                ))
+            }
         }
     }
 }
