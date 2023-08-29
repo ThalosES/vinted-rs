@@ -34,13 +34,13 @@ async fn main() {
 
     println!("Host: {}", vinted.get_host());
 
-    let items = vinted.get_items(&filter, 10).await.unwrap();
+    let items = vinted.get_items(&filter, 10, None).await.unwrap();
 
     if items.items.is_empty() {
         println!("No items found");
     } else {
         for item in items.items {
-            let advanced = vinted.get_advanced_item(item.id).await.unwrap();
+            let advanced = vinted.get_advanced_item(item.id, None).await.unwrap();
             println!("{}", advanced);
         }
     }
