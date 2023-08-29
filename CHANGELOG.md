@@ -1,5 +1,17 @@
 # Changelog
 
+# 0.8.3 (2023-08-29) [#67](https://github.com/TuTarea/vinted-rs/pull/67/)
+
+## Improved
+- Added support for setting the user agent
+
+# 0.8.2 (2023-08-29) [#65](https://github.com/TuTarea/vinted-rs/pull/65/)
+
+## Improved
+
+- Add a default `VintedWrappers` that is `all_the_wrappers`.
+ 
+
 # 0.8.1 (2023-08-23) [#62](https://github.com/TuTarea/vinted-rs/pull/62/)
 
 ## Improved
