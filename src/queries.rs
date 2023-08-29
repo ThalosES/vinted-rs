@@ -51,7 +51,7 @@ pub enum CookieError {
     #[error(transparent)]
     ReqWestError(#[from] reqwest::Error),
     #[error("Error to get cookies")]
-    GetCookiesError((StatusCode, String)),
+    GetCookiesError((StatusCode, String, String)),
 }
 
 #[derive(Error, Debug)]
@@ -464,6 +464,7 @@ impl<'a> VintedWrapper<'a> {
             return Err(CookieError::GetCookiesError((
                 response_cookies.status(),
                 String::from(self.get_host()),
+                user_agent.unwrap_or(DEFAULT_USER_AGENT).to_string(),
             )));
         }
 
