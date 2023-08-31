@@ -33,6 +33,7 @@ use fang::FangError;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
+use reqwest::Proxy;
 use reqwest::Response;
 use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
@@ -256,10 +257,14 @@ impl<'a> VintedWrappers<'a> {
         num: u32,
         current: usize,
         user_agent: Option<&str>,
+        proxy_cookies: Option<&str>,
+        proxy_fetch: Option<&str>,
     ) -> Result<Items, VintedWrapperError> {
         let vinted_wrapper = &self.wrappers[current];
 
-        vinted_wrapper.get_items(filters, num, user_agent).await
+        vinted_wrapper
+            .get_items(filters, num, user_agent, proxy_cookies, proxy_fetch)
+            .await
     }
 
     pub async fn lineal_to_advance_items(
@@ -267,10 +272,14 @@ impl<'a> VintedWrappers<'a> {
         item_id: i64,
         current: usize,
         user_agent: Option<&str>,
+        proxy_cookies: Option<&str>,
+        proxy_fetch: Option<&str>,
     ) -> Result<AdvancedItem, VintedWrapperError> {
         let vinted_wrapper = &self.wrappers[current];
 
-        vinted_wrapper.get_advanced_item(item_id, user_agent).await
+        vinted_wrapper
+            .get_advanced_item(item_id, user_agent, proxy_cookies, proxy_fetch)
+            .await
     }
 }
 
@@ -402,14 +411,26 @@ impl<'a> VintedWrapper<'a> {
         }
     }
 
-    fn get_client(&self, user_agent: Option<&str>) -> &'static Client {
-        CLIENT.get_or_init(|| -> Client {
-            reqwest::ClientBuilder::new()
-                .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-                .cookie_provider(Arc::clone(&self.cookie_store))
-                .build()
-                .unwrap()
-        })
+    fn get_client(&self, user_agent: Option<&str>, proxy: Option<&str>) -> &'static Client {
+        if let Some(url) = proxy {
+            let proxy: Proxy = Proxy::all(url).expect("Bad proxy URL");
+            CLIENT.get_or_init(|| -> Client {
+                reqwest::ClientBuilder::new()
+                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+                    .proxy(proxy)
+                    .cookie_provider(Arc::clone(&self.cookie_store))
+                    .build()
+                    .unwrap()
+            })
+        } else {
+            CLIENT.get_or_init(|| -> Client {
+                reqwest::ClientBuilder::new()
+                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+                    .cookie_provider(Arc::clone(&self.cookie_store))
+                    .build()
+                    .unwrap()
+            })
+        }
     }
     /// Refreshes the cookies for the Vinted API.
     ///
@@ -443,10 +464,14 @@ impl<'a> VintedWrapper<'a> {
     ///     }
     /// }
     /// ```
-    pub async fn refresh_cookies(&self, user_agent: Option<&str>) -> Result<(), CookieError> {
+    pub async fn refresh_cookies(
+        &self,
+        user_agent: Option<&str>,
+        proxy: Option<&str>,
+    ) -> Result<(), CookieError> {
         self.cookie_store.lock().unwrap().clear();
 
-        let client = self.get_client(user_agent);
+        let client = self.get_client(user_agent, proxy);
 
         let request = format!("https://www.vinted.{}/auth/token_refresh", self.host);
 
@@ -522,6 +547,8 @@ impl<'a> VintedWrapper<'a> {
         filters: &Filter,
         num: u32,
         user_agent: Option<&str>,
+        proxy_cookies: Option<&str>,
+        proxy_fetch: Option<&str>,
     ) -> Result<Items, VintedWrapperError> {
         if num == 0 {
             return Err(VintedWrapperError::ItemNumberError);
@@ -537,10 +564,10 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            self.refresh_cookies(user_agent).await?;
+            self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
-        let client = self.get_client(user_agent);
+        let client = self.get_client(user_agent, proxy_fetch);
 
         let mut first = true;
 
@@ -680,6 +707,8 @@ impl<'a> VintedWrapper<'a> {
         &self,
         item_id: i64,
         user_agent: Option<&str>,
+        proxy_cookies: Option<&str>,
+        proxy_fetch: Option<&str>,
     ) -> Result<AdvancedItem, VintedWrapperError> {
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
 
@@ -691,10 +720,10 @@ impl<'a> VintedWrapper<'a> {
             .get(&url, "/", "__cf_bm")
             .is_none()
         {
-            self.refresh_cookies(user_agent).await?;
+            self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
-        let client = self.get_client(user_agent);
+        let client = self.get_client(user_agent, proxy_fetch);
 
         let json: Response = client.get(url).send().await?;
 
