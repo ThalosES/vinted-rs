@@ -30,6 +30,7 @@
  ```
 */
 use fang::FangError;
+use log::info;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
@@ -474,6 +475,8 @@ impl<'a> VintedWrapper<'a> {
 
         let request = format!("https://www.vinted.{}/auth/token_refresh", self.host);
 
+        info!("POST_GET_COOKIES");
+
         let mut response_cookies = client.post(&request).send().await?;
         let max_retries = 3;
         let mut i = 0;
@@ -563,6 +566,7 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
+            info!("Refreshing cookies..");
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
@@ -678,6 +682,8 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
+        info!("GET_{}_ITEMS -> ", num);
+
         let json: Response = client.get(url).send().await?;
 
         match json.status() {
@@ -724,6 +730,7 @@ impl<'a> VintedWrapper<'a> {
 
         let client = self.get_client(user_agent, proxy_fetch);
 
+        info!("GET_ADVANCED_ITEM-> {}", item_id);
         let json: Response = client.get(url).send().await?;
 
         match json.status() {
