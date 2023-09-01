@@ -31,6 +31,7 @@
 */
 use fang::FangError;
 use log::info;
+use log::warn;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
@@ -564,7 +565,7 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            info!("POST_GET_COOKIES -> Get {} items", num);
+            warn!("POST_GET_COOKIES -> Get {} items", num);
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
@@ -723,7 +724,7 @@ impl<'a> VintedWrapper<'a> {
             .get(&url, "/", "__cf_bm")
             .is_none()
         {
-            info!("POST_GET_COOKIES -> Get item {}", item_id);
+            warn!("POST_GET_COOKIES -> Get item {}", item_id);
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
