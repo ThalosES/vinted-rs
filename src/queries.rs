@@ -475,8 +475,6 @@ impl<'a> VintedWrapper<'a> {
 
         let request = format!("https://www.vinted.{}/auth/token_refresh", self.host);
 
-        info!("POST_GET_COOKIES");
-
         let mut response_cookies = client.post(&request).send().await?;
         let max_retries = 3;
         let mut i = 0;
@@ -566,7 +564,7 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            info!("Refreshing cookies..");
+            info!("POST_GET_COOKIES -> Get {} items", num);
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
@@ -725,6 +723,7 @@ impl<'a> VintedWrapper<'a> {
             .get(&url, "/", "__cf_bm")
             .is_none()
         {
+            info!("POST_GET_COOKIES -> Get item {}", item_id);
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
