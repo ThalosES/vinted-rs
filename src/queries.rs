@@ -680,7 +680,7 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
-        info!("GET_{}_ITEMS -> ", num);
+        info!("GET_{}_ITEMS", num);
 
         let json: Response = client.get(url).send().await?;
 
