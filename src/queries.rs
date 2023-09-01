@@ -257,8 +257,8 @@ impl<'a> VintedWrappers<'a> {
         num: u32,
         current: usize,
         user_agent: Option<&str>,
-        proxy_cookies: Option<&str>,
-        proxy_fetch: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<Items, VintedWrapperError> {
         let vinted_wrapper = &self.wrappers[current];
 
@@ -272,8 +272,8 @@ impl<'a> VintedWrappers<'a> {
         item_id: i64,
         current: usize,
         user_agent: Option<&str>,
-        proxy_cookies: Option<&str>,
-        proxy_fetch: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<AdvancedItem, VintedWrapperError> {
         let vinted_wrapper = &self.wrappers[current];
 
@@ -411,9 +411,8 @@ impl<'a> VintedWrapper<'a> {
         }
     }
 
-    fn get_client(&self, user_agent: Option<&str>, proxy: Option<&str>) -> &'static Client {
-        if let Some(url) = proxy {
-            let proxy: Proxy = Proxy::all(url).expect("Bad proxy URL");
+    fn get_client(&self, user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
+        if let Some(proxy) = proxy {
             CLIENT.get_or_init(|| -> Client {
                 reqwest::ClientBuilder::new()
                     .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
@@ -467,7 +466,7 @@ impl<'a> VintedWrapper<'a> {
     pub async fn refresh_cookies(
         &self,
         user_agent: Option<&str>,
-        proxy: Option<&str>,
+        proxy: Option<Proxy>,
     ) -> Result<(), CookieError> {
         self.cookie_store.lock().unwrap().clear();
 
@@ -547,8 +546,8 @@ impl<'a> VintedWrapper<'a> {
         filters: &Filter,
         num: u32,
         user_agent: Option<&str>,
-        proxy_cookies: Option<&str>,
-        proxy_fetch: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<Items, VintedWrapperError> {
         if num == 0 {
             return Err(VintedWrapperError::ItemNumberError);
@@ -707,8 +706,8 @@ impl<'a> VintedWrapper<'a> {
         &self,
         item_id: i64,
         user_agent: Option<&str>,
-        proxy_cookies: Option<&str>,
-        proxy_fetch: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<AdvancedItem, VintedWrapperError> {
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
 

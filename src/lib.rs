@@ -39,9 +39,11 @@ use vinted_rs::VintedWrapper;
 const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
 const POOL_SIZE: u32 = 5;
 
+
+
 #[tokio::main]
 async fn main() {
-    l    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
         println!("Please provide the host as a command-line parameter.");

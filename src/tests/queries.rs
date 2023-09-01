@@ -333,43 +333,4 @@ async fn test_get_advanced_items() {
             VintedWrapperError::CookiesError(_) => (),
         },
     };
-
-    #[tokio::test]
-    async fn test_get_advanced_items_with_proxy() {
-        let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
-            .await
-            .unwrap();
-
-        let adidas = db.get_brand_by_name(&"Adidas").await.unwrap();
-        let nike = db.get_brand_by_name(&"Nike").await.unwrap();
-
-        let brands = format!("{},{}", adidas.id, nike.id);
-
-        let filter = Filter::builder()
-            .brand_ids(Some(brands))
-            .price_from(Some(15.0))
-            .price_to(Some(20.0))
-            .build();
-
-        let vinted = VintedWrapper::new();
-
-        match vinted.get_items(&filter, 10, None, None, None).await {
-            Ok(items) => {
-                if !items.items.is_empty() {
-                    for item in items.items {
-                        let advanced = vinted
-                            .get_advanced_item(item.id, None, None, None)
-                            .await
-                            .unwrap();
-                        assert_eq!(item.id, advanced.id);
-                    }
-                }
-            }
-            Err(err) => match err {
-                VintedWrapperError::ItemNumberError => unreachable!(),
-                VintedWrapperError::ItemError(_, _, _) => (),
-                VintedWrapperError::CookiesError(_) => (),
-            },
-        };
-    }
 }
