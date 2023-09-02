@@ -40,6 +40,8 @@ use reqwest::Response;
 use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use thiserror::Error;
 
@@ -298,9 +300,12 @@ impl<'a> Default for VintedWrappers<'a> {
 ///
 #[derive(Debug, Clone)]
 pub struct VintedWrapper<'a> {
+    id: usize,
     host: &'a str,
     cookie_store: Arc<CookieStoreMutex>,
 }
+
+static WRAPPER_ID: AtomicUsize = AtomicUsize::new(0);
 
 impl<'a> Default for VintedWrapper<'a> {
     fn default() -> Self {
@@ -323,8 +328,12 @@ impl<'a> VintedWrapper<'a> {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
         let cookie_store = Arc::new(cookie_store);
+
+        let id = WRAPPER_ID.fetch_add(1, Ordering::SeqCst);
+
         VintedWrapper {
             host: random_host(),
+            id,
             cookie_store,
         }
     }
@@ -347,8 +356,11 @@ impl<'a> VintedWrapper<'a> {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
         let cookie_store = Arc::new(cookie_store);
+        let id = WRAPPER_ID.fetch_add(1, Ordering::SeqCst);
+
         VintedWrapper {
             host: host.into(),
+            id,
             cookie_store,
         }
     }
@@ -388,6 +400,10 @@ impl<'a> VintedWrapper<'a> {
     /// ```
     pub fn get_host(&self) -> &str {
         self.host
+    }
+
+    pub fn get_id(&self) -> &usize {
+        &self.id
     }
     /**
 
@@ -564,7 +580,10 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            warn!("POST_GET_COOKIES -> Get {} items @ {}", num, self.host);
+            warn!(
+                "[{}] POST_GET_COOKIES -> Get {} items @ {}",
+                self.id, num, self.host
+            );
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
@@ -680,7 +699,7 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
-        info!("GET_{}_ITEMS @ {}", num, self.host);
+        info!("[{}] GET_{}_ITEMS @ {}", self.id, num, self.host);
 
         let json: Response = client.get(url).send().await?;
 
@@ -723,14 +742,20 @@ impl<'a> VintedWrapper<'a> {
             .get(&domain, "/", "__cf_bm")
             .is_none()
         {
-            warn!("POST_GET_COOKIES -> Get item {} @ {}", item_id, self.host);
+            warn!(
+                "[{}] POST_GET_COOKIES -> Get item {} @ {}",
+                self.id, item_id, self.host
+            );
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
         let client = self.get_client(user_agent, proxy_fetch);
 
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
-        info!("GET_ADVANCED_ITEM-> {} @ {}", item_id, self.host);
+        info!(
+            "[{}] GET_ADVANCED_ITEM-> {} @ {}",
+            self.id, item_id, self.host
+        );
         let json: Response = client.get(url).send().await?;
 
         match json.status() {
