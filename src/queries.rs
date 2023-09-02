@@ -565,7 +565,7 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            warn!("POST_GET_COOKIES -> Get {} items", num);
+            warn!("POST_GET_COOKIES -> Get {} items @ {}", num, self.host);
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
@@ -724,7 +724,7 @@ impl<'a> VintedWrapper<'a> {
             .get(&url, "/", "__cf_bm")
             .is_none()
         {
-            warn!("POST_GET_COOKIES -> Get item {}", item_id);
+            warn!("POST_GET_COOKIES -> Get item {} @ {}", item_id, self.host);
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
