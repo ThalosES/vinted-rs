@@ -739,7 +739,7 @@ impl<'a> VintedWrapper<'a> {
         if cookie_store_clone
             .lock()
             .unwrap()
-            .get(&domain, "/", "__cf_bm")
+            .get(domain, "/", "__cf_bm")
             .is_none()
         {
             warn!(
