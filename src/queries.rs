@@ -554,8 +554,7 @@ impl<'a> VintedWrapper<'a> {
         if num == 0 {
             return Err(VintedWrapperError::ItemNumberError);
         }
-
-        let domain: &str = &format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
+        let domain: &str = &format!("vinted.{}", self.host);
 
         let cookie_store_clone = self.cookie_store.clone();
 
@@ -714,14 +713,14 @@ impl<'a> VintedWrapper<'a> {
         proxy_cookies: Option<Proxy>,
         proxy_fetch: Option<Proxy>,
     ) -> Result<AdvancedItem, VintedWrapperError> {
-        let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
-
         let cookie_store_clone = self.cookie_store.clone();
+
+        let domain: &str = &format!("vinted.{}", self.host);
 
         if cookie_store_clone
             .lock()
             .unwrap()
-            .get(&url, "/", "__cf_bm")
+            .get(&domain, "/", "__cf_bm")
             .is_none()
         {
             warn!("POST_GET_COOKIES -> Get item {} @ {}", item_id, self.host);
@@ -730,6 +729,7 @@ impl<'a> VintedWrapper<'a> {
 
         let client = self.get_client(user_agent, proxy_fetch);
 
+        let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
         info!("GET_ADVANCED_ITEM-> {} @ {}", item_id, self.host);
         let json: Response = client.get(url).send().await?;
 
