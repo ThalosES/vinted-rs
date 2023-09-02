@@ -1,8 +1,17 @@
 # Changelog
 
+# 0.8.4 (2023-09-2) [#71](https://github.com/TuTarea/vinted-rs/pull/71/)
+
+## Improved
+
+- Added support for using proxy in requests to Vinted
+- Added some optional debug login
+- Wrappers are now serialized
+
 # 0.8.3 (2023-08-29) [#67](https://github.com/TuTarea/vinted-rs/pull/67/)
 
 ## Improved
+
 - Added support for setting the user agent
 
 # 0.8.2 (2023-08-29) [#65](https://github.com/TuTarea/vinted-rs/pull/65/)
@@ -10,28 +19,31 @@
 ## Improved
 
 - Add a default `VintedWrappers` that is `all_the_wrappers`.
- 
 
 # 0.8.1 (2023-08-23) [#62](https://github.com/TuTarea/vinted-rs/pull/62/)
 
 ## Improved
+
 - Added support for multiple vinted wrappers.
 
 # 0.7.0 (2023-08-20) [#59](https://github.com/TuTarea/vinted-rs/pull/59/)
 
 ## Improved
+
 - Added support for Redis for all objects.
 - Auto request cookies in get_advanced_item.
 
 ## 0.6.0 (2023-08-16) [#57](https://github.com/TuTarea/vinted-rs/pull/57/)
 
-## Improved 
+## Improved
+
 - Added support for redis bindings
 - Added support for Advanced Item query thanks to @alvarocabo.
 
 ## 0.5.1 (2023-08-04) [#54](https://github.com/TuTarea/vinted-rs/pull/54/)
 
 ## Fixed
+
 - Fix type of `price_from` and `price_to` atribute.
 - Fix a test related to sizes.
 
