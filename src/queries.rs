@@ -30,8 +30,7 @@
  ```
 */
 use fang::FangError;
-use log::info;
-use log::warn;
+use log::debug;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
@@ -581,7 +580,7 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            warn!(
+            debug!(
                 "[{}] POST_GET_COOKIES -> Get {} items @ {}",
                 self.id, num, self.host
             );
@@ -700,7 +699,7 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
-        info!("[{}] GET_{}_ITEMS @ {}", self.id, num, self.host);
+        debug!("[{}] GET_{}_ITEMS @ {}", self.id, num, self.host);
 
         let json: Response = client.get(url).send().await?;
 
@@ -743,7 +742,7 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            warn!(
+            debug!(
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
                 self.id, item_id, self.host
             );
@@ -753,8 +752,8 @@ impl<'a> VintedWrapper<'a> {
         let client = self.get_client(user_agent, proxy_fetch);
 
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
-        info!(
-            "[{}] GET_ADVANCED_ITEM-> {} @ {}",
+        debug!(
+            "[{}] GET_ADVANCED_ITEM_{} @ {}",
             self.id, item_id, self.host
         );
         let json: Response = client.get(url).send().await?;
