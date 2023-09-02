@@ -681,7 +681,7 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
-        info!("GET_{}_ITEMS", num);
+        info!("GET_{}_ITEMS @ {}", num, self.host);
 
         let json: Response = client.get(url).send().await?;
 
@@ -730,7 +730,7 @@ impl<'a> VintedWrapper<'a> {
 
         let client = self.get_client(user_agent, proxy_fetch);
 
-        info!("GET_ADVANCED_ITEM-> {}", item_id);
+        info!("GET_ADVANCED_ITEM-> {} @ {}", item_id, self.host);
         let json: Response = client.get(url).send().await?;
 
         match json.status() {
