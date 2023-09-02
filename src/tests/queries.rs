@@ -35,7 +35,7 @@ async fn test_get_item_query_text() {
         .search_text(Some(String::from("shoes")))
         .build();
 
-    match vinted.get_items(&filter, 1, None).await {
+    match vinted.get_items(&filter, 1, None, None, None).await {
         // Limitado el numero de elementos a 1
         Ok(items) => {
             assert!(items.items.len() <= 1);
@@ -58,7 +58,7 @@ async fn test_get_item_brands() {
         .brand_ids(Some(brand.id.to_string()))
         .build();
 
-    match vinted.get_items(&filter, 1, None).await {
+    match vinted.get_items(&filter, 1, None, None, None).await {
         // Limitado el numero de elementos a 1
         Ok(items) => {
             assert_eq!(items.items.get(0).unwrap().brand_title, brand.title);
@@ -81,7 +81,7 @@ async fn test_get_items_brands() {
         .brand_ids(Some(brand.id.to_string()))
         .build();
 
-    match vinted.get_items(&filter, 10, None).await {
+    match vinted.get_items(&filter, 10, None, None, None).await {
         Ok(items) => {
             for item in items.items {
                 assert_eq!(item.brand_title, brand.title);
@@ -108,7 +108,7 @@ async fn test_get_items_catalogs_no_db() {
         "femei", "mulher", "beauty", "femmes", "dam", "hombre",
     ];
 
-    match vinted.get_items(&filter, 10, None).await {
+    match vinted.get_items(&filter, 10, None, None, None).await {
         Ok(items) => {
             assert!(items.items.len() <= 10);
             items.items.iter().for_each(|item| {
@@ -141,7 +141,7 @@ async fn test_get_items_by_price() {
         .price_to(Some(max))
         .build();
 
-    match vinted.get_items(&filter, 10, None).await {
+    match vinted.get_items(&filter, 10, None, None, None).await {
         Ok(items) => {
             assert!(items.items.len() <= 10);
             let ok: bool = items.items.iter().all(|item| {
@@ -167,7 +167,7 @@ async fn test_get_items_by_size_no_db() {
 
     let filter: Filter = Filter::builder().size_ids(Some(size_id)).build();
 
-    match vinted.get_items(&filter, 20, None).await {
+    match vinted.get_items(&filter, 20, None, None, None).await {
         Ok(items) => {
             assert!(items.items.len() <= 20);
             let ok: bool = items.items.iter().all(|item| item.size_title == size_title);
@@ -199,7 +199,7 @@ async fn test_get_items_by_size() {
         .size_ids(Some(size.id.to_string()))
         .build();
 
-    match vinted.get_items(&filter, 20, None).await {
+    match vinted.get_items(&filter, 20, None, None, None).await {
         Ok(items) => {
             assert!(items.items.len() <= 20);
             let ok: bool = items
@@ -225,7 +225,10 @@ async fn test_get_items_by_material() {
     let filter: Filter = Filter::builder().material_ids(Some(id.to_string())).build();
     let num: usize = 15;
 
-    match vinted.get_items(&filter, num as u32, None).await {
+    match vinted
+        .get_items(&filter, num as u32, None, None, None)
+        .await
+    {
         Ok(items) => {
             assert!(items.items.len() <= num);
         }
@@ -249,7 +252,10 @@ async fn test_get_items_by_color() {
 
     let num: usize = 20;
 
-    match vinted.get_items(&filter, num as u32, None).await {
+    match vinted
+        .get_items(&filter, num as u32, None, None, None)
+        .await
+    {
         Ok(items) => {
             assert!(items.items.len() <= num);
         }
@@ -269,7 +275,10 @@ async fn test_get_items_by_currency() {
 
     let num: usize = 20;
 
-    match vinted.get_items(&filter, num as u32, None).await {
+    match vinted
+        .get_items(&filter, num as u32, None, None, None)
+        .await
+    {
         Ok(items) => {
             assert!(items.items.len() <= num);
             let ok: bool = items.items.iter().all(|item| {
@@ -306,11 +315,14 @@ async fn test_get_advanced_items() {
 
     let vinted = VintedWrapper::new();
 
-    match vinted.get_items(&filter, 10, None).await {
+    match vinted.get_items(&filter, 10, None, None, None).await {
         Ok(items) => {
             if !items.items.is_empty() {
                 for item in items.items {
-                    let advanced = vinted.get_advanced_item(item.id, None).await.unwrap();
+                    let advanced = vinted
+                        .get_advanced_item(item.id, None, None, None)
+                        .await
+                        .unwrap();
                     assert_eq!(item.id, advanced.id);
                 }
             }
