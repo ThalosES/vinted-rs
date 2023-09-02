@@ -430,7 +430,7 @@ impl<'a> VintedWrapper<'a> {
     }
 
     fn get_client(&self, user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
-        if let Some(proxy) = proxy {
+        let client = if let Some(proxy) = proxy {
             CLIENT.get_or_init(|| -> Client {
                 reqwest::ClientBuilder::new()
                     .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
@@ -447,7 +447,8 @@ impl<'a> VintedWrapper<'a> {
                     .build()
                     .unwrap()
             })
-        }
+        };
+        client
     }
     /// Refreshes the cookies for the Vinted API.
     ///
