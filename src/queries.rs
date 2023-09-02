@@ -30,13 +30,17 @@
  ```
 */
 use fang::FangError;
+use log::debug;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
+use reqwest::Proxy;
 use reqwest::Response;
 use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use thiserror::Error;
 
@@ -256,10 +260,14 @@ impl<'a> VintedWrappers<'a> {
         num: u32,
         current: usize,
         user_agent: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<Items, VintedWrapperError> {
         let vinted_wrapper = &self.wrappers[current];
 
-        vinted_wrapper.get_items(filters, num, user_agent).await
+        vinted_wrapper
+            .get_items(filters, num, user_agent, proxy_cookies, proxy_fetch)
+            .await
     }
 
     pub async fn lineal_to_advance_items(
@@ -267,10 +275,14 @@ impl<'a> VintedWrappers<'a> {
         item_id: i64,
         current: usize,
         user_agent: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<AdvancedItem, VintedWrapperError> {
         let vinted_wrapper = &self.wrappers[current];
 
-        vinted_wrapper.get_advanced_item(item_id, user_agent).await
+        vinted_wrapper
+            .get_advanced_item(item_id, user_agent, proxy_cookies, proxy_fetch)
+            .await
     }
 }
 
@@ -287,9 +299,12 @@ impl<'a> Default for VintedWrappers<'a> {
 ///
 #[derive(Debug, Clone)]
 pub struct VintedWrapper<'a> {
+    id: usize,
     host: &'a str,
     cookie_store: Arc<CookieStoreMutex>,
 }
+
+static WRAPPER_ID: AtomicUsize = AtomicUsize::new(0);
 
 impl<'a> Default for VintedWrapper<'a> {
     fn default() -> Self {
@@ -312,8 +327,12 @@ impl<'a> VintedWrapper<'a> {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
         let cookie_store = Arc::new(cookie_store);
+
+        let id = WRAPPER_ID.fetch_add(1, Ordering::SeqCst);
+
         VintedWrapper {
             host: random_host(),
+            id,
             cookie_store,
         }
     }
@@ -336,8 +355,11 @@ impl<'a> VintedWrapper<'a> {
         let cookie_store = CookieStore::new(None);
         let cookie_store = CookieStoreMutex::new(cookie_store);
         let cookie_store = Arc::new(cookie_store);
+        let id = WRAPPER_ID.fetch_add(1, Ordering::SeqCst);
+
         VintedWrapper {
             host: host.into(),
+            id,
             cookie_store,
         }
     }
@@ -378,6 +400,10 @@ impl<'a> VintedWrapper<'a> {
     pub fn get_host(&self) -> &str {
         self.host
     }
+
+    pub fn get_id(&self) -> &usize {
+        &self.id
+    }
     /**
 
     After changing host is always necessary to refresh cookies
@@ -402,14 +428,26 @@ impl<'a> VintedWrapper<'a> {
         }
     }
 
-    fn get_client(&self, user_agent: Option<&str>) -> &'static Client {
-        CLIENT.get_or_init(|| -> Client {
-            reqwest::ClientBuilder::new()
-                .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-                .cookie_provider(Arc::clone(&self.cookie_store))
-                .build()
-                .unwrap()
-        })
+    fn get_client(&self, user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
+        let client = if let Some(proxy) = proxy {
+            CLIENT.get_or_init(|| -> Client {
+                reqwest::ClientBuilder::new()
+                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+                    .proxy(proxy)
+                    .cookie_provider(Arc::clone(&self.cookie_store))
+                    .build()
+                    .unwrap()
+            })
+        } else {
+            CLIENT.get_or_init(|| -> Client {
+                reqwest::ClientBuilder::new()
+                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+                    .cookie_provider(Arc::clone(&self.cookie_store))
+                    .build()
+                    .unwrap()
+            })
+        };
+        client
     }
     /// Refreshes the cookies for the Vinted API.
     ///
@@ -443,10 +481,14 @@ impl<'a> VintedWrapper<'a> {
     ///     }
     /// }
     /// ```
-    pub async fn refresh_cookies(&self, user_agent: Option<&str>) -> Result<(), CookieError> {
+    pub async fn refresh_cookies(
+        &self,
+        user_agent: Option<&str>,
+        proxy: Option<Proxy>,
+    ) -> Result<(), CookieError> {
         self.cookie_store.lock().unwrap().clear();
 
-        let client = self.get_client(user_agent);
+        let client = self.get_client(user_agent, proxy);
 
         let request = format!("https://www.vinted.{}/auth/token_refresh", self.host);
 
@@ -522,12 +564,13 @@ impl<'a> VintedWrapper<'a> {
         filters: &Filter,
         num: u32,
         user_agent: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<Items, VintedWrapperError> {
         if num == 0 {
             return Err(VintedWrapperError::ItemNumberError);
         }
-
-        let domain: &str = &format!("https://www.vinted.{}/api/v2/catalog/items", self.host);
+        let domain: &str = &format!("vinted.{}", self.host);
 
         let cookie_store_clone = self.cookie_store.clone();
 
@@ -537,10 +580,14 @@ impl<'a> VintedWrapper<'a> {
             .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            self.refresh_cookies(user_agent).await?;
+            debug!(
+                "[{}] POST_GET_COOKIES -> Get {} items @ {}",
+                self.id, num, self.host
+            );
+            self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
-        let client = self.get_client(user_agent);
+        let client = self.get_client(user_agent, proxy_fetch);
 
         let mut first = true;
 
@@ -652,6 +699,8 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
+        debug!("[{}] GET_{}_ITEMS @ {}", self.id, num, self.host);
+
         let json: Response = client.get(url).send().await?;
 
         match json.status() {
@@ -680,22 +729,33 @@ impl<'a> VintedWrapper<'a> {
         &self,
         item_id: i64,
         user_agent: Option<&str>,
+        proxy_cookies: Option<Proxy>,
+        proxy_fetch: Option<Proxy>,
     ) -> Result<AdvancedItem, VintedWrapperError> {
-        let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
-
         let cookie_store_clone = self.cookie_store.clone();
+
+        let domain: &str = &format!("vinted.{}", self.host);
 
         if cookie_store_clone
             .lock()
             .unwrap()
-            .get(&url, "/", "__cf_bm")
+            .get(domain, "/", "__cf_bm")
             .is_none()
         {
-            self.refresh_cookies(user_agent).await?;
+            debug!(
+                "[{}] POST_GET_COOKIES -> Get item {} @ {}",
+                self.id, item_id, self.host
+            );
+            self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
-        let client = self.get_client(user_agent);
+        let client = self.get_client(user_agent, proxy_fetch);
 
+        let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
+        debug!(
+            "[{}] GET_ADVANCED_ITEM_{} @ {}",
+            self.id, item_id, self.host
+        );
         let json: Response = client.get(url).send().await?;
 
         match json.status() {

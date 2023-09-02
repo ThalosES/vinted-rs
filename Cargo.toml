@@ -1,6 +1,6 @@
 [package]
 name = "vinted-rs"
-version = "0.8.3"
+version = "0.8.4"
 edition = "2021"
 repository = "https://github.com/TuTarea/vinted-rs"
 authors = [
@@ -34,10 +34,10 @@ rand = "0.8"
 reqwest_cookie_store = "0.6"
 typed-builder = "0.16"
 fang = { version = "0.10.3", features = ["asynk"], default-features = false }
-redis-macros = { version = "0.2.1", optional = true}
-redis = { version = "0.23.2",  optional = true}
+redis-macros = { version = "0.2.1", optional = true }
+redis = { version = "0.23.2", optional = true }
 serde_json = { version = "1.0.91" }
-
+log = "0.4.20"
 [dev-dependencies]
 redis-macros = { version = "0.2.1" }
 redis = { version = "0.23.2" }
