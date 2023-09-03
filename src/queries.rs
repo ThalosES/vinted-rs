@@ -207,7 +207,7 @@ pub fn random_host<'a>() -> &'a str {
     DOMAINS[random_index]
 }
 
-static CLIENT: OnceCell<Client> = OnceCell::new();
+pub static CLIENT: OnceCell<Client> = OnceCell::new();
 
 /// This will allow you to operate with multiple hosts using just one struct
 #[derive(Debug, Clone)]
@@ -735,7 +735,7 @@ impl<'a> VintedWrapper<'a> {
 
     /// Results additional information from an item based on its id
     ///
-    /// **Warning** This querie result is affected by the host country, it has to be the same as the item is hosted at
+    /// **Warning** This query result is affected by the host country, it has to be the same as the item is hosted at
     pub async fn get_advanced_item(
         &self,
         item_id: i64,
