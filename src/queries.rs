@@ -30,7 +30,7 @@
  ```
 */
 use fang::FangError;
-use log::info;
+use log::debug;
 use rand::Rng;
 use reqwest::Client;
 use reqwest::Proxy;
@@ -585,7 +585,7 @@ impl<'a> VintedWrapper<'a> {
         }
 
         if cookie_valid {
-            info!(
+            debug!(
                 "[{}] POST_GET_COOKIES -> Get {} items @ {}",
                 self.id, num, self.host
             );
@@ -702,7 +702,7 @@ impl<'a> VintedWrapper<'a> {
 
         url = format!("{url}{per_page_args}");
 
-        info!("[{}] GET_{}_ITEMS @ {}", self.id, num, self.host);
+        debug!("[{}] GET_{}_ITEMS @ {}", self.id, num, self.host);
 
         let json: Response = client.get(url).send().await?;
 
@@ -747,7 +747,7 @@ impl<'a> VintedWrapper<'a> {
         }
 
         if cookie_valid {
-            info!(
+            debug!(
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
                 self.id, item_id, self.host
             );
@@ -755,7 +755,7 @@ impl<'a> VintedWrapper<'a> {
         }
 
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
-        info!(
+        debug!(
             "[{}] GET_ADVANCED_ITEM_{} @ {}",
             self.id, item_id, self.host
         );
