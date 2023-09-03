@@ -519,6 +519,10 @@ impl<'a> VintedWrapper<'a> {
             )));
         }
 
+        let cookies = self.cookie_store.lock().unwrap();
+
+        warn!("{:?}", cookies);
+
         Ok(())
     }
 
