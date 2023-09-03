@@ -223,26 +223,30 @@ async fn get_client(user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static 
 
     if let Some(proxy) = proxy {
         CLIENT_PROXY
-            .get_or_init(|| async {
-                reqwest::ClientBuilder::new()
-                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-                    .proxy(proxy)
-                    .cookie_provider(COOKIE_STORE.get().unwrap().clone())
-                    .build()
-                    .unwrap()
-            })
+            .get_or_init(|| async { create_client_proxy(user_agent, proxy) })
             .await
     } else {
         CLIENT
-            .get_or_init(|| async {
-                reqwest::ClientBuilder::new()
-                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-                    .cookie_provider(COOKIE_STORE.get().unwrap().clone())
-                    .build()
-                    .unwrap()
-            })
+            .get_or_init(|| async { create_client(user_agent) })
             .await
     }
+}
+
+fn create_client_proxy(user_agent: Option<&str>, proxy: Proxy) -> Client {
+    reqwest::ClientBuilder::new()
+        .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+        .proxy(proxy)
+        .cookie_provider(COOKIE_STORE.get().unwrap().clone())
+        .build()
+        .unwrap()
+}
+
+fn create_client(user_agent: Option<&str>) -> Client {
+    reqwest::ClientBuilder::new()
+        .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+        .cookie_provider(COOKIE_STORE.get().unwrap().clone())
+        .build()
+        .unwrap()
 }
 /// This will allow you to operate with multiple hosts using just one struct
 #[derive(Debug, Clone)]
