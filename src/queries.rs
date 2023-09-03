@@ -31,7 +31,6 @@
 */
 use fang::FangError;
 use log::info;
-use log::warn;
 use rand::Rng;
 use reqwest::Client;
 use reqwest::Proxy;
@@ -209,21 +208,26 @@ pub fn random_host<'a>() -> &'a str {
 
 pub static CLIENT: OnceCell<Client> = OnceCell::const_new();
 
+pub static CLIENT_PROXY: OnceCell<Client> = OnceCell::const_new();
+
 pub static COOKIE_STORE: OnceCell<Arc<CookieStoreMutex>> = OnceCell::const_new();
 
 async fn get_client(user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
-    if let Some(proxy) = proxy {
-        CLIENT
-            .get_or_init(|| async {
-                let cookie_store = CookieStore::new(None);
-                let cookie_store = CookieStoreMutex::new(cookie_store);
-                let cookie_store = Arc::new(cookie_store);
-                COOKIE_STORE.set(cookie_store.clone()).unwrap();
+    COOKIE_STORE
+        .get_or_init(|| async {
+            let cookie_store = CookieStore::new(None);
+            let cookie_store = CookieStoreMutex::new(cookie_store);
+            Arc::new(cookie_store)
+        })
+        .await;
 
+    if let Some(proxy) = proxy {
+        CLIENT_PROXY
+            .get_or_init(|| async {
                 reqwest::ClientBuilder::new()
                     .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
                     .proxy(proxy)
-                    .cookie_provider(cookie_store)
+                    .cookie_provider(COOKIE_STORE.get().unwrap().clone())
                     .build()
                     .unwrap()
             })
@@ -231,21 +235,15 @@ async fn get_client(user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static 
     } else {
         CLIENT
             .get_or_init(|| async {
-                let cookie_store = CookieStore::new(None);
-                let cookie_store = CookieStoreMutex::new(cookie_store);
-                let cookie_store = Arc::new(cookie_store);
-                COOKIE_STORE.set(cookie_store.clone()).unwrap();
-
                 reqwest::ClientBuilder::new()
                     .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-                    .cookie_provider(cookie_store)
+                    .cookie_provider(COOKIE_STORE.get().unwrap().clone())
                     .build()
                     .unwrap()
             })
             .await
     }
 }
-
 /// This will allow you to operate with multiple hosts using just one struct
 #[derive(Debug, Clone)]
 pub struct VintedWrappers<'a> {
@@ -494,8 +492,6 @@ impl<'a> VintedWrapper<'a> {
     ) -> Result<(), CookieError> {
         let client = get_client(user_agent, proxy).await;
 
-        warn!("PRE REQUEST {:?}", client);
-
         let request = format!("https://www.vinted.{}/auth/token_refresh", self.host);
 
         let mut response_cookies = client.post(&request).send().await?;
@@ -515,8 +511,6 @@ impl<'a> VintedWrapper<'a> {
                 user_agent.unwrap_or(DEFAULT_USER_AGENT).to_string(),
             )));
         }
-
-        warn!("POS REQUEST {:?}", client);
 
         Ok(())
     }
