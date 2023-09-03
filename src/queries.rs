@@ -31,6 +31,7 @@
 */
 use fang::FangError;
 use log::info;
+use log::warn;
 use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
@@ -488,7 +489,7 @@ impl<'a> VintedWrapper<'a> {
     ) -> Result<(), CookieError> {
         let mut cookies = self.cookie_store.lock().unwrap();
 
-        info!("{:?}", cookies);
+        warn!("{:?}", cookies);
 
         cookies.remove(&format!("vinted.{}", self.host), "/", "__cf_bm");
 
