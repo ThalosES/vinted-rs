@@ -212,7 +212,7 @@ pub static CLIENT: OnceCell<Client> = OnceCell::const_new();
 pub static COOKIE_STORE: OnceCell<Arc<CookieStoreMutex>> = OnceCell::const_new();
 
 async fn get_client(user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
-    let client = if let Some(proxy) = proxy {
+    if let Some(proxy) = proxy {
         CLIENT
             .get_or_init(|| async {
                 let cookie_store = CookieStore::new(None);
@@ -243,8 +243,7 @@ async fn get_client(user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static 
                     .unwrap()
             })
             .await
-    };
-    client
+    }
 }
 
 /// This will allow you to operate with multiple hosts using just one struct
@@ -584,9 +583,14 @@ impl<'a> VintedWrapper<'a> {
 
         let domain: &str = &format!("vinted.{}", self.host);
 
-        let cookie_store_clone = COOKIE_STORE.get().unwrap().lock().unwrap();
+        let cookie_valid;
 
-        if cookie_store_clone.get(domain, "/", "__cf_bm").is_none() {
+        {
+            let cookie_store_clone = COOKIE_STORE.get().unwrap().lock().unwrap();
+            cookie_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
+        }
+
+        if cookie_valid {
             info!(
                 "[{}] POST_GET_COOKIES -> Get {} items @ {}",
                 self.id, num, self.host
@@ -741,9 +745,14 @@ impl<'a> VintedWrapper<'a> {
 
         let domain: &str = &format!("vinted.{}", self.host);
 
-        let cookie_store_clone = COOKIE_STORE.get().unwrap().lock().unwrap();
+        let cookie_valid;
 
-        if cookie_store_clone.get(domain, "/", "__cf_bm").is_none() {
+        {
+            let cookie_store_clone = COOKIE_STORE.get().unwrap().lock().unwrap();
+            cookie_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
+        }
+
+        if cookie_valid {
             info!(
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
                 self.id, item_id, self.host
