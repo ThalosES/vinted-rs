@@ -487,11 +487,13 @@ impl<'a> VintedWrapper<'a> {
         user_agent: Option<&str>,
         proxy: Option<Proxy>,
     ) -> Result<(), CookieError> {
-        let mut cookies = self.cookie_store.lock().unwrap();
+        {
+            let mut cookies = self.cookie_store.lock().unwrap();
 
-        warn!("{:?}", cookies);
+            warn!("{:?}", cookies);
 
-        cookies.remove(&format!("vinted.{}", self.host), "/", "__cf_bm");
+            cookies.remove(&format!("vinted.{}", self.host), "/", "__cf_bm");
+        }
 
         let client = self.get_client(user_agent, proxy);
 
