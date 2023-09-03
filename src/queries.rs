@@ -492,7 +492,7 @@ impl<'a> VintedWrapper<'a> {
         {
             let mut cookies = self.cookie_store.lock().unwrap();
 
-            warn!("{:?}", cookies);
+            warn!("PRE REQUEST {:?}", cookies);
 
             cookies.remove(&format!("vinted.{}", self.host), "/", "__cf_bm");
         }
@@ -521,7 +521,7 @@ impl<'a> VintedWrapper<'a> {
 
         let cookies = self.cookie_store.lock().unwrap();
 
-        warn!("{:?}", cookies);
+        warn!("POS REQUEST {:?}", cookies);
 
         Ok(())
     }
