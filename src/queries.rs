@@ -32,7 +32,6 @@
 use fang::FangError;
 use log::info;
 use log::warn;
-use once_cell::sync::OnceCell;
 use rand::Rng;
 use reqwest::Client;
 use reqwest::Proxy;
@@ -44,6 +43,7 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use thiserror::Error;
+use tokio::sync::OnceCell;
 
 use crate::model::filter::Currency;
 use crate::model::filter::Filter;
@@ -207,7 +207,7 @@ pub fn random_host<'a>() -> &'a str {
     DOMAINS[random_index]
 }
 
-pub static CLIENT: OnceCell<Client> = OnceCell::new();
+pub static CLIENT: OnceCell<Client> = OnceCell::const_new();
 
 /// This will allow you to operate with multiple hosts using just one struct
 #[derive(Debug, Clone)]
@@ -429,24 +429,28 @@ impl<'a> VintedWrapper<'a> {
         }
     }
 
-    fn get_client(&self, user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
+    async fn get_client(&self, user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
         let client = if let Some(proxy) = proxy {
-            CLIENT.get_or_init(|| -> Client {
-                reqwest::ClientBuilder::new()
-                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-                    .proxy(proxy)
-                    .cookie_provider(Arc::clone(&self.cookie_store))
-                    .build()
-                    .unwrap()
-            })
+            CLIENT
+                .get_or_init(|| async {
+                    reqwest::ClientBuilder::new()
+                        .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+                        .proxy(proxy)
+                        .cookie_provider(Arc::clone(&self.cookie_store))
+                        .build()
+                        .unwrap()
+                })
+                .await
         } else {
-            CLIENT.get_or_init(|| -> Client {
-                reqwest::ClientBuilder::new()
-                    .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-                    .cookie_provider(Arc::clone(&self.cookie_store))
-                    .build()
-                    .unwrap()
-            })
+            CLIENT
+                .get_or_init(|| async {
+                    reqwest::ClientBuilder::new()
+                        .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
+                        .cookie_provider(Arc::clone(&self.cookie_store))
+                        .build()
+                        .unwrap()
+                })
+                .await
         };
         client
     }
@@ -495,7 +499,7 @@ impl<'a> VintedWrapper<'a> {
             cookies.remove(&format!("vinted.{}", self.host), "/", "__cf_bm");
         }
 
-        let client = self.get_client(user_agent, proxy);
+        let client = self.get_client(user_agent, proxy).await;
 
         let request = format!("https://www.vinted.{}/auth/token_refresh", self.host);
 
@@ -598,7 +602,7 @@ impl<'a> VintedWrapper<'a> {
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
-        let client = self.get_client(user_agent, proxy_fetch);
+        let client = self.get_client(user_agent, proxy_fetch).await;
 
         let mut first = true;
 
@@ -760,7 +764,7 @@ impl<'a> VintedWrapper<'a> {
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
 
-        let client = self.get_client(user_agent, proxy_fetch);
+        let client = self.get_client(user_agent, proxy_fetch).await;
 
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
         info!(
