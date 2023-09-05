@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.8.4 (2023-09-3) [#72](https://github.com/TuTarea/vinted-rs/pull/72/)
+# 0.8.5 (2023-09-3) [#72](https://github.com/TuTarea/vinted-rs/pull/72/)
 
 ## Improved
 

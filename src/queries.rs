@@ -30,6 +30,7 @@
  ```
 */
 use fang::FangError;
+use lazy_static::lazy_static;
 use log::debug;
 use rand::Rng;
 use reqwest::Client;
@@ -41,8 +42,8 @@ use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
+
 use thiserror::Error;
-use tokio::sync::OnceCell;
 
 use crate::model::filter::Currency;
 use crate::model::filter::Filter;
@@ -206,29 +207,19 @@ pub fn random_host<'a>() -> &'a str {
     DOMAINS[random_index]
 }
 
-pub static CLIENT: OnceCell<Client> = OnceCell::const_new();
+lazy_static! {
+    pub static ref COOKIE_STORE: Arc<CookieStoreMutex> = {
+        let cookie_store = CookieStore::new(None);
+        let cookie_store = CookieStoreMutex::new(cookie_store);
+        Arc::new(cookie_store)
+    };
+}
 
-pub static CLIENT_PROXY: OnceCell<Client> = OnceCell::const_new();
-
-pub static COOKIE_STORE: OnceCell<Arc<CookieStoreMutex>> = OnceCell::const_new();
-
-async fn get_client(user_agent: Option<&str>, proxy: Option<Proxy>) -> &'static Client {
-    COOKIE_STORE
-        .get_or_init(|| async {
-            let cookie_store = CookieStore::new(None);
-            let cookie_store = CookieStoreMutex::new(cookie_store);
-            Arc::new(cookie_store)
-        })
-        .await;
-
+async fn get_client(user_agent: Option<&str>, proxy: Option<Proxy>) -> Client {
     if let Some(proxy) = proxy {
-        CLIENT_PROXY
-            .get_or_init(|| async { create_client_proxy(user_agent, proxy) })
-            .await
+        create_client_proxy(user_agent, proxy)
     } else {
-        CLIENT
-            .get_or_init(|| async { create_client(user_agent) })
-            .await
+        create_client(user_agent)
     }
 }
 
@@ -236,7 +227,7 @@ fn create_client_proxy(user_agent: Option<&str>, proxy: Proxy) -> Client {
     reqwest::ClientBuilder::new()
         .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
         .proxy(proxy)
-        .cookie_provider(COOKIE_STORE.get().unwrap().clone())
+        .cookie_provider(COOKIE_STORE.clone())
         .build()
         .unwrap()
 }
@@ -244,7 +235,7 @@ fn create_client_proxy(user_agent: Option<&str>, proxy: Proxy) -> Client {
 fn create_client(user_agent: Option<&str>) -> Client {
     reqwest::ClientBuilder::new()
         .user_agent(user_agent.unwrap_or(DEFAULT_USER_AGENT))
-        .cookie_provider(COOKIE_STORE.get().unwrap().clone())
+        .cookie_provider(COOKIE_STORE.clone())
         .build()
         .unwrap()
 }
@@ -584,7 +575,7 @@ impl<'a> VintedWrapper<'a> {
         let cookie_valid;
 
         {
-            let cookie_store_clone = COOKIE_STORE.get().unwrap().lock().unwrap();
+            let cookie_store_clone = COOKIE_STORE.lock().unwrap();
             cookie_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
         }
 
@@ -746,7 +737,7 @@ impl<'a> VintedWrapper<'a> {
         let cookie_valid;
 
         {
-            let cookie_store_clone = COOKIE_STORE.get().unwrap().lock().unwrap();
+            let cookie_store_clone = COOKIE_STORE.lock().unwrap();
             cookie_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
         }
 
