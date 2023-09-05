@@ -30,6 +30,7 @@
  ```
 */
 use fang::FangError;
+use lazy_static::lazy_static;
 use log::debug;
 use once_cell::sync::OnceCell;
 use rand::Rng;
@@ -42,6 +43,7 @@ use reqwest_cookie_store::CookieStoreMutex;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
+
 use thiserror::Error;
 
 use crate::model::filter::Currency;
@@ -207,6 +209,8 @@ pub fn random_host<'a>() -> &'a str {
 }
 
 static CLIENT: OnceCell<Client> = OnceCell::new();
+
+lazy_static! {}
 
 /// This will allow you to operate with multiple hosts using just one struct
 #[derive(Debug, Clone)]
