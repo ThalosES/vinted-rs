@@ -572,14 +572,14 @@ impl<'a> VintedWrapper<'a> {
 
         let domain: &str = &format!("vinted.{}", self.host);
 
-        let cookie_valid;
+        let cookie_not_valid;
 
         {
             let cookie_store_clone = COOKIE_STORE.lock().unwrap();
-            cookie_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
+            cookie_not_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
         }
 
-        if cookie_valid {
+        if cookie_not_valid {
             debug!(
                 "[{}] POST_GET_COOKIES -> Get {} items @ {}",
                 self.id, num, self.host
@@ -734,14 +734,14 @@ impl<'a> VintedWrapper<'a> {
 
         let domain: &str = &format!("vinted.{}", self.host);
 
-        let cookie_valid;
+        let cookie_not_valid;
 
         {
             let cookie_store_clone = COOKIE_STORE.lock().unwrap();
-            cookie_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
+            cookie_not_valid = cookie_store_clone.get(domain, "/", "__cf_bm").is_none();
         }
 
-        if cookie_valid {
+        if cookie_not_valid {
             debug!(
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
                 self.id, item_id, self.host
