@@ -507,8 +507,6 @@ impl<'a> VintedWrapper<'a> {
             )));
         }
 
-        log::info!("{:?}", *COOKIE_STORE);
-
         Ok(())
     }
 
