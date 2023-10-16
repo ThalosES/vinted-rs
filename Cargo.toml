@@ -31,7 +31,7 @@ serde = { version = "1.0", features = ["serde_derive"] }
 thiserror = "1.0"
 rand = "0.8"
 reqwest_cookie_store = "0.6"
-typed-builder = "0.16"
+typed-builder = "0.17"
 fang = { version = "0.10.3", features = ["asynk"], default-features = false }
 redis-macros = { version = "0.2.1", optional = true }
 redis = { version = "0.23.2", optional = true }
