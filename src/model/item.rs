@@ -44,24 +44,31 @@ impl fmt::Display for Item {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct AdvancedItem {
-    // Products filter info
+    /// Vinted item ID
     pub id: i64,
+    /// Item title
     pub title: String,
+    /// Item description
     pub description: String,
+    /// See [`Size`](crate::model::filter::size::Size)
     #[serde(rename = "size")]
     pub size_title: String,
+    /// See [`Brand`](crate::model::filter::brand::Brand)
     #[serde(rename = "brand")]
     pub brand_title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub composition: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extra_conditions: Option<String>,
+    /// See [`Brand`](crate::model::filter::brand::Brand)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brand_id: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size_id: Option<i32>,
+    /// See [`ArticleStatus`](crate::model::filter::ArticleStatus)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status_id: Option<i32>,
+    /// Status of the item in French 🇫🇷
     #[serde(rename = "status")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status_fr: Option<String>,
@@ -78,7 +85,7 @@ pub struct AdvancedItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub color2: Option<String>,
     pub package_size_id: i32,
-    //Location
+    /// See [`Country`](crate::model::filter::country::Country)
     pub country_id: i32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city_id: Option<i32>,
@@ -86,17 +93,25 @@ pub struct AdvancedItem {
     pub city: Option<String>,
 
     //Stats
+    /// Number of bids on the item
     pub active_bid_count: i32,
+    /// Number of times the item was added to favourites
     pub favourite_count: i32,
+    /// Number of times the item was viewed
     pub view_count: i32,
+    /// Moderation status of the item (Vinted internal use only)
     pub moderation_status: i32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_push_up_at: Option<String>,
+    /// Related ['Brand'](crate::model::filter::brand::Brand) IDs
     pub related_catalog_ids: Vec<i32>,
 
     // Pricing
+    /// Original price of the item
     pub original_price_numeric: String,
+    /// Currency the item was posted with. See [`Currency`](crate::model::filter::Currency) for valid currencies on Vinted
     pub currency: String,
+    /// Current valid price of the item
     pub price_numeric: String,
 
     // Order by stats
@@ -106,7 +121,7 @@ pub struct AdvancedItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_updated_at_ts: Option<String>,
 
-    // Asets
+    // Assets
     pub photos: Vec<Photo>,
     pub url: String,
     pub user: AdvancedUser,

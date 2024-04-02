@@ -61,7 +61,7 @@ async fn test_get_item_brands() {
     match vinted.get_items(&filter, 1, None, None, None).await {
         // Limitado el numero de elementos a 1
         Ok(items) => {
-            assert_eq!(items.items.get(0).unwrap().brand_title, brand.title);
+            assert_eq!(items.items.first().unwrap().brand_title, brand.title);
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
