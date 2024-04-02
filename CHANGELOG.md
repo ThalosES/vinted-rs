@@ -1,6 +1,17 @@
 # Changelog
 
-# 0.8.5 (2023-09-4) [#74](https://github.com/TuTarea/vinted-rs/pull/74/)
+# 0.8.7 (2024-04-3) [#82](https://github.com/TuTarea/vinted-rs/pull/82/)
+
+## Improved
+
+- Made all fields in the `filter::models` crates _pub_ [#81](https://github.com/TuTarea/vinted-rs/pull/81/)
+- Added `cargo_publish` workflow
+
+## Fixes
+
+- Added more documentation on `filter::models` crates fields
+
+# 0.8.6 (2023-09-4) [#74](https://github.com/TuTarea/vinted-rs/pull/74/)
 
 ## Improved
 
@@ -9,7 +20,7 @@
 
 # 0.8.5 (2023-09-3) [#72](https://github.com/TuTarea/vinted-rs/pull/72/)
 
-## Improved
+## Fixes
 
 - Fixed clients treatment
 

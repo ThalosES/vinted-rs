@@ -36,7 +36,7 @@ pub mod size;
 /// let filter: Filter = Filter::builder()
 ///      .catalog_ids(Some(String::from("4,16")))
 ///      .brand_ids(Some(String::from("14,53")))
-///      .build();  
+///      .build();
 ///
 /// // Women shoes and Women clothes that are only from brands Adidas and Nike.
 ///
