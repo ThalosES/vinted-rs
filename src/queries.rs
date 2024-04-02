@@ -425,14 +425,12 @@ impl<'a> VintedWrapper<'a> {
     pub fn get_id(&self) -> &usize {
         &self.id
     }
-    /**
-
-    After changing host is always necessary to refresh cookies
-    */
+    /// After changing host is always necessary to refresh cookies
     pub fn set_new_random_host(&mut self) {
         self.host = random_host();
     }
 
+    /// After changing host is always necessary to refresh cookies
     pub fn set_new_host(&mut self, host: Host) {
         self.host = host.into();
     }
