@@ -1,14 +1,14 @@
-use std::fmt;
-
 use crate::model::{Deserialize, Serialize};
 #[cfg(feature = "redis")]
 use crate::model::{FromRedisValue, ToRedisArgs};
+use std::fmt;
 
 use super::{payment_method::PayInMethod, photo::Photo};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct User {
+    /// Vinted user ID
     pub id: i64,
     // Username
     pub login: String,
@@ -19,6 +19,7 @@ pub struct User {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct AdvancedUser {
+    /// Vinted user ID
     pub id: i64,
     /// Username
     pub login: String,
@@ -41,7 +42,7 @@ pub struct AdvancedUser {
     pub last_loged_on_ts: Option<String>,
     /// If the user wants to expose his location
     pub expose_location: bool,
-    /// See [`Country`](crate::model::Country)
+    /// See [`Country`](crate::model::filter::country::Country)
     pub country_id: i32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city_id: Option<i32>,
