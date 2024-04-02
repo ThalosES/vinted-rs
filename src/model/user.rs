@@ -9,43 +9,51 @@ use super::{payment_method::PayInMethod, photo::Photo};
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct User {
-    id: i64,
-    login: String, //usernameredis_macros
-    photo: Photo,
+    pub id: i64,
+    // Username
+    pub login: String,
+    /// User's profile picture URL
+    pub photo: Photo,
 }
-
+/// All avalible fields for a user
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct AdvancedUser {
-    id: i64,
-    login: String, //username
+    pub id: i64,
+    /// Username
+    pub login: String,
+    /// User's profile picture URL
     #[serde(skip_serializing_if = "Option::is_none")]
-    photo: Option<Photo>,
-
+    pub photo: Option<Photo>,
+    /// User's real name
     #[serde(skip_serializing_if = "Option::is_none")]
-    real_name: Option<String>,
+    pub real_name: Option<String>,
+    /// User's email
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<String>,
+    pub email: Option<String>,
+    /// User's birthday
     #[serde(skip_serializing_if = "Option::is_none")]
-    birthday: Option<String>,
+    pub birthday: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    gender: Option<String>,
-
+    pub gender: Option<String>,
+    /// Last time the user logged in
     #[serde(skip_serializing_if = "Option::is_none")]
-    last_loged_on_ts: Option<String>,
-    expose_location: bool,
-    country_id: i32,
+    pub last_loged_on_ts: Option<String>,
+    /// If the user wants to expose his location
+    pub expose_location: bool,
+    /// See [`Country`](crate::model::Country)
+    pub country_id: i32,
     #[serde(skip_serializing_if = "Option::is_none")]
-    city_id: Option<i32>,
+    pub city_id: Option<i32>,
+    /// City name
     #[serde(skip_serializing_if = "Option::is_none")]
-    city: Option<String>,
-
+    pub city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    path: Option<String>,
+    pub path: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    about: Option<String>,
-
-    accepted_pay_in_methods: Vec<PayInMethod>,
+    pub about: Option<String>,
+    /// Payment methods accepted by the user
+    pub accepted_pay_in_methods: Vec<PayInMethod>,
 }
 
 impl fmt::Display for AdvancedUser {

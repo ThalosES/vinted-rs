@@ -8,19 +8,22 @@ use redis_macros::{FromRedisValue, ToRedisArgs};
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
 pub struct PayInMethod {
-    id: i32,
-    code: String,
-    requires_credit_card: bool,
+    pub id: i32,
+    /// Code of the payment method given by Vinted
+    pub code: String,
+    /// If the payment method requires a credit card
+    pub requires_credit_card: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    event_tracking_code: Option<String>,
+    pub event_tracking_code: Option<String>,
+    /// Icon of the payment method
     #[serde(skip_serializing_if = "Option::is_none")]
-    icon: Option<String>,
-    enabled: bool,
+    pub icon: Option<String>,
+    pub enabled: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    translated_name: Option<String>,
+    pub translated_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    note: Option<String>,
-    method_change_possible: bool,
+    pub note: Option<String>,
+    pub method_change_possible: bool,
 }
 
 impl fmt::Display for PayInMethod {
