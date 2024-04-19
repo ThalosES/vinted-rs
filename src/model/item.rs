@@ -218,24 +218,76 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "Price: {} {}", self.price_numeric, self.currency)?;
 
         writeln!(f, "\nFlags: {{")?;
-        writeln!(f, "  is_for_sell: {}", AdvancedItem::display_option_bool(self.is_for_sell))?;
-        writeln!(f, "  is_for_swap: {}", AdvancedItem::display_option_bool(self.is_for_swap))?;
-        writeln!(f, "  is_for_give_away: {}", AdvancedItem::display_option_bool(self.is_for_give_away))?;
-        writeln!(f, "  is_handicraft: {}", AdvancedItem::display_option_bool(self.is_handicraft))?;
-        writeln!(f, "  is_processing: {}", AdvancedItem::display_option_bool(self.is_processing))?;
-        writeln!(f, "  is_draft: {}", AdvancedItem::display_option_bool(self.is_draft))?;
-        writeln!(f, "  promoted: {}", AdvancedItem::display_option_bool(self.promoted))?;
-        writeln!(f, "  package_size_standard: {}", AdvancedItem::display_option_bool(self.package_size_standard))?;
+        writeln!(
+            f,
+            "  is_for_sell: {}",
+            AdvancedItem::display_option_bool(self.is_for_sell)
+        )?;
+        writeln!(
+            f,
+            "  is_for_swap: {}",
+            AdvancedItem::display_option_bool(self.is_for_swap)
+        )?;
+        writeln!(
+            f,
+            "  is_for_give_away: {}",
+            AdvancedItem::display_option_bool(self.is_for_give_away)
+        )?;
+        writeln!(
+            f,
+            "  is_handicraft: {}",
+            AdvancedItem::display_option_bool(self.is_handicraft)
+        )?;
+        writeln!(
+            f,
+            "  is_processing: {}",
+            AdvancedItem::display_option_bool(self.is_processing)
+        )?;
+        writeln!(
+            f,
+            "  is_draft: {}",
+            AdvancedItem::display_option_bool(self.is_draft)
+        )?;
+        writeln!(
+            f,
+            "  promoted: {}",
+            AdvancedItem::display_option_bool(self.promoted)
+        )?;
+        writeln!(
+            f,
+            "  package_size_standard: {}",
+            AdvancedItem::display_option_bool(self.package_size_standard)
+        )?;
         writeln!(
             f,
             "  related_catalogs_enabled: {}",
             AdvancedItem::display_option_bool(self.related_catalogs_enabled)
         )?;
-        writeln!(f, "  is_hidden: {}", AdvancedItem::display_option_i32(self.is_hidden))?;
-        writeln!(f, "  is_reserved: {}", AdvancedItem::display_option_i32(self.is_reserved))?;
-        writeln!(f, "  is_visible: {}", AdvancedItem::display_option_i32(self.is_visible))?;
-        writeln!(f, "  is_unisex: {}", AdvancedItem::display_option_i32(self.is_unisex))?;
-        writeln!(f, "  is_closed: {}", AdvancedItem::display_option_i32(self.is_closed))?;
+        writeln!(
+            f,
+            "  is_hidden: {}",
+            AdvancedItem::display_option_i32(self.is_hidden)
+        )?;
+        writeln!(
+            f,
+            "  is_reserved: {}",
+            AdvancedItem::display_option_i32(self.is_reserved)
+        )?;
+        writeln!(
+            f,
+            "  is_visible: {}",
+            AdvancedItem::display_option_i32(self.is_visible)
+        )?;
+        writeln!(
+            f,
+            "  is_unisex: {}",
+            AdvancedItem::display_option_i32(self.is_unisex)
+        )?;
+        writeln!(
+            f,
+            "  is_closed: {}",
+            AdvancedItem::display_option_i32(self.is_closed)
+        )?;
         writeln!(f, "}}\n")?;
 
         for (num, photo) in self.photos.iter().enumerate() {
