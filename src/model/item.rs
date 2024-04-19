@@ -127,23 +127,37 @@ pub struct AdvancedItem {
     pub user: AdvancedUser,
 
     // Some flags
-    pub is_for_sell: bool,
-    pub is_for_swap: bool,
-    pub is_for_give_away: bool,
-    pub is_handicraft: bool,
-    pub is_processing: bool,
-    pub is_draft: bool,
-    pub promoted: bool,
-    pub package_size_standard: bool,
-    pub related_catalogs_enabled: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_for_sell: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_for_swap: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_for_give_away: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_handicraft: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_processing: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_draft: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promoted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub package_size_standard: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub related_catalogs_enabled: Option<bool>,
     // More flags, just in i32
-    pub is_hidden: i32,
-    pub is_reserved: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_hidden: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_reserved: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reserved_for_user_id: Option<i32>,
-    pub is_visible: i32,
-    pub is_unisex: i32,
-    pub is_closed: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_visible: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_unisex: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_closed: Option<i32>,
 }
 
 impl fmt::Display for AdvancedItem {
