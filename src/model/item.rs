@@ -160,6 +160,25 @@ pub struct AdvancedItem {
     pub is_closed: Option<i32>,
 }
 
+impl AdvancedItem {
+    fn display_option_bool(value: Option<bool>) -> String {
+        match value {
+            Some(true) => "true".to_string(),
+            Some(false) => "false".to_string(),
+            None => "None".to_string(),
+        }
+    }
+
+    fn display_option_i32(value: Option<i32>) -> String {
+        match value {
+            Some(1) => "true".to_string(),
+            Some(0) => "false".to_string(),
+            None => "None".to_string(),
+            _ => "Unknown".to_string(),
+        }
+    }
+}
+
 impl fmt::Display for AdvancedItem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "ID: {}", self.id)?;
@@ -199,24 +218,24 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "Price: {} {}", self.price_numeric, self.currency)?;
 
         writeln!(f, "\nFlags: {{")?;
-        writeln!(f, "  is_for_sell: {}", self.is_for_sell)?;
-        writeln!(f, "  is_for_swap: {}", self.is_for_swap)?;
-        writeln!(f, "  is_for_give_away: {}", self.is_for_give_away)?;
-        writeln!(f, "  is_handicraft: {}", self.is_handicraft)?;
-        writeln!(f, "  is_processing: {}", self.is_processing)?;
-        writeln!(f, "  is_draft: {}", self.is_draft)?;
-        writeln!(f, "  promoted: {}", self.promoted)?;
-        writeln!(f, "  package_size_standard: {}", self.package_size_standard)?;
+        writeln!(f, "  is_for_sell: {}", AdvancedItem::display_option_bool(self.is_for_sell))?;
+        writeln!(f, "  is_for_swap: {}", AdvancedItem::display_option_bool(self.is_for_swap))?;
+        writeln!(f, "  is_for_give_away: {}", AdvancedItem::display_option_bool(self.is_for_give_away))?;
+        writeln!(f, "  is_handicraft: {}", AdvancedItem::display_option_bool(self.is_handicraft))?;
+        writeln!(f, "  is_processing: {}", AdvancedItem::display_option_bool(self.is_processing))?;
+        writeln!(f, "  is_draft: {}", AdvancedItem::display_option_bool(self.is_draft))?;
+        writeln!(f, "  promoted: {}", AdvancedItem::display_option_bool(self.promoted))?;
+        writeln!(f, "  package_size_standard: {}", AdvancedItem::display_option_bool(self.package_size_standard))?;
         writeln!(
             f,
             "  related_catalogs_enabled: {}",
-            self.related_catalogs_enabled
+            AdvancedItem::display_option_bool(self.related_catalogs_enabled)
         )?;
-        writeln!(f, "  is_hidden: {}", self.is_hidden)?;
-        writeln!(f, "  is_reserved: {}", self.is_reserved)?;
-        writeln!(f, "  is_visible: {}", self.is_visible)?;
-        writeln!(f, "  is_unisex: {}", self.is_unisex)?;
-        writeln!(f, "  is_closed: {}", self.is_closed)?;
+        writeln!(f, "  is_hidden: {}", AdvancedItem::display_option_i32(self.is_hidden))?;
+        writeln!(f, "  is_reserved: {}", AdvancedItem::display_option_i32(self.is_reserved))?;
+        writeln!(f, "  is_visible: {}", AdvancedItem::display_option_i32(self.is_visible))?;
+        writeln!(f, "  is_unisex: {}", AdvancedItem::display_option_i32(self.is_unisex))?;
+        writeln!(f, "  is_closed: {}", AdvancedItem::display_option_i32(self.is_closed))?;
         writeln!(f, "}}\n")?;
 
         for (num, photo) in self.photos.iter().enumerate() {
