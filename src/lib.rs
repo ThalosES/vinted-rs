@@ -85,6 +85,7 @@ async fn main() {
 ```
 */
 #[cfg(feature = "advanced_filters")]
+pub mod utils;
 pub mod db;
 pub mod model;
 pub mod queries;
