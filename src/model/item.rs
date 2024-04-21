@@ -1,8 +1,8 @@
 use super::{photo::Photo, user::AdvancedUser};
 use crate::model::{Deserialize, Serialize};
-use crate::utils::display_option;
 #[cfg(feature = "redis")]
 use crate::model::{FromRedisValue, ToRedisArgs};
+use crate::utils::display_option;
 use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
@@ -202,13 +202,25 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "\nFlags: {{")?;
         writeln!(f, "  is_for_sell: {}", display_option(self.is_for_sell))?;
         writeln!(f, "  is_for_swap: {}", display_option(self.is_for_swap))?;
-        writeln!(f, "  is_for_give_away: {}", display_option(self.is_for_give_away))?;
+        writeln!(
+            f,
+            "  is_for_give_away: {}",
+            display_option(self.is_for_give_away)
+        )?;
         writeln!(f, "  is_handicraft: {}", display_option(self.is_handicraft))?;
         writeln!(f, "  is_processing: {}", display_option(self.is_processing))?;
         writeln!(f, "  is_draft: {}", display_option(self.is_draft))?;
         writeln!(f, "  promoted: {}", display_option(self.promoted))?;
-        writeln!(f, "  package_size_standard: {}", display_option(self.package_size_standard))?;
-        writeln!(f, "  related_catalogs_enabled: {}", display_option(self.related_catalogs_enabled))?;
+        writeln!(
+            f,
+            "  package_size_standard: {}",
+            display_option(self.package_size_standard)
+        )?;
+        writeln!(
+            f,
+            "  related_catalogs_enabled: {}",
+            display_option(self.related_catalogs_enabled)
+        )?;
         writeln!(f, "  is_hidden: {}", display_option(self.is_hidden))?;
         writeln!(f, "  is_reserved: {}", display_option(self.is_reserved))?;
         writeln!(f, "  is_visible: {}", display_option(self.is_visible))?;
