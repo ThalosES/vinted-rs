@@ -2,6 +2,7 @@ use super::{photo::Photo, user::AdvancedUser};
 use crate::model::{Deserialize, Serialize};
 #[cfg(feature = "redis")]
 use crate::model::{FromRedisValue, ToRedisArgs};
+use crate::utils::display_option;
 use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
@@ -127,23 +128,37 @@ pub struct AdvancedItem {
     pub user: AdvancedUser,
 
     // Some flags
-    pub is_for_sell: bool,
-    pub is_for_swap: bool,
-    pub is_for_give_away: bool,
-    pub is_handicraft: bool,
-    pub is_processing: bool,
-    pub is_draft: bool,
-    pub promoted: bool,
-    pub package_size_standard: bool,
-    pub related_catalogs_enabled: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_for_sell: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_for_swap: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_for_give_away: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_handicraft: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_processing: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_draft: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promoted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub package_size_standard: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub related_catalogs_enabled: Option<bool>,
     // More flags, just in i32
-    pub is_hidden: i32,
-    pub is_reserved: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_hidden: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_reserved: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reserved_for_user_id: Option<i32>,
-    pub is_visible: i32,
-    pub is_unisex: i32,
-    pub is_closed: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_visible: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_unisex: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_closed: Option<i32>,
 }
 
 impl fmt::Display for AdvancedItem {
@@ -185,24 +200,32 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "Price: {} {}", self.price_numeric, self.currency)?;
 
         writeln!(f, "\nFlags: {{")?;
-        writeln!(f, "  is_for_sell: {}", self.is_for_sell)?;
-        writeln!(f, "  is_for_swap: {}", self.is_for_swap)?;
-        writeln!(f, "  is_for_give_away: {}", self.is_for_give_away)?;
-        writeln!(f, "  is_handicraft: {}", self.is_handicraft)?;
-        writeln!(f, "  is_processing: {}", self.is_processing)?;
-        writeln!(f, "  is_draft: {}", self.is_draft)?;
-        writeln!(f, "  promoted: {}", self.promoted)?;
-        writeln!(f, "  package_size_standard: {}", self.package_size_standard)?;
+        writeln!(f, "  is_for_sell: {}", display_option(self.is_for_sell))?;
+        writeln!(f, "  is_for_swap: {}", display_option(self.is_for_swap))?;
+        writeln!(
+            f,
+            "  is_for_give_away: {}",
+            display_option(self.is_for_give_away)
+        )?;
+        writeln!(f, "  is_handicraft: {}", display_option(self.is_handicraft))?;
+        writeln!(f, "  is_processing: {}", display_option(self.is_processing))?;
+        writeln!(f, "  is_draft: {}", display_option(self.is_draft))?;
+        writeln!(f, "  promoted: {}", display_option(self.promoted))?;
+        writeln!(
+            f,
+            "  package_size_standard: {}",
+            display_option(self.package_size_standard)
+        )?;
         writeln!(
             f,
             "  related_catalogs_enabled: {}",
-            self.related_catalogs_enabled
+            display_option(self.related_catalogs_enabled)
         )?;
-        writeln!(f, "  is_hidden: {}", self.is_hidden)?;
-        writeln!(f, "  is_reserved: {}", self.is_reserved)?;
-        writeln!(f, "  is_visible: {}", self.is_visible)?;
-        writeln!(f, "  is_unisex: {}", self.is_unisex)?;
-        writeln!(f, "  is_closed: {}", self.is_closed)?;
+        writeln!(f, "  is_hidden: {}", display_option(self.is_hidden))?;
+        writeln!(f, "  is_reserved: {}", display_option(self.is_reserved))?;
+        writeln!(f, "  is_visible: {}", display_option(self.is_visible))?;
+        writeln!(f, "  is_unisex: {}", display_option(self.is_unisex))?;
+        writeln!(f, "  is_closed: {}", display_option(self.is_closed))?;
         writeln!(f, "}}\n")?;
 
         for (num, photo) in self.photos.iter().enumerate() {
