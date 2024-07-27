@@ -62,6 +62,8 @@ pub enum CookieError {
 #[derive(Error, Debug)]
 pub enum VintedWrapperError {
     #[error(transparent)]
+    SerdeError(#[from] serde_json::Error),
+    #[error(transparent)]
     CookiesError(#[from] CookieError),
     #[error("Number of items must be non-zero value")]
     ItemNumberError,
@@ -757,12 +759,14 @@ impl<'a> VintedWrapper<'a> {
         match json.status() {
             StatusCode::OK => {
                 let response_text = json.text().await?;
-                let items: AdvancedItems =
-                    serde_json::from_str(&response_text).unwrap_or_else(|err| {
-                        log::error!("Failed to deserialize JSON: {:?}", response_text);
-                        // Handle the error as needed (e.g., rethrow, return a default value, etc.)
-                        panic!("Deserialization error: {:?}", err);
-                    });
+                let result: Result<AdvancedItems, serde_json::Error> =
+                    serde_json::from_str(&response_text);
+
+                if let Err(_) = result {
+                    log::error!("{}", &response_text)
+                }
+
+                let items = result?;
                 Ok(items.item)
             }
             code => {

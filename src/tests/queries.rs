@@ -45,6 +45,7 @@ async fn test_get_item_query_text() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -68,6 +69,7 @@ async fn test_get_item_brands() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -91,6 +93,7 @@ async fn test_get_items_brands() {
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+            VintedWrapperError::SerdeError(_) => (),
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -127,6 +130,7 @@ async fn test_get_items_catalogs_no_db() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -156,6 +160,7 @@ async fn test_get_items_by_price() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -179,6 +184,7 @@ async fn test_get_items_by_size_no_db() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -214,6 +220,7 @@ async fn test_get_items_by_size() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -237,6 +244,7 @@ async fn test_get_items_by_material() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -264,6 +272,7 @@ async fn test_get_items_by_color() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -293,6 +302,7 @@ async fn test_get_items_by_currency() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
+            VintedWrapperError::SerdeError(_) => (),
         },
     };
 }
@@ -331,6 +341,7 @@ async fn test_get_advanced_items() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
+            VintedWrapperError::SerdeError(_) => (),
             VintedWrapperError::ItemError(_, _, _) => (),
             VintedWrapperError::CookiesError(_) => (),
         },
