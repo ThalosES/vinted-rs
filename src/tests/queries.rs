@@ -299,7 +299,7 @@ async fn test_get_items_by_currency() {
 
 #[tokio::test]
 async fn test_get_advanced_items() {
-    let _ = env_logger::builder().is_test(true).init();
+    env_logger::builder().is_test(true).init();
     let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
         .await
         .unwrap();
