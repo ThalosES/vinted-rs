@@ -762,7 +762,7 @@ impl<'a> VintedWrapper<'a> {
                 let result: Result<AdvancedItems, serde_json::Error> =
                     serde_json::from_str(&response_text);
 
-                if let Err(_) = result {
+                if result.is_err() {
                     log::error!("{}", &response_text)
                 }
 
