@@ -115,6 +115,9 @@ pub struct AdvancedItem {
     /// Current valid price of the item
     pub price_numeric: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_fee: Option<String>,
+
     // Order by stats
     pub created_at_ts: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -146,19 +149,32 @@ pub struct AdvancedItem {
     pub package_size_standard: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub related_catalogs_enabled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_hidden: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_reserved: Option<bool>,
     // More flags, just in i32
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_hidden: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_reserved: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reserved_for_user_id: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_visible: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_unisex: Option<i32>,
+    pub is_visible_new: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_closed: Option<i32>,
+    pub is_unisex: Option<i32>,
+
+    /*
+    WARN:Leaving is_closed commented, since its type [i32, bool]
+    is not stable and could cause issues
+     */
+    // #[serde(skip_serializing_if = "Option::is_none")]
+    // pub is_closed: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_closed_new: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_delayed_publication: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_be_sold: Option<bool>,
 }
 
 impl fmt::Display for AdvancedItem {
@@ -225,7 +241,7 @@ impl fmt::Display for AdvancedItem {
         writeln!(f, "  is_reserved: {}", display_option(self.is_reserved))?;
         writeln!(f, "  is_visible: {}", display_option(self.is_visible))?;
         writeln!(f, "  is_unisex: {}", display_option(self.is_unisex))?;
-        writeln!(f, "  is_closed: {}", display_option(self.is_closed))?;
+        // writeln!(f, "  is_closed: {}", display_option(self.is_closed))?;
         writeln!(f, "}}\n")?;
 
         for (num, photo) in self.photos.iter().enumerate() {
