@@ -740,11 +740,9 @@ impl<'a> VintedWrapper<'a> {
         }
 
         if cookie_not_valid {
-            log::debug!(
+            debug!(
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
-                self.id,
-                item_id,
-                self.host
+                self.id, item_id, self.host
             );
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
