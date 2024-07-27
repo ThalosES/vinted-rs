@@ -3,9 +3,15 @@ use crate::model::filter::{Currency, Filter};
 use crate::queries::VintedWrapperError;
 use crate::VintedWrapper;
 use bb8_postgres::tokio_postgres::NoTls;
+use env_logger;
+use once_cell::sync::Lazy;
 
 const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
 const POOL_SIZE: u32 = 5;
+
+static INIT: Lazy<()> = Lazy::new(|| {
+    env_logger::builder().is_test(true).init();
+});
 
 fn _calculate_color_props(hex_color1: &str) -> (f64, f64, f64) {
     let color1 = _hex_to_rgb(hex_color1);
@@ -298,6 +304,7 @@ async fn test_get_items_by_currency() {
 
 #[tokio::test]
 async fn test_get_advanced_items() {
+    Lazy::force(&INIT);
     let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
         .await
         .unwrap();
