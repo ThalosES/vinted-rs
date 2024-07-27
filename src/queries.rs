@@ -740,9 +740,11 @@ impl<'a> VintedWrapper<'a> {
         }
 
         if cookie_not_valid {
-            debug!(
+            log::debug!(
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
-                self.id, item_id, self.host
+                self.id,
+                item_id,
+                self.host
             );
             self.refresh_cookies(user_agent, proxy_cookies).await?;
         }
@@ -756,7 +758,13 @@ impl<'a> VintedWrapper<'a> {
 
         match json.status() {
             StatusCode::OK => {
-                let items: AdvancedItems = json.json().await?;
+                let response_text = json.text().await?;
+                let items: AdvancedItems =
+                    serde_json::from_str(&response_text).unwrap_or_else(|err| {
+                        log::error!("Failed to deserialize JSON: {:?}", response_text);
+                        // Handle the error as needed (e.g., rethrow, return a default value, etc.)
+                        panic!("Deserialization error: {:?}", err);
+                    });
                 Ok(items.item)
             }
             code => {
