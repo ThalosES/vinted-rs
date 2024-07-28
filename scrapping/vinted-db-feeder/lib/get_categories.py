@@ -15,7 +15,6 @@ class Category:
     def __str__(self):
         return f"{self.id},'{self.title}','{self.code}',{self.parent_id},'{self.url}','{self.url_en}'"
 
-    @staticmethod
     def to_node(self, level):
         indent = "  " * level
         tree_str = f"{indent}- {self.title} ({self.id})\n"
@@ -93,7 +92,7 @@ def debug(source, outfile):
     outfile = open(outfile, "w")
     res = ""
     for root_category in generate_cat_tree(source):
-        res+=Category.to_node(root_category, 0)+"\n"
+        res+=root_category.to_node(0)+"\n"
     
     outfile.write(res)
     outfile.close()
