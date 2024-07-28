@@ -20,7 +20,7 @@ class Size:
         return f"{self.id}, '{self.title}', '{self.category}'"
 
 
-def obtener(path):
+def parse_to_file(path):
 
     with open(path, 'r') as file:
         contenido_html = file.read()
@@ -136,7 +136,7 @@ def exec(path, outfolder, outfilename):
         outfile.write("ID, TITLE, SIZE_TYPE, CATEGORY_NAME\n")
 
         for html_file in os.listdir(os.path.join(path, fol)):
-            lista, category_id = obtener(os.path.join(path, fol, html_file))
+            lista, category_id = parse_to_file(os.path.join(path, fol, html_file))
             outfile.write(print_result(lista, category_id))
 
         outfile.close()
