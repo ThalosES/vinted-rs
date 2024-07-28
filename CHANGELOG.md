@@ -1,5 +1,15 @@
 # Changelog
 
+# 0.9.0 (2024-07-28) [#97](https://github.com/TuTarea/vinted-rs/pull/97/)
+
+## Fixed
+
+- Updated API fields for `advancedItem`
+
+## Improved
+
+- Moved the [scrapping scripts](https://github.com/ThalosES/vinted-db-feeder) in `/scrapping` folder and removed the old repo
+
 # 0.8.7 (2024-04-3) [#82](https://github.com/TuTarea/vinted-rs/pull/82/)
 
 ## Improved
