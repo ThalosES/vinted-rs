@@ -3,3 +3,5 @@ Cargo.lock
 .vscode/
 /**/results/
 docker/query.sh
+
+src/tests/output
