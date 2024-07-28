@@ -10,6 +10,12 @@
 
 - Moved the [scrapping scripts](https://github.com/ThalosES/vinted-db-feeder) in `/scrapping` folder and removed the old repo
 
+- update `reqwest_cookie_store` requirement from 0.6 to `0.8` [#94](https://github.com/ThalosES/vinted-rs/pull/94)
+
+- update `typed-builder` requirement from 0.18 to `0.19` [#96](https://github.com/ThalosES/vinted-rs/pull/96) 
+
+- update `redis` requirement from 0.24.0 to `0.25.4` [#93](https://github.com/ThalosES/vinted-rs/pull/93) 
+
 # 0.8.7 (2024-04-3) [#82](https://github.com/TuTarea/vinted-rs/pull/82/)
 
 ## Improved
