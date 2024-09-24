@@ -1,5 +1,13 @@
 # Changelog
 
+# 0.9.1 (2024-09-24) [#111](https://github.com/TuTarea/vinted-rs/pull/111/)
+⚠️Not using `develop` branch any more. Leaving main as "canary"/develop channel and using releases to declare _stable_ and _experimental_ versions
+
+## Fixed
+#108 : Updated Redis to 0.27.2
+#105 : Updated TypeBuilder to 0.20
+#109 : Solved vulnerable dependency for Db Feeder
+
 # 0.9.0 (2024-07-28) [#97](https://github.com/TuTarea/vinted-rs/pull/97/)
 
 ## Fixed
