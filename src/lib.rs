@@ -95,3 +95,11 @@ pub use queries::VintedWrapper;
 pub use queries::VintedWrapperError;
 #[cfg(test)]
 pub mod tests;
+
+#[cfg(feature = "redis")]
+#[doc(hidden)]
+pub extern crate redis;
+
+#[cfg(feature = "redis")]
+#[doc(hidden)]
+pub extern crate redis_macros;
