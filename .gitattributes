@@ -1,0 +1,5 @@
+# Mark all HTML files in the static/ directory as generated
+static/*.html linguist-generated
+
+# Mark all HTML files in scrapping/vinted-db-feeder/data/raw/ as generated
+scrapping/vinted-db-feeder/data/raw/*.html linguist-generated
