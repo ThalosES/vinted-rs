@@ -1,5 +1,10 @@
 # Changelog
 
+# 0.9.2 (WIP)
+
+## Fixed
+[#115](https://github.com/ThalosES/vinted-rs/pull/115) : Rexported Redis crate
+
 # 0.9.1 (2024-09-24) [#111](https://github.com/TuTarea/vinted-rs/pull/111/)
 ⚠️Not using `develop` branch any more. Leaving main as "canary"/develop channel and using releases to declare _stable_ and _experimental_ versions
 
