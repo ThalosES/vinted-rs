@@ -3,7 +3,7 @@ cargo-features = ["edition2024"]
 [package]
 name = "vinted-rs"
 version = "0.9.1"
-edition = "2024"
+edition = "2021"
 repository = "https://github.com/TuTarea/vinted-rs"
 authors = [
     "Pepe Márquez <pepe.marquezromero@gmail.com>",
