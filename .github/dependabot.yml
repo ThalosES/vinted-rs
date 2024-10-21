@@ -8,7 +8,7 @@ updates:
       time: "07:10" # UTC
     commit-message:
       prefix: "chore(cargo):"
-    target-branch: "develop"
+    target-branch: "main"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -16,4 +16,4 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "ci(actions):"
-    target-branch: "develop"
+    target-branch: "main"
