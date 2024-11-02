@@ -32,6 +32,7 @@
 use fang::FangError;
 use lazy_static::lazy_static;
 use log::debug;
+use log::error;
 use rand::Rng;
 use reqwest::Client;
 use reqwest::Proxy;
@@ -62,6 +63,8 @@ pub enum CookieError {
 #[derive(Error, Debug)]
 pub enum VintedWrapperError {
     #[error(transparent)]
+    ReqWestError(#[from] reqwest::Error),
+    #[error(transparent)]
     SerdeError(#[from] serde_json::Error),
     #[error(transparent)]
     CookiesError(#[from] CookieError),
@@ -69,12 +72,6 @@ pub enum VintedWrapperError {
     ItemNumberError,
     #[error("Could not get deatiled info for item `{2}` with code: {0}")]
     ItemError(StatusCode, Option<i32>, String),
-}
-
-impl From<reqwest::Error> for VintedWrapperError {
-    fn from(value: reqwest::Error) -> Self {
-        VintedWrapperError::CookiesError(CookieError::ReqWestError(value))
-    }
 }
 
 impl From<VintedWrapperError> for FangError {
@@ -701,11 +698,25 @@ impl<'a> VintedWrapper<'a> {
 
         let json: Response = client.get(url).send().await?;
 
+        debug!("{:?}", &json);
+
         match json.status() {
             StatusCode::OK => {
-                let items: Items = json.json().await?;
-                Ok(items)
+                // First, get the response body as text to enable debugging if deserialization fails
+                let raw_json = json.text().await?;
+
+                // Try to parse the JSON into Items
+                match serde_json::from_str::<Items>(&raw_json) {
+                    Ok(items) => Ok(items),
+                    Err(e) => {
+                        // Log or debug the raw JSON content
+                        error!("{:#?}", e);
+                        error!("Failed to deserialize JSON: {}", raw_json); // Or use a logger
+                        Err(VintedWrapperError::SerdeError(e))
+                    }
+                }
             }
+
             code => {
                 let retry_after = json
                     .headers()
@@ -758,17 +769,18 @@ impl<'a> VintedWrapper<'a> {
 
         match json.status() {
             StatusCode::OK => {
-                let response_text = json.text().await?;
-                let result: Result<AdvancedItems, serde_json::Error> =
-                    serde_json::from_str(&response_text);
-
-                if result.is_err() {
-                    log::error!("{}", &response_text)
+                let raw_json = json.text().await?;
+                match serde_json::from_str::<AdvancedItems>(&raw_json) {
+                    Ok(items) => Ok(items.item),
+                    Err(e) => {
+                        // Log or debug the raw JSON content
+                        error!("{:#?}", e);
+                        error!("Failed to deserialize JSON: {}", raw_json); // Or use a logger
+                        Err(VintedWrapperError::SerdeError(e))
+                    }
                 }
-
-                let items = result?;
-                Ok(items.item)
             }
+
             code => {
                 let retry_after = json
                     .headers()

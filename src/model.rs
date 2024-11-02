@@ -67,6 +67,9 @@ pub mod payment_method;
 /// - `photo`: The photo of the user.
 pub mod user;
 
+/// Serde configuration attributes to handle wrongly typed items
+pub mod serde_config;
+
 #[cfg(feature = "redis")]
 pub use redis_macros::{FromRedisValue, ToRedisArgs};
 pub use serde::{Deserialize, Serialize};
