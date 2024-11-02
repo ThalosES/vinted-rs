@@ -10,15 +10,6 @@
 
 </div>
 
-- [Vinted-rs: A Vinted API wrapper in Rust](#vinted-rs-a-vinted-api-wrapper-in-rust)
-  - [Installation](#installation)
-  - [Features](#features)
-    - [Advanced filters](#advanced-filters)
-      - [Environment set-up](#environment-set-up)
-      - [Database set-up](#database-set-up)
-      - [Testing set-up](#testing-set-up)
-    - [Redis](#redis)
-
 ## Installation
 
 Via `cargo` you can add the library to your project's `Cargo.toml`
@@ -113,8 +104,6 @@ cargo test
 ### Redis
 
 This feature allows recovered results to be cached using a Redis instance. <code><img width="4%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/redis.svg"></code>
-
-
 
 A development instance can be created using:
 
