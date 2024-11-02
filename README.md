@@ -16,7 +16,7 @@ Via `cargo` you can add the library to your project's `Cargo.toml`
 
 ```toml
 [dependencies]
-vinted-rs = { version = "0.9.2", 
+vinted-rs = { version = "0.10.0", 
               #features = ["advanced_filters", "redis"] 
               }
 ```
