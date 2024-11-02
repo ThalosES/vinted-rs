@@ -3,7 +3,7 @@
 # 0.10.0 (WIP)
 
 ## Fixed
-- Rexported Redis crate [#115](https://github.com/ThalosES/vinted-rs/pull/115) 
+- Re-exported Redis crate [#115](https://github.com/ThalosES/vinted-rs/pull/115) 
 
 - Added support for fields that may come as boolean or integer [#118](https://github.com/ThalosES/vinted-rs/pull/118)
 
@@ -12,7 +12,8 @@
 - Removed hardcoded DB strings and introduced a `.env` file required for feature `Advanced Items` [#117](https://github.com/ThalosES/vinted-rs/pull/117)
 
 # 0.9.1 (2024-09-24) [#111](https://github.com/TuTarea/vinted-rs/pull/111/)
-⚠️Not using `develop` branch any more. Leaving main as "canary"/develop channel and using releases to declare _stable_ and _experimental_ versions
+
+⚠️Not using [`develop`](https://github.com/ThalosES/vinted-rs/tree/develop) branch any more. Leaving main as "canary"/develop channel and using releases to declare _stable_ and _experimental_ versions
 
 ## Fixed
 - Updated Redis to 0.27.2 [#108](https://github.com/ThalosES/vinted-rs/pull/108) 
