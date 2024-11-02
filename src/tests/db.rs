@@ -1,15 +1,15 @@
 use crate::{
     db::DbController,
     model::filter::{brand::Brand, category::Category, country::Country, size::Size},
+    tests::DB_URI,
 };
 use bb8_postgres::tokio_postgres::NoTls;
 
-const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
 const POOL_SIZE: u32 = 5;
 
 #[tokio::test]
 async fn test_get_brand_by_name() {
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
 
     let brand_name: String = String::from("adidas");
 
@@ -27,7 +27,7 @@ async fn test_get_brand_by_name() {
 
 #[tokio::test]
 async fn test_get_brands_by_name() {
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
 
     let brand_name: String = String::from("adidas");
 
@@ -38,7 +38,7 @@ async fn test_get_brands_by_name() {
 
 #[tokio::test]
 async fn test_get_category_by_name() {
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
 
     let category_name: String = String::from("Women");
 
@@ -59,7 +59,7 @@ async fn test_get_category_by_name() {
 
 #[tokio::test]
 async fn test_get_country_by_iso() {
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let c = db.get_country_by_iso(&String::from("ES")).await.unwrap();
 
     assert_eq!(
@@ -76,7 +76,7 @@ async fn test_get_country_by_iso() {
 
 #[tokio::test]
 async fn test_get_size_by_title_and_type() {
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let size = db
         .get_size_by_title_and_type(
             &String::from("ES"),
@@ -102,7 +102,7 @@ async fn test_get_size_by_title_and_type() {
 }
 #[tokio::test]
 async fn test_get_sizes_for_category() {
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let sizes = db.get_sizes_for_category(5).await.unwrap();
 
     assert!(sizes.into_iter().all(|size| { size.category_id == 5 }));
