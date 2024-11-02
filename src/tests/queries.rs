@@ -41,16 +41,16 @@ async fn test_get_item_query_text() {
         Ok(items) => {
             assert!(items.items.len() <= 1);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -69,16 +69,16 @@ async fn test_get_item_brands() {
         Ok(items) => {
             assert_eq!(items.items.first().unwrap().brand_title, brand.title);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -98,16 +98,16 @@ async fn test_get_items_brands() {
                 assert_eq!(item.brand_title, brand.title);
             }
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-            VintedWrapperError::CookiesError(_) => (),
-        },
+        }
     };
 }
 
@@ -138,16 +138,16 @@ async fn test_get_items_catalogs_no_db() {
                 );
             });
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -172,16 +172,16 @@ async fn test_get_items_by_price() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -200,16 +200,16 @@ async fn test_get_items_by_size_no_db() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -240,16 +240,16 @@ async fn test_get_items_by_size() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -268,16 +268,16 @@ async fn test_get_items_by_material() {
         Ok(items) => {
             assert!(items.items.len() <= num);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -300,16 +300,16 @@ async fn test_get_items_by_color() {
         Ok(items) => {
             assert!(items.items.len() <= num);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -334,16 +334,16 @@ async fn test_get_items_by_currency() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-        },
+        }
     };
 }
 
@@ -375,23 +375,34 @@ async fn test_get_advanced_items() {
         Ok(items) => {
             if !items.items.is_empty() {
                 for item in items.items {
-                    let advanced = vinted
-                        .get_advanced_item(item.id, None, None, None)
-                        .await
-                        .unwrap();
-                    assert_eq!(item.id, advanced.id);
+                    let raw = vinted.get_advanced_item(item.id, None, None, None).await;
+                    match raw {
+                        Ok(advanced) => {
+                            assert_eq!(item.id, advanced.id);
+                        }
+                        Err(err) => {
+                            log::error!("{:#?}", err);
+                            match err {
+                                VintedWrapperError::ItemNumberError => unreachable!(),
+                                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                                VintedWrapperError::CookiesError(_) => (),
+                                VintedWrapperError::SerdeError(_) => unreachable!(),
+                                VintedWrapperError::ReqWestError(_) => unreachable!(),
+                            }
+                        }
+                    }
                 }
             }
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::SerdeError(_) => unreachable!(),
-            VintedWrapperError::ReqWestError(err) => {
-                log::error!("{:#?}", err);
-                unreachable!()
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
-            VintedWrapperError::ItemError(_, _, _) => (),
-            VintedWrapperError::CookiesError(_) => (),
-        },
+        }
     };
 }
