@@ -350,13 +350,7 @@ async fn test_get_items_by_currency() {
 #[tokio::test]
 async fn test_get_advanced_items() {
     env_logger::builder().is_test(true).init();
-    let db = DbController::new(
-        "postgres://postgres:postgres@localhost/horus-bot?sslmode=disable",
-        5,
-        NoTls,
-    )
-    .await
-    .unwrap();
+    let db = DbController::new(&DB_URI, 5, NoTls).await.unwrap();
 
     let adidas = db.get_brand_by_name(&"Adidas").await.unwrap();
     let nike = db.get_brand_by_name(&"Nike").await.unwrap();
