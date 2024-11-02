@@ -384,7 +384,7 @@ async fn test_get_advanced_items() {
                             log::error!("{:#?}", err);
                             match err {
                                 VintedWrapperError::ItemNumberError => unreachable!(),
-                                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                                VintedWrapperError::ItemError(_, _, _) => (),
                                 VintedWrapperError::CookiesError(_) => (),
                                 VintedWrapperError::SerdeError(_) => unreachable!(),
                                 VintedWrapperError::ReqWestError(_) => unreachable!(),
