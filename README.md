@@ -1,4 +1,6 @@
-# Vinted-rs: A Vinted API wrapper
+# Vinted-rs: A Vinted API wrapper in Rust
+
+<div align="center">
 
 [![github]](https://github.com/TuTarea/vinted-rs/)&ensp;[![crates-io]](https://crates.io/crates/vinted-rs)&ensp;[![docs-rs]](https://docs.rs/vinted-rs/latest/vinted_rs/)
 
@@ -6,16 +8,15 @@
 [crates-io]: https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
 [docs-rs]: https://img.shields.io/badge/docs.rs-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs
 
-## Table of Contents
+</div>
 
-- [Vinted-rs: A Vinted API wrapper](#vinted-rs-a-vinted-api-wrapper)
-  - [Table of Contents](#table-of-contents)
+- [Vinted-rs: A Vinted API wrapper in Rust](#vinted-rs-a-vinted-api-wrapper-in-rust)
   - [Installation](#installation)
-    - [Environment set-up](#environment-set-up)
-    - [Database set-up](#database-set-up)
-    - [Testing set-up](#testing-set-up)
   - [Features](#features)
     - [Advanced filters](#advanced-filters)
+      - [Environment set-up](#environment-set-up)
+      - [Database set-up](#database-set-up)
+      - [Testing set-up](#testing-set-up)
     - [Redis](#redis)
 
 ## Installation
@@ -25,10 +26,19 @@ Via `cargo` you can add the library to your project's `Cargo.toml`
 ```toml
 [dependencies]
 vinted-rs = { version = "0.9.2", 
-              features = ["advanced_filters", "redis"] }
+              #features = ["advanced_filters", "redis"] 
+              }
 ```
 
-### Environment set-up
+## Features
+
+### Advanced filters
+
+> This feature requires [setting up a Postgres Database](#database-set-up) <code><img width="5%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/postgresql.svg"></code>
+
+Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), which is stored in the diesel [migrations](./migrations/) folder.
+
+#### Environment set-up
 
 1. Copy the `.env.example`
 
@@ -38,7 +48,7 @@ vinted-rs = { version = "0.9.2",
 
 2. Modify the variables to your liking
 
-### Database set-up
+#### Database set-up
 Advanced filtering features must require this setup before running.
 
 1. ⚠️ `diesel-cli` installation may fail if you do not have `libpq` library installed. To install `libpq`, just install PostgreSQL package on your machine.
@@ -92,7 +102,7 @@ Advanced filtering features must require this setup before running.
     make stop
     ```
 
-### Testing set-up
+#### Testing set-up
 
 > This step requires completing the [DB setup](#database-set-up)
 
@@ -100,17 +110,11 @@ Advanced filtering features must require this setup before running.
 cargo test
 ```
 
-## Features
-
-### Advanced filters
-
-> This feature requires [setting up the Postgres DB](#database-set-up)
-
-Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), which is stored in the diesel [migrations](./migrations/) folder.
-
 ### Redis
 
-This feature allows recovered results to be cached on a Redis instance.
+This feature allows recovered results to be cached using a Redis instance. 
+
+<p align=center><code><img width="10%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/redis.svg"></code>
 
 A development instance can be created using:
 
