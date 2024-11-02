@@ -1,11 +1,11 @@
 use crate::db::DbController;
 use crate::model::filter::{Currency, Filter};
 use crate::queries::VintedWrapperError;
+use crate::tests::DB_URI;
 use crate::VintedWrapper;
 use bb8_postgres::tokio_postgres::NoTls;
 use env_logger;
 
-const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
 const POOL_SIZE: u32 = 5;
 
 fn _calculate_color_props(hex_color1: &str) -> (f64, f64, f64) {
@@ -45,7 +45,11 @@ async fn test_get_item_query_text() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -53,7 +57,7 @@ async fn test_get_item_query_text() {
 #[tokio::test]
 async fn test_get_item_brands() {
     let vinted = VintedWrapper::new();
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
     let filter: Filter = Filter::builder()
@@ -69,7 +73,11 @@ async fn test_get_item_brands() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -77,7 +85,7 @@ async fn test_get_item_brands() {
 #[tokio::test]
 async fn test_get_items_brands() {
     let vinted = VintedWrapper::new();
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
     let filter: Filter = Filter::builder()
@@ -93,7 +101,11 @@ async fn test_get_items_brands() {
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
             VintedWrapperError::CookiesError(_) => (),
         },
     };
@@ -130,7 +142,11 @@ async fn test_get_items_catalogs_no_db() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -160,7 +176,11 @@ async fn test_get_items_by_price() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -184,7 +204,11 @@ async fn test_get_items_by_size_no_db() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -192,7 +216,7 @@ async fn test_get_items_by_size_no_db() {
 #[tokio::test]
 async fn test_get_items_by_size() {
     let vinted = VintedWrapper::new();
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let size = db
         .get_size_by_title_and_type(
             &String::from("ES"),
@@ -220,7 +244,11 @@ async fn test_get_items_by_size() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -244,7 +272,11 @@ async fn test_get_items_by_material() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -272,7 +304,11 @@ async fn test_get_items_by_color() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -302,7 +338,11 @@ async fn test_get_items_by_currency() {
             VintedWrapperError::ItemNumberError => unreachable!(),
             VintedWrapperError::ItemError(_, _, _) => unreachable!(),
             VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
         },
     };
 }
@@ -310,9 +350,13 @@ async fn test_get_items_by_currency() {
 #[tokio::test]
 async fn test_get_advanced_items() {
     env_logger::builder().is_test(true).init();
-    let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
-        .await
-        .unwrap();
+    let db = DbController::new(
+        "postgres://postgres:postgres@localhost/horus-bot?sslmode=disable",
+        5,
+        NoTls,
+    )
+    .await
+    .unwrap();
 
     let adidas = db.get_brand_by_name(&"Adidas").await.unwrap();
     let nike = db.get_brand_by_name(&"Nike").await.unwrap();
@@ -341,7 +385,11 @@ async fn test_get_advanced_items() {
         }
         Err(err) => match err {
             VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::SerdeError(_) => (),
+            VintedWrapperError::SerdeError(_) => unreachable!(),
+            VintedWrapperError::ReqWestError(err) => {
+                log::error!("{:#?}", err);
+                unreachable!()
+            }
             VintedWrapperError::ItemError(_, _, _) => (),
             VintedWrapperError::CookiesError(_) => (),
         },

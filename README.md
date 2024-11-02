@@ -11,12 +11,12 @@
 - [Vinted-rs: A Vinted API wrapper](#vinted-rs-a-vinted-api-wrapper)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
-  - [DB setup](#db-setup)
-    - [Create a migration](#create-a-migration)
-    - [Run a Docker container with PostgreSQL](#run-a-docker-container-with-postgresql)
-    - [Run migrations](#run-migrations)
-    - [Stop DB](#stop-db)
-  - [Running Tests](#running-tests)
+    - [Environment set-up](#environment-set-up)
+    - [Database set-up](#database-set-up)
+    - [Testing set-up](#testing-set-up)
+  - [Features](#features)
+    - [Advanced filters](#advanced-filters)
+    - [Redis](#redis)
 
 ## Installation
 
@@ -24,73 +24,96 @@ Via `cargo` you can add the library to your project's `Cargo.toml`
 
 ```toml
 [dependencies]
-vinted-rs = "0.9.1"
+vinted-rs = { version = "0.9.1", 
+              features = ["advanced_filters", "redis"] }
 ```
 
-## DB setup
+### Environment set-up
 
+1. Copy the `.env.example`
+
+    ```sh
+    cp .env.example .env
+    ```
+
+2. Modify the variables to your liking
+
+### Database set-up
 Advanced filtering features must require this setup before running.
 
-- First start installing diesel-cli (in order to run the migrations in PostgreSQL database)
+1. ⚠️ `diesel-cli` installation may fail if you do not have `libpq` library installed. To install `libpq`, just install PostgreSQL package on your machine.
 
-⚠️**Very important:** diesel-cli installation may fail if you do not have `libpq` library installed.
+   - In `Arch` based is only necessary to install this package.
 
-To install `libpq`, just install PostgreSQL package on your machine.
+      ```bash
+      sudo pacman -S postgresql-libs
+      ```
 
-In `Arch` based is only necessary to install this package.
+   - In `Debian` based distributions is only necessary to install this package.
 
-```bash
-sudo pacman -S postgresql-libs
-```
+      ```bash
+      sudo apt install libpq-dev
+      ```
 
-In `Debian` based distributions is only necessary to install this package.
+2. Install `diesel-cli` in order to run the migrations in PostgreSQL database
+      
+    ```bash
+    cargo install diesel_cli --features=postgres --no-default-features
+    ```
 
-```bash
-sudo apt install libpq-dev
-```
+**Available interactions** (See [Makefile](./Makefile)) 
 
-```bash
-cargo install diesel_cli --features=postgres --no-default-features
-```
+1. Create a migration
 
-### Create a migration
+    ```bash
+    mkdir -p migrations #
+    diesel migration generate my_migration
+    ```
 
-```bash
-mkdir migrations
-```
+    Program after that `up.sql` and `down.sql` scripts.
 
-```bash
-diesel migration generate my_migration
-```
+2. Run a Docker container with PostgreSQL
 
-Program after that `up.sql` and `down.sql` scripts.
+   - See in [Makefile](https://github.com/ThalosES/vinted-rs/blob/main/Makefile)
 
-### Run a Docker container with PostgreSQL
+   ```bash
+   make db
+   ```
 
-- See in [Makefile](https://github.com/TuTarea/vinted-rs/blob/main/Makefile)
+3. Run migrations
 
-```bash
-make db
-```
+    ```bash
+    make diesel
+    ```
 
-### Run migrations
+4. Stop DB
 
-```bash
-make diesel
-```
+    ```bash
+    make stop
+    ```
 
-### Stop DB
+### Testing set-up
 
-```bash
-make stop
-```
-
-## Running Tests
-
-⚠️**Very important:** Before running tests is important to do the [DB setup](#db-setup)
-
-Then run the tests
+> This step requires completing the [DB setup](#database-set-up)
 
 ```bash
 cargo test
+```
+
+## Features
+
+### Advanced filters
+
+> This feature requires [setting up the Postgres DB](#database-set-up)
+
+Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), which is stored in the diesel [migrations](./migrations/) folder.
+
+### Redis
+
+This feature allows recovered results to be cached on a Redis instance.
+
+A development instance can be created using:
+
+```bash
+make cache
 ```
