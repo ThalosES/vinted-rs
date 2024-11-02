@@ -1,6 +1,6 @@
-# Vinted-rs: A Vinted API wrapper in Rust
-
 <div align="center">
+
+# Vinted-rs: A Vinted API wrapper in Rust
 
 [![github]](https://github.com/TuTarea/vinted-rs/)&ensp;[![crates-io]](https://crates.io/crates/vinted-rs)&ensp;[![docs-rs]](https://docs.rs/vinted-rs/latest/vinted_rs/)
 
