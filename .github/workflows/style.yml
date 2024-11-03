@@ -15,7 +15,7 @@ jobs:
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
-          components: clippy
+          components: rustfmt
           override: true
           profile: minimal
           toolchain: nightly
