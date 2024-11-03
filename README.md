@@ -1,4 +1,6 @@
-# Vinted-rs: A Vinted API wrapper
+<div align="center">
+
+# Vinted-rs: A Vinted API wrapper in Rust
 
 [![github]](https://github.com/TuTarea/vinted-rs/)&ensp;[![crates-io]](https://crates.io/crates/vinted-rs)&ensp;[![docs-rs]](https://docs.rs/vinted-rs/latest/vinted_rs/)
 
@@ -6,17 +8,7 @@
 [crates-io]: https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
 [docs-rs]: https://img.shields.io/badge/docs.rs-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs
 
-## Table of Contents
-
-- [Vinted-rs: A Vinted API wrapper](#vinted-rs-a-vinted-api-wrapper)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [DB setup](#db-setup)
-    - [Create a migration](#create-a-migration)
-    - [Run a Docker container with PostgreSQL](#run-a-docker-container-with-postgresql)
-    - [Run migrations](#run-migrations)
-    - [Stop DB](#stop-db)
-  - [Running Tests](#running-tests)
+</div>
 
 ## Installation
 
@@ -24,73 +16,102 @@ Via `cargo` you can add the library to your project's `Cargo.toml`
 
 ```toml
 [dependencies]
-vinted-rs = "0.9.1"
+vinted-rs = { version = "0.10.0", 
+              #features = ["advanced_filters", "redis"] 
+              }
 ```
 
-## DB setup
+## Features
 
+| Feature                               | Description                                                                                                                                      | Example                         |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| [Advanced Filters](#advanced-filters) | Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), which is stored in the diesel [migrations](./migrations/) folder. | [✅](./examples/filter_example/) |
+| [Redis](#redis)                       | Allows recovered results to be cached using a Redis instance                                                                                     | ❌                               |
+
+### Advanced filters
+
+> This feature requires [setting up a Postgres Database](#database-set-up) <code><img width="3%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/postgresql.svg"></code>
+
+Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), which is stored in the diesel [migrations](./migrations/) folder.
+
+#### Environment set-up
+
+1. Copy the `.env.example`
+
+    ```sh
+    cp .env.example .env
+    ```
+
+2. Modify the variables to your liking
+
+#### Database set-up
 Advanced filtering features must require this setup before running.
 
-- First start installing diesel-cli (in order to run the migrations in PostgreSQL database)
+1. ⚠️ `diesel-cli` installation may fail if you do not have `libpq` library installed. To install `libpq`, just install PostgreSQL package on your machine.
 
-⚠️**Very important:** diesel-cli installation may fail if you do not have `libpq` library installed.
+   - In `Arch` based is only necessary to install this package.
 
-To install `libpq`, just install PostgreSQL package on your machine.
+      ```bash
+      sudo pacman -S postgresql-libs
+      ```
 
-In `Arch` based is only necessary to install this package.
+   - In `Debian` based distributions is only necessary to install this package.
 
-```bash
-sudo pacman -S postgresql-libs
-```
+      ```bash
+      sudo apt install libpq-dev
+      ```
 
-In `Debian` based distributions is only necessary to install this package.
+2. Install `diesel-cli` in order to run the migrations in PostgreSQL database
+      
+    ```bash
+    cargo install diesel_cli --features=postgres --no-default-features
+    ```
 
-```bash
-sudo apt install libpq-dev
-```
+**Available interactions** (See [Makefile](./Makefile)) 
 
-```bash
-cargo install diesel_cli --features=postgres --no-default-features
-```
+1. Create a migration
 
-### Create a migration
+    ```bash
+    mkdir -p migrations #
+    diesel migration generate my_migration
+    ```
 
-```bash
-mkdir migrations
-```
+    Program after that `up.sql` and `down.sql` scripts.
 
-```bash
-diesel migration generate my_migration
-```
+2. Run a Docker container with PostgreSQL
 
-Program after that `up.sql` and `down.sql` scripts.
+   - See in [Makefile](https://github.com/ThalosES/vinted-rs/blob/main/Makefile)
 
-### Run a Docker container with PostgreSQL
+   ```bash
+   make db
+   ```
 
-- See in [Makefile](https://github.com/TuTarea/vinted-rs/blob/main/Makefile)
+3. Run migrations
 
-```bash
-make db
-```
+    ```bash
+    make diesel
+    ```
 
-### Run migrations
+4. Stop DB
 
-```bash
-make diesel
-```
+    ```bash
+    make stop
+    ```
 
-### Stop DB
+#### Testing set-up
 
-```bash
-make stop
-```
-
-## Running Tests
-
-⚠️**Very important:** Before running tests is important to do the [DB setup](#db-setup)
-
-Then run the tests
+> This step requires completing the [DB setup](#database-set-up)
 
 ```bash
 cargo test
+```
+
+### Redis
+
+This feature allows recovered results to be cached using a Redis instance. <code><img width="4%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/redis.svg"></code>
+
+A development instance can be created using:
+
+```bash
+make cache
 ```

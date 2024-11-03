@@ -1,4 +1,5 @@
 use super::{photo::Photo, user::AdvancedUser};
+use crate::model::serde_config::bool_from_int_or_bool;
 use crate::model::{Deserialize, Serialize};
 #[cfg(feature = "redis")]
 use crate::model::{FromRedisValue, ToRedisArgs};
@@ -17,7 +18,7 @@ pub struct Item {
     pub price: String,
     pub photo: Option<Photo>,
     pub url: String,
-    pub is_visible: i32,
+    pub is_visible: bool,
     pub promoted: bool,
     pub favourite_count: i32,
 }
@@ -131,49 +132,116 @@ pub struct AdvancedItem {
     pub user: AdvancedUser,
 
     // Some flags
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_for_sell: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_for_swap: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_for_give_away: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_handicraft: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_processing: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_draft: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub promoted: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub package_size_standard: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub related_catalogs_enabled: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_hidden: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_reserved: Option<bool>,
-    // More flags, just in i32
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reserved_for_user_id: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_visible: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
+    pub is_visible: Option<bool>,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_visible_new: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_unisex: Option<i32>,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
+    pub is_unisex: Option<bool>,
 
-    /*
-    WARN:Leaving is_closed commented, since its type [i32, bool]
-    is not stable and could cause issues
-     */
-    // #[serde(skip_serializing_if = "Option::is_none")]
-    // pub is_closed: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
+    pub is_closed: Option<bool>,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_closed_new: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub is_delayed_publication: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "bool_from_int_or_bool",
+        default
+    )]
     pub can_be_sold: Option<bool>,
 }
 

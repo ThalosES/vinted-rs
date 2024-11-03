@@ -1,17 +1,24 @@
 # Changelog
 
-# 0.9.2 (WIP)
+# 0.10.0 (WIP)
 
 ## Fixed
-[#115](https://github.com/ThalosES/vinted-rs/pull/115) : Rexported Redis crate
+- Re-exported Redis crate [#115](https://github.com/ThalosES/vinted-rs/pull/115) 
+
+- Added support for fields that may come as boolean or integer [#118](https://github.com/ThalosES/vinted-rs/pull/118)
+
+## Improved
+
+- Removed hardcoded DB strings and introduced a `.env` file required for feature `Advanced Items` [#117](https://github.com/ThalosES/vinted-rs/pull/117)
 
 # 0.9.1 (2024-09-24) [#111](https://github.com/TuTarea/vinted-rs/pull/111/)
-⚠️Not using `develop` branch any more. Leaving main as "canary"/develop channel and using releases to declare _stable_ and _experimental_ versions
+
+⚠️Not using [`develop`](https://github.com/ThalosES/vinted-rs/tree/develop) branch any more. Leaving main as "canary"/develop channel and using releases to declare _stable_ and _experimental_ versions
 
 ## Fixed
-#108 : Updated Redis to 0.27.2
-#105 : Updated TypeBuilder to 0.20
-#109 : Solved vulnerable dependency for Db Feeder
+- Updated Redis to 0.27.2 [#108](https://github.com/ThalosES/vinted-rs/pull/108) 
+- Updated TypeBuilder to 0.20 [#105](https://github.com/ThalosES/vinted-rs/pull/105) 
+- Solved vulnerable dependency for Db Feeder [#109](https://github.com/ThalosES/vinted-rs/pull/109) 
 
 # 0.9.0 (2024-07-28) [#97](https://github.com/TuTarea/vinted-rs/pull/97/)
 
