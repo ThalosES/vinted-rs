@@ -1,6 +1,7 @@
+cargo-features = ["edition2024"]
+
 [workspace]
 members = ["examples/filter_example", "."]
-cargo-features = ["edition2024"]
 
 [package]
 name = "vinted-rs"
