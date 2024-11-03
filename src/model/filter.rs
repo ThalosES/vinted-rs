@@ -179,7 +179,6 @@ pub struct Filter {
     ///```
     #[builder(default)]
     pub size_ids: Option<String>,
-
     /// The article statuses to filter items by.
     ///
     ///### Example
@@ -192,7 +191,6 @@ pub struct Filter {
     #[builder(default)]
     pub article_status: Option<Vec<ArticleStatus>>,
     /// The sort order for the retrieved items.
-
     ///### Example
     ///```rust
     /// use vinted_rs::Filter;
