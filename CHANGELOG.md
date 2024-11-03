@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.10.0 (WIP)
+# 0.10.0 (2024-11-03)
 
 ## Fixed
 - Re-exported Redis crate [#115](https://github.com/ThalosES/vinted-rs/pull/115) 
