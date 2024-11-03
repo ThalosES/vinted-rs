@@ -13,14 +13,13 @@ where
                     "expected an integer for optional boolean field",
                 ));
             };
-            {
-                match i {
-                    0 => Ok(Some(false)),
-                    1 => Ok(Some(true)),
-                    _ => Err(serde::de::Error::custom(
-                        "expected 0 or 1 for optional boolean field",
-                    )),
-                }
+
+            match i {
+                0 => Ok(Some(false)),
+                1 => Ok(Some(true)),
+                _ => Err(serde::de::Error::custom(
+                    "expected 0 or 1 for optional boolean field",
+                )),
             }
         }
 
