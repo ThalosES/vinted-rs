@@ -698,8 +698,6 @@ impl<'a> VintedWrapper<'a> {
 
         let json: Response = client.get(url).send().await?;
 
-        debug!("{:?}", &json);
-
         match json.status() {
             StatusCode::OK => {
                 // First, get the response body as text to enable debugging if deserialization fails
@@ -709,9 +707,7 @@ impl<'a> VintedWrapper<'a> {
                 match serde_json::from_str::<Items>(&raw_json) {
                     Ok(items) => Ok(items),
                     Err(e) => {
-                        // Log or debug the raw JSON content
-                        error!("{:#?}", e);
-                        error!("Failed to deserialize JSON: {}", raw_json); // Or use a logger
+                        error!("Failed to deserialize JSON: {}", raw_json);
                         Err(VintedWrapperError::SerdeError(e))
                     }
                 }
