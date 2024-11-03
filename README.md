@@ -23,6 +23,11 @@ vinted-rs = { version = "0.10.0",
 
 ## Features
 
+| Feature                               | Description                                                                                                                                      | Example                         |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| [Advanced Filters](#advanced-filters) | Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), which is stored in the diesel [migrations](./migrations/) folder. | [✅](./examples/filter_example/) |
+| [Redis](#redis)                       | Allows recovered results to be cached using a Redis instance                                                                                     | ❌                               |
+
 ### Advanced filters
 
 > This feature requires [setting up a Postgres Database](#database-set-up) <code><img width="3%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/postgresql.svg"></code>
