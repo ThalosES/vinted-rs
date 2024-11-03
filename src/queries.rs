@@ -40,6 +40,7 @@ use reqwest::Response;
 use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
+use std::fmt;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
@@ -65,13 +66,38 @@ pub enum VintedWrapperError {
     #[error(transparent)]
     ReqWestError(#[from] reqwest::Error),
     #[error(transparent)]
-    SerdeError(#[from] serde_json::Error),
+    SerdeError(#[from] SerdeJSONError),
     #[error(transparent)]
     CookiesError(#[from] CookieError),
     #[error("Number of items must be non-zero value")]
     ItemNumberError,
     #[error("Could not get deatiled info for item `{2}` with code: {0}")]
     ItemError(StatusCode, Option<i32>, String),
+}
+
+#[derive(Debug, Error)]
+pub struct SerdeJSONError {
+    raw_json: String,
+    serde_error: serde_json::Error,
+}
+
+impl SerdeJSONError {
+    fn new(raw_json: String, serde_error: serde_json::Error) -> Self {
+        SerdeJSONError {
+            raw_json,
+            serde_error,
+        }
+    }
+}
+
+impl fmt::Display for SerdeJSONError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "JSON: {}, SerdeError: {}",
+            self.raw_json, self.serde_error
+        )
+    }
 }
 
 impl From<VintedWrapperError> for FangError {
@@ -706,9 +732,10 @@ impl<'a> VintedWrapper<'a> {
                 // Try to parse the JSON into Items
                 match serde_json::from_str::<Items>(&raw_json) {
                     Ok(items) => Ok(items),
-                    Err(e) => {
-                        error!("Failed to deserialize JSON: {}", raw_json);
-                        Err(VintedWrapperError::SerdeError(e))
+                    Err(serde_error) => {
+                        let error = SerdeJSONError::new(raw_json, serde_error);
+                        error!("Failed to deserialize: {}", error); // Or use a logger
+                        Err(VintedWrapperError::SerdeError(error))
                     }
                 }
             }
@@ -768,11 +795,11 @@ impl<'a> VintedWrapper<'a> {
                 let raw_json = json.text().await?;
                 match serde_json::from_str::<AdvancedItems>(&raw_json) {
                     Ok(items) => Ok(items.item),
-                    Err(e) => {
+                    Err(serde_error) => {
                         // Log or debug the raw JSON content
-                        error!("{:#?}", e);
-                        error!("Failed to deserialize JSON: {}", raw_json); // Or use a logger
-                        Err(VintedWrapperError::SerdeError(e))
+                        let error = SerdeJSONError::new(raw_json, serde_error);
+                        error!("Failed to deserialize: {}", error); // Or use a logger
+                        Err(VintedWrapperError::SerdeError(error))
                     }
                 }
             }
