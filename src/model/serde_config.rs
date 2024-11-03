@@ -8,7 +8,12 @@ where
     match Value::deserialize(deserializer)? {
         Value::Bool(b) => Ok(Some(b)),
         Value::Number(n) => {
-            if let Some(i) = n.as_i64() {
+            let Some(i) = n.as_i64() else {
+                return Err(serde::de::Error::custom(
+                    "expected an integer for optional boolean field",
+                ));
+            };
+            {
                 match i {
                     0 => Ok(Some(false)),
                     1 => Ok(Some(true)),
@@ -16,10 +21,6 @@ where
                         "expected 0 or 1 for optional boolean field",
                     )),
                 }
-            } else {
-                Err(serde::de::Error::custom(
-                    "expected an integer for optional boolean field",
-                ))
             }
         }
 
