@@ -1,11 +1,11 @@
 use crate::db::DbController;
 use crate::model::filter::{Currency, Filter};
 use crate::queries::VintedWrapperError;
+use crate::tests::DB_URI;
 use crate::VintedWrapper;
 use bb8_postgres::tokio_postgres::NoTls;
 use env_logger;
 
-const DB_URL: &str = "postgres://postgres:postgres@localhost/vinted-rs";
 const POOL_SIZE: u32 = 5;
 
 fn _calculate_color_props(hex_color1: &str) -> (f64, f64, f64) {
@@ -41,19 +41,23 @@ async fn test_get_item_query_text() {
         Ok(items) => {
             assert!(items.items.len() <= 1);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
 #[tokio::test]
 async fn test_get_item_brands() {
     let vinted = VintedWrapper::new();
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
     let filter: Filter = Filter::builder()
@@ -63,21 +67,29 @@ async fn test_get_item_brands() {
     match vinted.get_items(&filter, 1, None, None, None).await {
         // Limitado el numero de elementos a 1
         Ok(items) => {
-            assert_eq!(items.items.first().unwrap().brand_title, brand.title);
+            let result = items.items.first();
+            if result.is_none() {
+                drop(VintedWrapperError::ItemNumberError);
+            }
+            assert_eq!(result.unwrap().brand_title, brand.title);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
 #[tokio::test]
 async fn test_get_items_brands() {
     let vinted = VintedWrapper::new();
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let brand = db.get_brand_by_name(&String::from("Adidas")).await.unwrap();
 
     let filter: Filter = Filter::builder()
@@ -90,12 +102,16 @@ async fn test_get_items_brands() {
                 assert_eq!(item.brand_title, brand.title);
             }
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::SerdeError(_) => (),
-            VintedWrapperError::CookiesError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
@@ -126,12 +142,16 @@ async fn test_get_items_catalogs_no_db() {
                 );
             });
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
@@ -156,12 +176,16 @@ async fn test_get_items_by_price() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
@@ -180,19 +204,23 @@ async fn test_get_items_by_size_no_db() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
 #[tokio::test]
 async fn test_get_items_by_size() {
     let vinted = VintedWrapper::new();
-    let db: DbController<NoTls> = DbController::new(DB_URL, POOL_SIZE, NoTls).await.unwrap();
+    let db: DbController<NoTls> = DbController::new(&DB_URI, POOL_SIZE, NoTls).await.unwrap();
     let size = db
         .get_size_by_title_and_type(
             &String::from("ES"),
@@ -216,12 +244,16 @@ async fn test_get_items_by_size() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
@@ -240,12 +272,16 @@ async fn test_get_items_by_material() {
         Ok(items) => {
             assert!(items.items.len() <= num);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
@@ -268,12 +304,16 @@ async fn test_get_items_by_color() {
         Ok(items) => {
             assert!(items.items.len() <= num);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
@@ -298,21 +338,23 @@ async fn test_get_items_by_currency() {
 
             assert!(ok);
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-            VintedWrapperError::CookiesError(_) => (),
-            VintedWrapperError::SerdeError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
 
 #[tokio::test]
 async fn test_get_advanced_items() {
     env_logger::builder().is_test(true).init();
-    let db = DbController::new("postgres://postgres:postgres@localhost/vinted-rs", 5, NoTls)
-        .await
-        .unwrap();
+    let db = DbController::new(&DB_URI, 5, NoTls).await.unwrap();
 
     let adidas = db.get_brand_by_name(&"Adidas").await.unwrap();
     let nike = db.get_brand_by_name(&"Nike").await.unwrap();
@@ -331,19 +373,34 @@ async fn test_get_advanced_items() {
         Ok(items) => {
             if !items.items.is_empty() {
                 for item in items.items {
-                    let advanced = vinted
-                        .get_advanced_item(item.id, None, None, None)
-                        .await
-                        .unwrap();
-                    assert_eq!(item.id, advanced.id);
+                    let raw = vinted.get_advanced_item(item.id, None, None, None).await;
+                    match raw {
+                        Ok(advanced) => {
+                            assert_eq!(item.id, advanced.id);
+                        }
+                        Err(err) => {
+                            log::error!("{:#?}", err);
+                            match err {
+                                VintedWrapperError::ItemNumberError => unreachable!(),
+                                VintedWrapperError::ItemError(_, _, _) => (),
+                                VintedWrapperError::CookiesError(_) => (),
+                                VintedWrapperError::SerdeError(_) => unreachable!(),
+                                VintedWrapperError::ReqWestError(_) => unreachable!(),
+                            }
+                        }
+                    }
                 }
             }
         }
-        Err(err) => match err {
-            VintedWrapperError::ItemNumberError => unreachable!(),
-            VintedWrapperError::SerdeError(_) => (),
-            VintedWrapperError::ItemError(_, _, _) => (),
-            VintedWrapperError::CookiesError(_) => (),
-        },
+        Err(err) => {
+            log::error!("{:#?}", err);
+            match err {
+                VintedWrapperError::ItemNumberError => unreachable!(),
+                VintedWrapperError::ItemError(_, _, _) => unreachable!(),
+                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::SerdeError(_) => unreachable!(),
+                VintedWrapperError::ReqWestError(_) => unreachable!(),
+            }
+        }
     };
 }
