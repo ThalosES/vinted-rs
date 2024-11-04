@@ -47,7 +47,8 @@ Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), w
 #### Database set-up
 Advanced filtering features must require this setup before running.
 
-1. ⚠️ `diesel-cli` installation may fail if you do not have `libpq` library installed. To install `libpq`, just install PostgreSQL package on your machine.
+> [!IMPORTANT]
+`diesel-cli` installation may fail if you do not have `libpq` library installed. To install `libpq`, just install PostgreSQL package on your machine.
 
    - In `Arch` based is only necessary to install this package.
 
@@ -100,6 +101,7 @@ Advanced filtering features must require this setup before running.
 
 #### Testing set-up
 
+> [!NOTE]
 > This step requires completing the [DB setup](#database-set-up)
 
 ```bash
