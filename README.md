@@ -30,7 +30,8 @@ vinted-rs = { version = "0.10.0",
 
 ### Advanced filters
 
-> This feature requires [setting up a Postgres Database](#database-set-up) <code><img width="3%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/postgresql.svg"></code>
+>  [!NOTE]
+>  This feature requires [setting up a Postgres Database](#database-set-up) <code><img width="3%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/postgresql.svg"></code>
 
 Uses the data pulled by the [scrapping module](./scrapping/vinted-db-feeder/), which is stored in the diesel [migrations](./migrations/) folder.
 
@@ -109,7 +110,6 @@ cargo test
 ```
 
 ### Redis
-
 This feature allows recovered results to be cached using a Redis instance. <code><img width="4%" src="https://raw.githubusercontent.com/yurijserrano/Github-Profile-Readme-Logos/refs/heads/master/databases/redis.svg"></code>
 
 A development instance can be created using:
